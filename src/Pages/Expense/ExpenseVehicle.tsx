@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  ChevronLeft, Wallet, Car, DollarSign, 
+  ChevronLeft, Car, DollarSign, 
   Users, Plus, X, ReceiptText 
 } from 'lucide-react';
 import { Header } from '../../Utils/Screen/Header/Header';
