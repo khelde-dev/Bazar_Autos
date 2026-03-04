@@ -20,13 +20,7 @@ export default function Login() {
   };
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#f4f7fb] font-sans relative"
-      style={{
-        backgroundImage: "radial-gradient(#d1d5db 1px, transparent 1px)",
-        backgroundSize: "24px 24px",
-      }}
-    >
+    <>
       <main className="bg-white w-full max-w-105 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 sm:p-10 relative z-10 flex flex-col items-center">
         <div className="relative mb-6 mt-2">
           <div className="w-20 h-20 bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] rounded-3xl flex items-center justify-center shadow-lg shadow-blue-500/30">
@@ -105,9 +99,6 @@ export default function Login() {
           </button>
         </form>
       </main>
-      <footer className="mt-8 text-center text-[11px] font-medium text-slate-400 tracking-wider">
-        © {new Date().getFullYear()} ACCESO PROFESIONAL • BAZAR DE AUTOS
-      </footer>
-    </div>
+    </>
   );
 }
