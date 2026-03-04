@@ -1,5 +1,5 @@
 import type React from "react";
-import { SectionTitle } from "../../../Utils/Screen/Inputs/SectionTitle";
+import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
 import { Bookmark } from "lucide-react";
 
 export const Status:React.FC=()=>{

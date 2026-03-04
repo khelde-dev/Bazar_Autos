@@ -1,5 +1,5 @@
 import type React from "react";
-import { SectionTitle } from "../../../Utils/Screen/Inputs/SectionTitle";
+import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
 import { FileText } from "lucide-react";
 import { MoneyInput } from "../../../Utils/Screen/Inputs/MoneyInput";
 

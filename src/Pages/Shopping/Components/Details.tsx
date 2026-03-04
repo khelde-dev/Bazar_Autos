@@ -1,6 +1,6 @@
 import type React from "react";
 import {Info} from 'lucide-react';
-import { SectionTitle } from "../../../Utils/Screen/Inputs/SectionTitle";
+import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
 import { InputField } from "../../../Utils/Screen/Inputs/InputField";
 export const Details:React.FC=()=>{
     return(
