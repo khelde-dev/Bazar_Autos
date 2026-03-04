@@ -2,10 +2,11 @@ import type React from "react";
 import {Info} from 'lucide-react';
 import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
 import { InputField } from "../../../Utils/Screen/Inputs/InputField";
+import { Card } from "../../../Utils/Screen/Boxes/Card";
 export const Details:React.FC=()=>{
     return(
         <>
-         <section className="bg-white p-5 rounded-3xl shadow-sm space-y-5">
+         <Card>
           <SectionTitle icon={Info} title="Detalles Generales" />
           <div className="grid grid-cols-2 gap-4">
             <InputField label="Marca" placeholder="Ej. Toyota" />
@@ -29,7 +30,7 @@ export const Details:React.FC=()=>{
             <InputField label="Fecha de Compra" type="date" />
             <InputField label="Fecha de Venta" type="date" />
           </div>
-        </section>
+         </Card>
         </>
     );
 };
