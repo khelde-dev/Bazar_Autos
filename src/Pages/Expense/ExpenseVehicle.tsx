@@ -3,7 +3,6 @@ import {
   ChevronLeft, Car, DollarSign, 
   Users, Plus, X, ReceiptText 
 } from 'lucide-react';
-import { Header } from '../../Utils/Screen/Header/Header';
 import { Card } from '../../Utils/Screen/Boxes/Card';
 import { Label } from '../../Utils/Screen/Text/Label';
 
@@ -17,8 +16,6 @@ export const ExpenseVehicle: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-10 font-sans">
-      <Header Title='Registro de Movimientos'/>
-
       <main className="max-w-md mx-auto p-4 space-y-6">
         <Card>
           <div>
