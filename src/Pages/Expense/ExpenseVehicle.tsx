@@ -5,7 +5,6 @@ import {
 } from 'lucide-react';
 import { Header } from '../../Utils/Screen/Header/Header';
 import { Card } from '../../Utils/Screen/Boxes/Card';
-import { SectionTitle } from '../../Utils/Screen/Text/SectionTitle';
 import { Label } from '../../Utils/Screen/Text/Label';
 
 export const ExpenseVehicle: React.FC = () => {
@@ -22,7 +21,6 @@ export const ExpenseVehicle: React.FC = () => {
 
       <main className="max-w-md mx-auto p-4 space-y-6">
         <Card>
-            <SectionTitle icon={Wallet} title="Detalles del Gasto" />
           <div>
             <Label>Categoría</Label>
             <div className="relative">

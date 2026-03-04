@@ -4,13 +4,11 @@ import { Status } from "./Components/Status";
 import { Details } from "./Components/Details";
 import { Expense } from "./Components/Expense";
 import { BoxMoney } from "../../Utils/Screen/Boxes/BoxMoney";
-import { Header } from "../../Utils/Screen/Header/Header";
 
 const ShoppVehicle: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#F4F7F9] pb-10">
       <main className="max-w-md mx-auto p-4 space-y-6">
-        <Header Title="Agregar Vehículo" />
         <Details />
         <Status />
         <Expense />
