@@ -8,15 +8,26 @@ import {
   EyeOff,
   ArrowRight,
 } from "lucide-react";
+import { initialLoginForm, type LoginForm } from "./types/Login.types";
+import { useLoginMutation } from "./Hooks/useLoginMutation";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState<LoginForm>(initialLoginForm);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { mutate, isPending } = useLoginMutation();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name as keyof LoginForm]: value,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Iniciando sesión", { email, password });
+    mutate(formData);
   };
 
   return (
@@ -56,9 +67,10 @@ export default function Login() {
                 <AtSign size={20} className="text-slate-400" />
               </div>
               <input
+                name="email"
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="tu@correo.com"
                 className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-2xl text-[15px] text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                 required
@@ -74,9 +86,10 @@ export default function Login() {
                 <Lock size={20} className="text-slate-400" />
               </div>
               <input
+                name="password"
                 type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={handleChange}
                 placeholder="••••••••"
                 className="w-full pl-11 pr-12 py-3.5 bg-white border border-slate-200 rounded-2xl text-[15px] text-slate-800 placeholder:text-slate-400 placeholder:text-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all tracking-wider"
                 required
@@ -94,8 +107,8 @@ export default function Login() {
             type="submit"
             className="w-full mt-4 bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] hover:from-[#2552d6] hover:to-[#163fa8] text-white font-semibold text-[16px] py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-[0_8px_20px_-6px_rgba(47,99,246,0.5)] active:scale-[0.98]"
           >
-            Iniciar SesiónS
-            <ArrowRight size={20} className="stroke-[2.5]" />
+            {isPending ? "Iniciando sesión..." : "Iniciar Sesión"}
+            {!isPending && <ArrowRight size={20} />}
           </button>
         </form>
       </main>
