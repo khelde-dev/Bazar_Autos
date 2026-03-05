@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import ShoppVehicle from "../Shopping/ShoppVehicle";
 import { SaleVehicle } from "../Sale/SaleVehicle";
 import { ExpenseVehicle } from "../Expense/ExpenseVehicle";
-import { Footer } from "../../Utils/Screen/Footer/Footer";
 import { Header } from "../../Utils/Screen/Header/Header";
 
 
@@ -41,13 +40,7 @@ useEffect(() => {
   }
 }, [activeTab]);
     return(
-            <div
-              className="min-h-screen flex flex-col items-center justify-start p-4 bg-[#f4f7fb] font-sans relative"
-              style={{
-                backgroundImage: "radial-gradient(#d1d5db 1px, transparent 1px)",
-                backgroundSize: "24px 24px",
-              }}
-            >
+           <>
               <main className="w-full max-w-md mt-10 space-y-6">
                 <Header Title={headerTitle}/>
                 <section>
@@ -71,7 +64,6 @@ useEffect(() => {
                   {renderContent()}
                 </div>
               </main>
-              <Footer />
-            </div>
+            </>
     );
 };

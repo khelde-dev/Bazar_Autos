@@ -1,12 +1,13 @@
-import "./App.css";
-import Login from "./Pages/Login/Login";
-import { Menu } from "./Pages/Menu/Menu";
-
+import { Toaster } from "sonner";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AppRoutes } from "./Routes/AppRoutes";
+const queryClient = new QueryClient();
 function App() {
   return (
-    <>
-    <Menu/>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <Toaster position="top-center" richColors />
+      <AppRoutes />
+    </QueryClientProvider>
   );
 }
 
