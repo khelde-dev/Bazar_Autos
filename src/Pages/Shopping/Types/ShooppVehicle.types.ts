@@ -40,3 +40,51 @@ export const COLOR_PRESETS = [
 ];
 
 export const STATUS_OPTIONS: VehicleStatus[] = ["Inventario", "En Espera", "Reparación"];
+
+export interface VehicleExpenses {
+  tires: number;         
+  bodywork: number;       
+  upholstery: number;     
+  ceiling: number;        
+  steeringWheel: number;  
+  cover: number;          
+  mechanic: number;       
+  caps: number;           
+  fine: number;          
+  kit: number;           
+  hatShelf: number;      
+  oilService: number;     
+  spareCap: number;       
+  alignment: number;      
+  handle: number;         
+  headlights: number;     
+}
+export interface ExpenseConfig {
+  key: keyof VehicleExpenses;
+  label: string;
+}
+
+export const EXPENSE_ITEMS: ExpenseConfig[] = [
+  { key: "tires", label: "Llantas" },
+  { key: "bodywork", label: "Hojalatería" },
+  { key: "upholstery", label: "Tapicería" },
+  { key: "ceiling", label: "Cielo" },
+  { key: "steeringWheel", label: "Volante" },
+  { key: "cover", label: "Funda" },
+  { key: "mechanic", label: "Mecánico" },
+  { key: "caps", label: "Tapones" },
+  { key: "fine", label: "Multa" },
+  { key: "kit", label: "Kit" },
+  { key: "hatShelf", label: "Sombrerera" },
+  { key: "oilService", label: "Rin/Llaveta/Aceite" },
+  { key: "spareCap", label: "Tapón Facción" },
+  { key: "alignment", label: "Alineación" },
+  { key: "handle", label: "Manija" },
+  { key: "headlights", label: "Faros/Calaveras" },
+];
+
+export const INITIAL_EXPENSES: VehicleExpenses = {
+  tires: 0, bodywork: 0, upholstery: 0, ceiling: 0, steeringWheel: 0,
+  cover: 0, mechanic: 0, caps: 0, fine: 0, kit: 0, hatShelf: 0,
+  oilService: 0, spareCap: 0, alignment: 0, handle: 0, headlights: 0,
+};

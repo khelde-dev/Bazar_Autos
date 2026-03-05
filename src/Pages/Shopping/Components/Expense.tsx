@@ -3,43 +3,34 @@ import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
 import { FileText } from "lucide-react";
 import { MoneyInput } from "../../../Utils/Screen/Inputs/MoneyInput";
 import { Card } from "../../../Utils/Screen/Boxes/Card";
+import { EXPENSE_ITEMS, type VehicleExpenses } from "../Types/ShooppVehicle.types";
 
-export const Expense: React.FC = () => {
+interface ExpenseProps {
+  expenses: VehicleExpenses;
+  onExpenseChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export const Expense: React.FC<ExpenseProps> = ({ expenses, onExpenseChange }) => {
+  //const totalInvestment = Object.values(expenses).reduce((acc, curr) => acc + (Number(curr) || 0), 0);
+
   return (
-    <>
-      <Card>
-        <SectionTitle
-          icon={FileText}
-          title="Gastos e Inversión"
-          extra={
-            <span className="bg-blue-600 text-[10px] text-white px-2 py-1 rounded-full font-bold">
-              MONEDA: MXN
-            </span>
-          }
-        />
-        <div className="grid grid-cols-2 gap-x-4 gap-y-5">
-          {[
-            "Llantas",
-            "Hojalatería",
-            "Tapicería",
-            "Cielo",
-            "Volante",
-            "Funda",
-            "Mecánico",
-            "Tapones",
-            "Multa",
-            "Kit",
-            "Sombrerera",
-            "Rin/Llaveta/Aceite",
-            "Tapón Facción",
-            "Alineación",
-            "Manija",
-            "Faros/Calaveras",
-          ].map((item) => (
-            <MoneyInput key={item} label={item} />
-          ))}
-        </div>
-      </Card>
-    </>
+    <Card>
+      <SectionTitle
+        icon={FileText}
+        title="Gastos e Inversión"
+      />
+      <div className="grid grid-cols-2 gap-x-4 gap-y-5 mt-2">
+        {EXPENSE_ITEMS.map((item) => (
+          <MoneyInput 
+            key={item.key} 
+            label={item.label}
+            name={item.key}
+            value={expenses[item.key]}
+            onChange={onExpenseChange}
+            placeholder="0.00"
+          />
+        ))}
+      </div>
+    </Card>
   );
 };

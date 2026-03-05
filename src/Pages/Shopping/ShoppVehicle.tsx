@@ -8,12 +8,12 @@ import { useVehicleForm } from "./Hooks/useVehicleForm";
 import type { VehicleStatus } from "./Types/ShooppVehicle.types";
 
 const ShoppVehicle: React.FC = () => {
-  const { vehicleData, setVehicleData, handleInputChange } = useVehicleForm();
+  const { vehicleData, setVehicleData, handleInputChange, expenses,handleExpenseChange } = useVehicleForm();
 
-  // Función específica para cambiar el estatus
   const handleStatusChange = (newStatus: VehicleStatus) => {
     setVehicleData((prev) => ({ ...prev, status: newStatus }));
   };
+
   return (
     <div className="min-h-screen bg-[#F4F7F9] pb-10">
       <main className="max-w-md mx-auto p-4 space-y-6">
@@ -22,7 +22,7 @@ const ShoppVehicle: React.FC = () => {
           currentStatus={vehicleData.status}
           onStatusChange={handleStatusChange}
         />
-        <Expense />
+        <Expense expenses={expenses} onExpenseChange={handleExpenseChange}/>
         <BoxMoney />
         <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-lg shadow-blue-200 transition-all active:scale-95">
           <Save size={20} />
