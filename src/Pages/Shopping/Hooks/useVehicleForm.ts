@@ -4,7 +4,6 @@ import { INITIAL_VEHICLE_DETAILS, type VehicleDetails } from "../Types/ShooppVeh
 export const useVehicleForm = () => {
   const [vehicleData, setVehicleData] = useState<VehicleDetails>(INITIAL_VEHICLE_DETAILS);
 
-  // Manejador universal para inputs y selects
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
   
