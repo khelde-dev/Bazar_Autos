@@ -13,6 +13,7 @@ const ShoppVehicle: React.FC = () => {
   const handleStatusChange = (newStatus: VehicleStatus) => {
     setVehicleData((prev) => ({ ...prev, status: newStatus }));
   };
+  const totalInvestment = Object.values(expenses).reduce((acc, curr) => acc + (Number(curr) || 0), 0);
 
   return (
     <div className="min-h-screen bg-[#F4F7F9] pb-10">
@@ -23,7 +24,7 @@ const ShoppVehicle: React.FC = () => {
           onStatusChange={handleStatusChange}
         />
         <Expense expenses={expenses} onExpenseChange={handleExpenseChange}/>
-        <BoxMoney />
+        <BoxMoney value={totalInvestment}/>
         <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-lg shadow-blue-200 transition-all active:scale-95">
           <Save size={20} />
           Guardar en Catálogo
