@@ -16,11 +16,11 @@ export const useVehicleForm = () => {
   };
 
   const handleExpenseChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setExpenses(prev => ({
-      ...prev,
-      [name]: value === "" ? 0 : parseFloat(value)
-    }));
+  const { name, value } = e.target;
+  setExpenses(prev => ({
+    ...prev,
+    [name]: value
+  }));
   };
 
   const resetForm = () => setVehicleData(INITIAL_VEHICLE_DETAILS);
