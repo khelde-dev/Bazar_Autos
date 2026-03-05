@@ -4,12 +4,14 @@ import { Status } from "./Components/Status";
 import { Details } from "./Components/Details";
 import { Expense } from "./Components/Expense";
 import { BoxMoney } from "../../Utils/Screen/Boxes/BoxMoney";
+import { useVehicleForm } from "./Hooks/useVehicleForm";
 
 const ShoppVehicle: React.FC = () => {
+  const { vehicleData, handleInputChange } = useVehicleForm();
   return (
     <div className="min-h-screen bg-[#F4F7F9] pb-10">
       <main className="max-w-md mx-auto p-4 space-y-6">
-        <Details />
+        <Details data={vehicleData} onInputChange={handleInputChange}/>
         <Status />
         <Expense />
         <BoxMoney />
