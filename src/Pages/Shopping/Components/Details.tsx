@@ -70,8 +70,6 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
         <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">
           Color del Vehículo
         </label>
-        
-        {/* Botón que muestra el color actual */}
         <button 
           type="button"
           onClick={() => setShowColorPicker(!showColorPicker)}

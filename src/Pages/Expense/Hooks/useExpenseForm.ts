@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { VehicleExpense ,MainType} from "../Types/ExpenseVehicle.types";
+import { type VehicleExpense , VEHICLE_BRANDS} from "../Types/ExpenseVehicle.types";
 
 
 export const useExpenseForm = () => {
@@ -14,21 +14,22 @@ export const useExpenseForm = () => {
     description: ''
   });
 
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredBrands = VEHICLE_BRANDS.filter(brand =>
+    brand.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    
     setExpenseData(prev => {
       const updated = { 
         ...prev, 
         [name]: name === 'amount' ? parseFloat(value) || 0 : value 
       };
-
-      if (name === 'subType') {
-        updated.categoryId = "";
-      }
-      
+      if (name === 'subType') updated.categoryId = "";
       return updated;
     });
   };
@@ -46,5 +47,26 @@ export const useExpenseForm = () => {
     }));
   };
 
-  return { expenseData, setExpenseData, handleChange, toggleShared, removeVehicleTag };
+  const addVehicleTag = (tag: string) => {
+    setExpenseData(prev => {
+      if (prev.involvedVehicles.includes(tag)) return prev;
+      
+      return {
+        ...prev,
+        involvedVehicles: [...prev.involvedVehicles, tag]
+      };
+    });
+  };
+
+  return { 
+    expenseData, 
+    setExpenseData, 
+    handleChange, 
+    toggleShared, 
+    removeVehicleTag,
+    searchTerm,
+    setSearchTerm,
+    filteredBrands,
+    addVehicleTag
+  };
 };

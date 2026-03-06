@@ -1,6 +1,7 @@
-export type MainType = 'COMPRA' | 'VENTA' | 'GASTO';
-export type SubType = 'Activo' | 'Pasivo';
 
+export type SubType = 'Activo' | 'Pasivo';
+export const MAIN_MOVEMENT_TYPES = ['COMPRA', 'VENTA', 'GASTO'] as const;
+export type MainType = typeof MAIN_MOVEMENT_TYPES[number];
 export interface VehicleExpense {
   mainType: MainType;
   subType: SubType;
@@ -30,3 +31,12 @@ export const CATEGORY_MAP: Record<SubType, { id: string; name: string }[]> = {
     { id: 'CG-012', name: 'Mantenimiento Menor' },
   ]
 };
+
+export const VEHICLE_BRANDS = [
+  "VOLKSWAGEN",
+  "CHEVROLET",
+  "SEAT",
+  "RENAULT"
+] as const;
+
+export type VehicleBrand = typeof VEHICLE_BRANDS[number];

@@ -11,7 +11,6 @@ interface ExpenseProps {
 }
 
 export const Expense: React.FC<ExpenseProps> = ({ expenses, onExpenseChange }) => {
-  //const totalInvestment = Object.values(expenses).reduce((acc, curr) => acc + (Number(curr) || 0), 0);
 
   return (
     <Card>
