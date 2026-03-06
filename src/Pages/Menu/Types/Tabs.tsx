@@ -4,17 +4,17 @@ import ShoppVehicle from "../../Shopping/ShoppVehicle";
 
 // 1. La configuración maestra
 export const TABS_CONFIG = {
-  Compra: { 
-    title: "Agregar Vehículo", 
-    component: <ShoppVehicle /> 
+  Compra: {
+    title: "Agregar Vehículo",
+    component: <ShoppVehicle />
   },
-  Venta:  { 
-    title: "Registro de Inversión de Capital", 
-    component: <SaleVehicle /> 
+  Inversionista: {
+    title: "Registro de Inversión de Capital",
+    component: <SaleVehicle />
   },
-  Gasto:  { 
-    title: "Detalles del Gasto", 
-    component: <ExpenseVehicle /> 
+  Gasto: {
+    title: "Detalles del Gasto",
+    component: <ExpenseVehicle />
   },
 } as const;
 export type TabType = keyof typeof TABS_CONFIG;
