@@ -33,7 +33,7 @@ export const MoneyInput = ({
         <input 
           name={name}
           type="text" 
-          inputMode="decimal" // Teclado numérico con punto en móviles
+          inputMode="decimal"
           value={value} 
           onChange={handleChange}
           placeholder={placeholder}

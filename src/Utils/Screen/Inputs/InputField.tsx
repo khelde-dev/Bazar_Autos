@@ -1,6 +1,6 @@
 interface InputProps {
   label: string;
-  name: string; // Importante para que el handleInputChange funcione
+  name: string;
   value: string | number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;

@@ -2,7 +2,6 @@ import { ExpenseVehicle } from "../../Expense/ExpenseVehicle";
 import { SaleVehicle } from "../../Sale/SaleVehicle";
 import ShoppVehicle from "../../Shopping/ShoppVehicle";
 
-// 1. La configuración maestra
 export const TABS_CONFIG = {
   Compra: {
     title: "Agregar Vehículo",
