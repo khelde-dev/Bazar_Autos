@@ -10,8 +10,7 @@ export const useLoginMutation = () => {
   return useMutation({
     mutationFn: (data: LoginForm) => loginUser(data),
     onSuccess: (response) => {
-    //Se cambiara segun quede mas HD Dummy 7w7
-      localStorage.setItem("token", response.token);
+      console.log(response.success);
       toast.success("¡Bienvenido al Bazar de Autos!");
       setTimeout(() => navigate("/dashboard"), 1000);
     },
