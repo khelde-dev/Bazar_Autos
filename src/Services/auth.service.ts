@@ -3,6 +3,7 @@ import type { LoginForm } from '../Pages/Login/types/Login.types';
 
 const api = axios.create({
   baseURL: 'http://localhost:3000/api/v1',
+  withCredentials: true
 });
 
 export const loginUser = async (data: LoginForm) => {
