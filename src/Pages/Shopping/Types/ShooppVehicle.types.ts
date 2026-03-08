@@ -1,4 +1,4 @@
-export type VehicleStatus = "Inventario" | "En Espera" | "Reparación";
+export type VehicleStatus = "Vendido" | "Inventario" | "En Espera" | "Reparacion";
 export interface VehicleDetails {
   brand: string;
   model: string;
@@ -21,7 +21,7 @@ export const INITIAL_VEHICLE_DETAILS: VehicleDetails = {
   status: "Inventario",
 };
 
-export type VehicleYear = number; 
+export type VehicleYear = number;
 
 export const getYearOptions = (): number[] => {
   return Array.from({ length: 2100 - 1950 + 1 }, (_, i) => 2100 - i);
@@ -39,25 +39,25 @@ export const COLOR_PRESETS = [
   { name: 'Amarillo', value: '#eab308' },
 ];
 
-export const STATUS_OPTIONS: VehicleStatus[] = ["Inventario", "En Espera", "Reparación"];
+export const STATUS_OPTIONS: VehicleStatus[] = ["Vendido", "Inventario", "En Espera", "Reparacion"];
 
 export interface VehicleExpenses {
-  tires: number;         
-  bodywork: number;       
-  upholstery: number;     
-  ceiling: number;        
-  steeringWheel: number;  
-  cover: number;          
-  mechanic: number;       
-  caps: number;           
-  fine: number;          
-  kit: number;           
-  hatShelf: number;      
-  oilService: number;     
-  spareCap: number;       
-  alignment: number;      
-  handle: number;         
-  headlights: number;     
+  tires: number;
+  bodywork: number;
+  upholstery: number;
+  ceiling: number;
+  steeringWheel: number;
+  cover: number;
+  mechanic: number;
+  caps: number;
+  fine: number;
+  kit: number;
+  hatShelf: number;
+  oilService: number;
+  spareCap: number;
+  alignment: number;
+  handle: number;
+  headlights: number;
 }
 export interface ExpenseConfig {
   key: keyof VehicleExpenses;
