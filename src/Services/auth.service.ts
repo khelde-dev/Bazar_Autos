@@ -9,3 +9,7 @@ export const loginUser = async (data: LoginForm) => {
   const response = await api.post('/auth/login', data);
   return response.data;
 };
+
+export const logOutUser = async () => {
+  await api.post('/auth/logout');
+};

@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { loginUser } from "../../../Services/auth.service";
+import { loginUser, logOutUser } from "../../../Services/auth.service";
 import type { LoginForm } from "../types/Login.types";
 
 export const useLoginMutation = () => {
@@ -17,6 +17,23 @@ export const useLoginMutation = () => {
     onError: (error: any) => {
       const msg = error.response?.data?.message || "Error de credenciales";
       toast.error(msg);
+    },
+  });
+};
+
+export const useLogOutMutation = () => {
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn:() => logOutUser(),
+    onSuccess: () => {
+      toast.success("Sesión cerrada");
+      navigate("/login");
+    },
+    onError: (error: any) => {
+      const msg = error.response?.data?.message || "Sesión cerrada";
+      toast.error(msg);
+      navigate("/login");
     },
   });
 };
