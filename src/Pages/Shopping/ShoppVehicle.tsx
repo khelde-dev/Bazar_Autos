@@ -32,6 +32,7 @@ const ShoppVehicle: React.FC = () => {
   const totalInvestment = Math.round(sum * 100) / 100;
 
   const handleSave = () => {
+    //Test
     if (!validateVehicleForm(vehicleData, expenses)) return;
     const payload = {
       ...vehicleData,
