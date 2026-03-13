@@ -1,10 +1,11 @@
-import axios from 'axios';
-
-const api = axios.create({
-  baseURL: 'https://api.com/api',
-});
+import { api } from "./axiosConfig";
 
 export const createVehicle = async (payload: any) => {
   const { data } = await api.post('/vehicles', payload);
   return data;
+};
+
+export const getCarModels = async () => {
+  const { data } = await api.get('/cars/models');
+  return data; 
 };

@@ -1,10 +1,8 @@
+
 import axios from 'axios';
 import type { LoginForm } from '../Pages/Login/types/Login.types';
+import { api } from './axiosConfig';
 
-const api = axios.create({
-  baseURL: 'http://localhost:3000/api/v1',
-  withCredentials: true
-});
 
 export const loginUser = async (data: LoginForm) => {
   const response = await api.post('/auth/login', data);
@@ -13,4 +11,9 @@ export const loginUser = async (data: LoginForm) => {
 
 export const logOutUser = async () => {
   await api.post('/auth/logout');
+};
+
+export const validateSession = async () => {
+  const { data } = await axios.get('/auth/validate'); 
+  return data; 
 };

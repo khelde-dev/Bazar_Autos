@@ -9,8 +9,8 @@ export const useLoginMutation = () => {
 
   return useMutation({
     mutationFn: (data: LoginForm) => loginUser(data),
-    onSuccess: (response) => {
-      console.log(response.success);
+    onSuccess: () => {
+      localStorage.setItem('isAuthenticated', 'true'); 
       toast.success("¡Bienvenido al Bazar de Autos!");
       setTimeout(() => navigate("/dashboard"), 1000);
     },
@@ -27,11 +27,12 @@ export const useLogOutMutation = () => {
   return useMutation({
     mutationFn:() => logOutUser(),
     onSuccess: () => {
+      localStorage.removeItem('isAuthenticated');
       toast.success("Sesión cerrada");
       navigate("/login");
     },
     onError: (error: any) => {
-      const msg = error.response?.data?.message || "Sesión cerrada";
+      const msg = error.response?.data?.message || "Ocurrio un error";
       toast.error(msg);
       navigate("/login");
     },

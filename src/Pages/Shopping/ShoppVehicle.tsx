@@ -7,7 +7,7 @@ import { BoxMoney } from "../../Utils/Screen/Boxes/BoxMoney";
 import { useVehicleForm } from "./Hooks/useVehicleForm";
 import type { VehicleStatus } from "./Types/ShooppVehicle.types";
 import { validateVehicleForm } from "./Functions/Validation";
-import { useCreateVehicle } from "./Hooks/useCreateVehiculeMutation";
+import { useCreateVehicle } from "./Hooks/useVehicle";
 
 const ShoppVehicle: React.FC = () => {
   const {

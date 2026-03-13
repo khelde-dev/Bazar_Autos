@@ -1,10 +1,11 @@
 import type React from "react";
-import { Check, Info } from 'lucide-react';
+import { Check, ChevronDown, Info, Loader2 } from 'lucide-react';
 import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
 import { InputField } from "../../../Utils/Screen/Inputs/InputField";
 import { Card } from "../../../Utils/Screen/Boxes/Card";
 import { COLOR_PRESETS, YEAR_OPTIONS, type VehicleDetails } from "../Types/ShooppVehicle.types";
 import { useState } from "react";
+import { useCarModels } from "../Hooks/useVehicle";
 
 
 interface DetailsProps {
@@ -14,6 +15,8 @@ interface DetailsProps {
 
 export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
+  
+  const { data: modelsData, isLoading } =useCarModels();
 
   const handleSelectColor = (colorValue: string) => {
     onInputChange({
@@ -21,6 +24,7 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
     } as React.ChangeEvent<HTMLInputElement>);
     setShowColorPicker(false);
   };
+
   return (
     <Card>
       <SectionTitle icon={Info} title="Detalles Generales" />
@@ -33,13 +37,35 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
           onChange={onInputChange}
           placeholder="Ej. Toyota"
         />
-        <InputField
-          label="Modelo"
-          name="model"
-          value={data.model}
-          onChange={onInputChange}
-          placeholder="Ej. Camry"
-        />
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">
+            Modelo
+          </label>
+          <div className="relative">
+            <select
+              name="model"
+              value={data.model}
+              onChange={onInputChange}
+              disabled={isLoading}
+              className="w-full bg-gray-50 p-3 rounded-xl text-sm appearance-none border border-transparent outline-none focus:border-blue-500 transition-all text-slate-700 disabled:opacity-50"
+            >
+              <option value="">{isLoading ? "Cargando..." : "Seleccionar..."}</option>
+              {modelsData?.map((m: any) => (
+                <option key={m.id} value={m.name}>
+                  {m.name}
+                </option>
+              ))}
+            </select>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+              {isLoading ? (
+                <Loader2 size={16} className="animate-spin text-blue-500" />
+              ) : (
+                <ChevronDown size={16} />
+              )}
+            </div>
+          </div>
+        </div>
+
         <InputField
           label="Año Actual"
           name="currentYear"
@@ -85,11 +111,7 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
         </button>
         {showColorPicker && (
           <>
-            <div
-              className="fixed inset-0 z-10"
-              onClick={() => setShowColorPicker(false)}
-            />
-
+            <div className="fixed inset-0 z-10" onClick={() => setShowColorPicker(false)} />
             <div className="absolute top-16 left-0 w-full bg-white p-4 rounded-2xl shadow-xl border border-slate-100 z-20 animate-in fade-in zoom-in duration-200">
               <div className="grid grid-cols-4 gap-3">
                 {COLOR_PRESETS.map((color) => (

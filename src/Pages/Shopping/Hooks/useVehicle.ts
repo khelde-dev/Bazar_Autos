@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { createVehicle } from '../../../Services/shoopVehicle.service';
+import { createVehicle, getCarModels } from '../../../Services/shoopVehicle.service';
 
 export const useCreateVehicle = () => {
   const queryClient = useQueryClient();
@@ -17,5 +17,13 @@ export const useCreateVehicle = () => {
       const message = error.response?.data?.message || 'Error al conectar con el servidor';
       toast.error('No se pudo guardar', { description: message });
     }
+  });
+};
+
+export const useCarModels = () => {
+  return useQuery({
+    queryKey: ['car-models'],
+    queryFn: getCarModels,
+    staleTime: 1000 * 60 * 10,
   });
 };
