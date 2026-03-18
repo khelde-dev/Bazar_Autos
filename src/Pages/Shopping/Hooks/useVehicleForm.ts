@@ -3,7 +3,7 @@ import { INITIAL_EXPENSES, INITIAL_VEHICLE_DETAILS, type VehicleDetails, type Ve
 
 export const useVehicleForm = () => {
   const [vehicleData, setVehicleData] = useState<VehicleDetails>(INITIAL_VEHICLE_DETAILS);
-   const [expenses, setExpenses] = useState<VehicleExpenses>(INITIAL_EXPENSES);
+  const [expenses, setExpenses] = useState<VehicleExpenses>(INITIAL_EXPENSES);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -23,7 +23,10 @@ export const useVehicleForm = () => {
   }));
   };
 
-  const resetForm = () => setVehicleData(INITIAL_VEHICLE_DETAILS);
+  const resetForm = () =>{
+    setVehicleData(INITIAL_VEHICLE_DETAILS);
+    setExpenses(INITIAL_EXPENSES);
+  } 
 
   return {
     vehicleData,

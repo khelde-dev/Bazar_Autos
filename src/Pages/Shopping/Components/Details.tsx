@@ -50,7 +50,7 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
               className="w-full bg-gray-50 p-3 rounded-xl text-sm appearance-none border border-transparent outline-none focus:border-blue-500 transition-all text-slate-700 disabled:opacity-50"
             >
               <option value="">{isLoading ? "Cargando..." : "Seleccionar..."}</option>
-              {modelsData?.map((m: any) => (
+              {modelsData?.data.map((m: any) => (
                 <option key={m.id} value={m.name}>
                   {m.name}
                 </option>
@@ -71,7 +71,7 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
           name="currentYear"
           type="number"
           disable={true}
-          value={data.currentYear}
+          value={new Date().getFullYear()}
           onChange={onInputChange}
         />
 
@@ -80,8 +80,8 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
             Año del Auto
           </label>
           <select
-            name="carYear"
-            value={data.carYear}
+            name="year_of_car"
+            value={data.year_of_car}
             onChange={onInputChange}
             className="bg-gray-50 p-3 rounded-xl text-sm appearance-none border border-transparent outline-none focus:border-blue-500 transition-all"
           >
@@ -154,16 +154,16 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
       <div className="grid grid-cols-2 gap-4 mt-4">
         <InputField
           label="Fecha de Compra"
-          name="purchaseDate"
+          name="purchase_date"
           type="date"
-          value={data.purchaseDate}
+          value={data.purchase_date}
           onChange={onInputChange}
         />
         <InputField
           label="Fecha de Venta"
-          name="saleDate"
+          name="sale_date"
           type="date"
-          value={data.saleDate || ""}
+          value={data.sale_date || ""}
           onChange={onInputChange}
         />
       </div>

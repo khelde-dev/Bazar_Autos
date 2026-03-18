@@ -5,9 +5,15 @@ import { Details } from "./Components/Details";
 import { Expense } from "./Components/Expense";
 import { BoxMoney } from "../../Utils/Screen/Boxes/BoxMoney";
 import { useVehicleForm } from "./Hooks/useVehicleForm";
-import type { VehicleStatus } from "./Types/ShooppVehicle.types";
+import {
+  COLOR_PRESETS,
+  EXPENSE_ITEMS,
+  COST_TYPE_OVERRIDES,
+  type VehicleStatus,
+} from "./Types/ShooppVehicle.types";
 import { validateVehicleForm } from "./Functions/Validation";
 import { useCreateVehicle } from "./Hooks/useVehicle";
+import { NormalizeText } from "../../Utils/Functions/Normalize";
 
 const ShoppVehicle: React.FC = () => {
   const {
@@ -16,9 +22,10 @@ const ShoppVehicle: React.FC = () => {
     handleInputChange,
     expenses,
     handleExpenseChange,
+    resetForm,
   } = useVehicleForm();
 
-  const { mutate, isPending } = useCreateVehicle();
+  const { mutate, isPending } = useCreateVehicle(resetForm);
 
   const handleStatusChange = (newStatus: VehicleStatus) => {
     setVehicleData((prev) => ({ ...prev, status: newStatus }));
@@ -32,12 +39,23 @@ const ShoppVehicle: React.FC = () => {
   const totalInvestment = Math.round(sum * 100) / 100;
 
   const handleSave = () => {
-    //Test
     if (!validateVehicleForm(vehicleData, expenses)) return;
+
+    const formattedCosts = EXPENSE_ITEMS.map((item) => ({
+      cost_type: COST_TYPE_OVERRIDES[item.label] || NormalizeText(item.label),
+      amount: Number(expenses[item.key]) || 0,
+      note: "",
+    }));
+
     const payload = {
       ...vehicleData,
-      expenses,
-      totalInvestment,
+      price_for_sale: Number(vehicleData.price_for_sale) || 0,
+      year_of_car: Number(vehicleData.year_of_car) || 0,
+      color:
+        COLOR_PRESETS.find((c) => c.value === vehicleData.color)?.name ||
+        vehicleData.color,
+      purchase_price: totalInvestment,
+      costs: formattedCosts,
     };
     mutate(payload);
   };
@@ -52,15 +70,26 @@ const ShoppVehicle: React.FC = () => {
           onStatusChange={handleStatusChange}
         />
 
-        <Expense expenses={expenses} onExpenseChange={handleExpenseChange} />
+        <Expense
+          expenses={expenses}
+          onExpenseChange={handleExpenseChange}
+          totalInvestment={totalInvestment.toLocaleString("es-MX", {
+            minimumFractionDigits: 2,
+          })}
+        />
 
-        <BoxMoney value={totalInvestment.toLocaleString("es-MX")} />
+        <BoxMoney
+          label="Precio de Venta"
+          name="price_for_sale"
+          value={vehicleData.price_for_sale}
+          onChange={handleInputChange}
+        />
 
-        <button 
+        <button
           onClick={handleSave}
           disabled={isPending}
           className={`w-full mt-4 bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98] ${
-            isPending ? 'opacity-70 cursor-not-allowed' : 'hover:from-[#2552d6]'
+            isPending ? "opacity-70 cursor-not-allowed" : "hover:from-[#2552d6]"
           }`}
         >
           {isPending ? (

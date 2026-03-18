@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { createVehicle, getCarModels } from '../../../Services/shoopVehicle.service';
 
-export const useCreateVehicle = () => {
+export const useCreateVehicle = (resetForm: () => void) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -11,7 +11,9 @@ export const useCreateVehicle = () => {
       toast.success('Vehículo guardado', {
         description: 'Se ha registrado exitosamente en el catálogo.'
       });
-      queryClient.invalidateQueries({ queryKey: ['vehicles'] });
+      resetForm();
+      queryClient.invalidateQueries({ queryKey: ['car-models'] });
+      
     },
     onError: (error: any) => {
       const message = error.response?.data?.message || 'Error al conectar con el servidor';
