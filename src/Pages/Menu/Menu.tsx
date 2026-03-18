@@ -2,13 +2,25 @@ import type React from "react";
 import { Header } from "../../Utils/Screen/Header/Header";
 import { useMenuNavigation } from "./Hooks/UseNavigation";
 import { TAB_NAMES, TABS_CONFIG } from "./Types/Tabs";
+import { useUserProfile } from "./Hooks/UserProfile";
+import { Loader2 } from "lucide-react";
 
 export const Menu: React.FC = () => {
   const { activeTab, setActiveTab, currentHeaderTitle } = useMenuNavigation();
 
+  const { data: user, isLoading } = useUserProfile();
+
   return (
     <main className="w-full max-w-md mt-10 space-y-6">
-      <Header Title={currentHeaderTitle} />
+      {isLoading ? (
+        <Loader2
+          size={14}
+          className="animate-spin text-blue-600 opacity-90"
+          strokeWidth={3}
+        />
+      ) : (
+        <Header Title={currentHeaderTitle} user={user.data[0].username} />
+      )}
 
       <section>
         <div className="bg-gray-200/50 p-1.5 rounded-2xl flex gap-1">
