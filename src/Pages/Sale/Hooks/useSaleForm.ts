@@ -13,9 +13,12 @@ export const useSaleForm = () => {
     }));
     };
 
+  const resetForm = () => setSaleData(INITIAL_SALE_STATE);
+
   return {
     saleData,
     handleSaleChange,
-    setSaleData
+    setSaleData,
+    resetForm
   };
 };

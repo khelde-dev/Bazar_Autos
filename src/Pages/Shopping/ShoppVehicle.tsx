@@ -79,7 +79,7 @@ const ShoppVehicle: React.FC = () => {
         />
 
         <BoxMoney
-          label="Precio de Venta"
+          label="PRECIO DE VENTA OBJETIVO"
           name="price_for_sale"
           value={vehicleData.price_for_sale}
           onChange={handleInputChange}

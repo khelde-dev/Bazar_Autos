@@ -3,12 +3,7 @@ import { Card } from "../../../Utils/Screen/Boxes/Card";
 import React from "react";
 import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
 
-interface RegistrationDateProps {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
-export const RegistrationDate: React.FC<RegistrationDateProps> = ({ value, onChange }) => {
+export const RegistrationDate: React.FC = () => {
   return (
     <Card>
       <SectionTitle icon={Calendar} title="Fecha de Registro" />
@@ -20,8 +15,8 @@ export const RegistrationDate: React.FC<RegistrationDateProps> = ({ value, onCha
           <input
             type="date"
             name="registrationDate"
-            value={value}
-            onChange={onChange}
+            disabled={true}
+            value={new Date().toLocaleDateString('en-CA')}
             className="w-full bg-gray-50 border border-transparent focus:border-blue-500/20 p-4 rounded-2xl text-gray-700 text-sm font-medium outline-none transition-all appearance-none"
           />
         </div>

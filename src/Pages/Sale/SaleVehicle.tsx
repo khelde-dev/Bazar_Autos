@@ -1,35 +1,53 @@
 import React from "react";
-import { Save } from "lucide-react";
+import { Loader2, Save } from "lucide-react";
 import { Investor } from "./Components/Investor";
 import { BoxMoney } from "../../Utils/Screen/Boxes/BoxMoney";
 import { RegistrationDate } from "./Components/RegistrationDate";
-import { Notes } from "./Components/Notes";
+//import { Notes } from "./Components/Notes";
 import { useSaleForm } from "./Hooks/useSaleForm";
 import { useRegisterInvestment } from "./Hooks/useRegisterInvestmentMutate";
 import { validateInvestment } from "./Functions/Validation";
+import { useUserProfile } from "../Menu/Hooks/UserProfile";
 
 export const SaleVehicle: React.FC = () => {
-  const { saleData, handleSaleChange } = useSaleForm();
-  const { mutate, isPending } = useRegisterInvestment();
+  const { saleData, handleSaleChange,resetForm } = useSaleForm();
+  const { mutate, isPending } = useRegisterInvestment(resetForm);
+  const { data: user, isLoading } = useUserProfile();
 
   const handleSaveInvestment = () => {
     if (!validateInvestment(saleData)) return;
-    mutate(saleData);
+
+    const payload = {
+      user_id:user.data[0].user_id,
+      investment_amount:Number(saleData.investment_amount)
+    };
+
+    mutate(payload);
   };
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-10 font-sans">
       <main className="max-w-md mx-auto p-4 space-y-5">
-        <Investor value={saleData.investorName} onChange={handleSaleChange} />
+        {isLoading ? (
+          <Loader2
+            size={14}
+            className="animate-spin text-blue-600 opacity-90"
+            strokeWidth={3}
+          />
+        ) : (
+          <Investor value={user.data[0].full_name} />
+        )}
 
-        <BoxMoney value={saleData.amount.toString()} />
-
-        <RegistrationDate
-          value={saleData.registrationDate}
+        <BoxMoney
+          label="MONTO DE INVERSIÓN"
+          name="investment_amount"
+          value={saleData.investment_amount}
           onChange={handleSaleChange}
         />
 
-        <Notes value={saleData.notes} onChange={handleSaleChange} />
+        <RegistrationDate />
+
+        {/*<Notes value={saleData.notes} onChange={handleSaleChange} />*/}
 
         <button
           onClick={handleSaveInvestment}
