@@ -1,20 +1,27 @@
+import type { FC } from "react";
 import { ExpenseVehicle } from "../../Expense/ExpenseVehicle";
 import { SaleVehicle } from "../../Sale/SaleVehicle";
 import ShoppVehicle from "../../Shopping/ShoppVehicle";
 
-export const TABS_CONFIG = {
+interface TabConfigItem {
+  title: string;
+  component: FC;
+}
+
+export const TABS_CONFIG: Record<string, TabConfigItem> = {
   Compra: {
     title: "Agregar Vehículo",
-    component: <ShoppVehicle />
+    component: ShoppVehicle
   },
   Inversionista: {
     title: "Registro de Inversión de Capital",
-    component: <SaleVehicle />
+    component: SaleVehicle
   },
   Gasto: {
     title: "Detalles del Gasto",
-    component: <ExpenseVehicle />
+    component: ExpenseVehicle
   },
-} as const;
+};
+
 export type TabType = keyof typeof TABS_CONFIG;
 export const TAB_NAMES = Object.keys(TABS_CONFIG) as TabType[];

@@ -1,16 +1,15 @@
 import { useState } from "react";
-import { TABS_CONFIG, type TabType } from "../Types/Tabs";
+import { TABS_CONFIG } from "../Types/Tabs";
+import type { TabType } from "../Types/Tabs";
 
 export const useMenuNavigation = () => {
   const [activeTab, setActiveTab] = useState<TabType>("Compra");
-
-  const currentHeaderTitle = TABS_CONFIG[activeTab].title;
-  const ActiveComponent = TABS_CONFIG[activeTab].component;
+  const config = TABS_CONFIG[activeTab as string];
 
   return {
     activeTab,
     setActiveTab,
-    currentHeaderTitle,
-    ActiveComponent
+    currentHeaderTitle: config.title,
+    ActiveComponent: config.component
   };
 };
