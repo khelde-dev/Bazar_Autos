@@ -1,24 +1,9 @@
 import { useState } from "react";
-import { type VehicleExpense , VEHICLE_BRANDS} from "../Types/ExpenseVehicle.types";
+import { type VehicleExpense,INITIAL_EXPENSE } from "../Types/ExpenseVehicle.types";
 
 
 export const useExpenseForm = () => {
-  const [expenseData, setExpenseData] = useState<VehicleExpense>({
-    mainType: 'GASTO',
-    subType: 'Pasivo',
-    categoryId: '',
-    mainVehicleId: '',
-    amount: 0,
-    isShared: false,
-    involvedVehicles: [],
-    description: ''
-  });
-
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const filteredBrands = VEHICLE_BRANDS.filter(brand =>
-    brand.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [expenseData, setExpenseData] = useState<VehicleExpense>(INITIAL_EXPENSE);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -29,7 +14,7 @@ export const useExpenseForm = () => {
         ...prev, 
         [name]: name === 'amount' ? parseFloat(value) || 0 : value 
       };
-      if (name === 'subType') updated.categoryId = "";
+      if (name === 'subType') updated.movements_category_id = "";
       return updated;
     });
   };
@@ -58,15 +43,15 @@ export const useExpenseForm = () => {
     });
   };
 
+   const resetForm = () =>setExpenseData(INITIAL_EXPENSE);
+
   return { 
     expenseData, 
     setExpenseData, 
     handleChange, 
     toggleShared, 
     removeVehicleTag,
-    searchTerm,
-    setSearchTerm,
-    filteredBrands,
-    addVehicleTag
+    addVehicleTag,
+    resetForm
   };
 };

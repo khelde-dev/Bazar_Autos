@@ -7,36 +7,68 @@ import {
   X,
   ReceiptText,
   Check,
+  Loader2,
 } from "lucide-react";
 import { Card } from "../../Utils/Screen/Boxes/Card";
 import { Label } from "../../Utils/Screen/Text/Label";
 import { useExpenseForm } from "./Hooks/useExpenseForm";
-import {
-  CATEGORY_MAP,
-  MAIN_MOVEMENT_TYPES,
-  type SubType,
-} from "./Types/ExpenseVehicle.types";
-import { useRegisterExpense } from "./Hooks/useRegisterExpenseMutate";
+import { MAIN_MOVEMENT_TYPES } from "./Types/ExpenseVehicle.types";
+import { useCategories, useExpense } from "./Hooks/useExpenseMutate";
 import { validateExpense } from "./Functions/Validation";
+import { useCarModels } from "../Shopping/Hooks/useVehicle";
 
 export const ExpenseVehicle: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const {
     expenseData,
     setExpenseData,
     handleChange,
     toggleShared,
     removeVehicleTag,
-    searchTerm,
-    setSearchTerm,
-    filteredBrands,
+    resetForm
   } = useExpenseForm();
 
-  const { mutate, isPending } = useRegisterExpense();
+  const { mutate, isPending } = useExpense(resetForm);
+  const { data: categoriesData, isLoading } = useCategories();
+  const { data: modelsData, isLoading: isLoadingModels } = useCarModels();
+  const dataArray = categoriesData?.data || [];
+
+  const categoryTypes: string[] = categoriesData
+    ? Array.from(new Set(dataArray.map((cat: any) => cat.type as string)))
+    : [];
+
+  const carsModels: string[] = modelsData
+    ? Array.from(new Set(modelsData.data.map((car: any) => car.name as string)))
+    : [];
+
+  const filteredBrands = carsModels.filter((brand) =>
+    brand.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   const handleSave = () => {
     if (!validateExpense(expenseData)) return;
-    mutate(expenseData);
+
+    let resultIds:string[]=[];
+    if (expenseData.isShared) {
+      resultIds = modelsData.data
+        .filter((model:any) => expenseData.involvedVehicles.includes(model.name))
+        .map((model:any) => model.id);
+    } else {
+      resultIds = modelsData.data
+        .filter((model:any) => expenseData.mainVehicleId===model.name)
+        .map((model:any) => model.id);
+    }
+
+    const payload = {
+      movements_category_id: expenseData.movements_category_id,
+      car_id: resultIds,
+      type: expenseData.type,
+      amount:expenseData.amount,
+      description: expenseData.description,
+      isShared:expenseData.isShared,
+    };
+    mutate(payload);
   };
 
   const handleSelectBrand = (brand: string) => {
@@ -68,10 +100,10 @@ export const ExpenseVehicle: React.FC = () => {
                   key={t}
                   type="button"
                   onClick={() =>
-                    setExpenseData((prev) => ({ ...prev, mainType: t }))
+                    setExpenseData((prev) => ({ ...prev, type: t }))
                   }
-                  className={`flex-1 py-3 rounded-xl text-[10px] font-black transition-all border ${
-                    expenseData.mainType === t
+                  className={`flex-1 py-3 rounded-xl text-[13px] font-black transition-all border ${
+                    expenseData.type === t
                       ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-100"
                       : "bg-white text-gray-400 border-gray-100 hover:bg-gray-50"
                   }`}
@@ -81,131 +113,148 @@ export const ExpenseVehicle: React.FC = () => {
               ))}
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label>Subtipo</Label>
-              <div className="relative">
-                <select
-                  name="subType"
-                  value={expenseData.subType}
-                  onChange={handleChange}
-                  className="w-full bg-gray-50 p-4 rounded-2xl text-sm font-bold outline-none border border-transparent appearance-none"
-                >
-                  <option value="Activo">Activo (+)</option>
-                  <option value="Pasivo">Pasivo (-)</option>
-                </select>
-                <ChevronDown
-                  size={16}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                />
+          {isLoading ? (
+            <Loader2
+              size={14}
+              className="animate-spin text-blue-600 opacity-90"
+              strokeWidth={3}
+            />
+          ) : (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Subtipo</Label>
+                <div className="relative">
+                  <select
+                    name="subType"
+                    value={expenseData.subType}
+                    onChange={handleChange}
+                    className="w-full bg-gray-50 p-4 rounded-2xl text-sm font-bold outline-none border border-transparent appearance-none"
+                  >
+                    {categoryTypes.map((c: string) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={16}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                  />
+                </div>
               </div>
-            </div>
 
-            <div className="animate-in fade-in duration-300">
-              <Label>Categoría</Label>
-              <div className="relative">
-                <select
-                  name="categoryId"
-                  value={expenseData.categoryId}
-                  onChange={handleChange}
-                  className="w-full bg-gray-50 p-4 rounded-2xl text-sm appearance-none outline-none border border-transparent"
-                >
-                  <option value="">Seleccionar...</option>
-                  {CATEGORY_MAP[expenseData.subType as SubType].map((cat) => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown
-                  size={16}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                />
+              <div className="animate-in fade-in duration-300">
+                <Label>Categoría</Label>
+                <div className="relative">
+                  <select
+                    name="movements_category_id"
+                    value={expenseData.movements_category_id}
+                    onChange={handleChange}
+                    className="w-full bg-gray-50 p-4 rounded-2xl text-sm appearance-none outline-none border border-transparent"
+                  >
+                    <option value="">Seleccionar...</option>
+                    {dataArray.map(
+                      (cat: any) =>
+                        cat.type === expenseData.subType && (
+                          <option key={cat.category_id} value={cat.category_id}>
+                            {cat.name}
+                          </option>
+                        ),
+                    )}
+                  </select>
+                  <ChevronDown
+                    size={16}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          <div className="relative">
-            <Label>
-              {expenseData.isShared
-                ? "Añadir Vehículos involucrados"
-                : "Vehículo Principal"}
-            </Label>
+          )}
+          {!isLoadingModels && (
             <div className="relative">
-              <Car
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                size={20}
-              />
-              <input
-                type="text"
-                placeholder={
-                  expenseData.isShared
-                    ? "Escribe para añadir varios..."
-                    : "Buscar marca..."
-                }
-                value={
-                  isSearchOpen
-                    ? searchTerm
-                    : expenseData.isShared
-                      ? ""
-                      : expenseData.mainVehicleId
-                }
-                onFocus={() => setIsSearchOpen(true)}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-gray-50 pl-12 pr-10 py-4 rounded-2xl text-sm outline-none border border-transparent focus:border-blue-500/20 text-gray-700"
-              />
-              <ChevronDown
-                size={18}
-                className={`absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 transition-transform ${isSearchOpen ? "rotate-180" : ""}`}
-              />
-            </div>
-
-            {isSearchOpen && (
-              <div className="absolute z-50 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 max-h-60 overflow-y-auto animate-in zoom-in-95 duration-150">
-                {filteredBrands.length > 0 ? (
-                  filteredBrands.map((brand) => {
-                    const isSelected = expenseData.isShared
-                      ? expenseData.involvedVehicles.includes(brand)
-                      : expenseData.mainVehicleId === brand;
-
-                    return (
-                      <button
-                        key={brand}
-                        type="button"
-                        onClick={() => handleSelectBrand(brand)}
-                        className={`w-full flex items-center justify-between px-5 py-4 text-sm transition-colors border-b border-gray-50 last:border-none ${
-                          isSelected
-                            ? "bg-blue-50 text-blue-700 font-bold"
-                            : "text-gray-700 hover:bg-gray-50"
-                        }`}
-                      >
-                        <span className="flex items-center gap-2">
-                          {brand}
-                          {isSelected && expenseData.isShared && (
-                            <span className="text-[9px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded uppercase tracking-tighter">
-                              Añadido
-                            </span>
-                          )}
-                        </span>
-                        {isSelected && (
-                          <Check size={16} className="text-blue-600" />
-                        )}
-                      </button>
-                    );
-                  })
-                ) : (
-                  <div className="p-4 text-xs text-gray-400 text-center">
-                    No hay resultados
-                  </div>
-                )}
+              <Label>
+                {expenseData.isShared
+                  ? "Añadir Vehículos involucrados"
+                  : "Vehículo Principal"}
+              </Label>
+              <div className="relative">
+                <Car
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                  size={20}
+                />
+                <input
+                  type="text"
+                  placeholder={
+                    expenseData.isShared
+                      ? "Escribe para añadir varios..."
+                      : "Buscar marca..."
+                  }
+                  value={
+                    isSearchOpen
+                      ? searchTerm
+                      : expenseData.isShared
+                        ? ""
+                        : expenseData.mainVehicleId
+                  }
+                  onFocus={() => setIsSearchOpen(true)}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-gray-50 pl-12 pr-10 py-4 rounded-2xl text-sm outline-none border border-transparent focus:border-blue-500/20 text-gray-700"
+                />
+                <ChevronDown
+                  size={18}
+                  className={`absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 transition-transform ${isSearchOpen ? "rotate-180" : ""}`}
+                />
               </div>
-            )}
-            {isSearchOpen && (
-              <div
-                className="fixed inset-0 z-40"
-                onClick={() => setIsSearchOpen(false)}
-              />
-            )}
-          </div>
+
+              {isSearchOpen && (
+                <div className="absolute z-50 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 max-h-60 overflow-y-auto animate-in zoom-in-95 duration-150">
+                  {filteredBrands.length > 0 ? (
+                    filteredBrands.map((brand: any) => {
+                      const isSelected = expenseData.isShared
+                        ? expenseData.involvedVehicles.includes(brand)
+                        : expenseData.mainVehicleId === brand;
+
+                      return (
+                        <button
+                          key={brand}
+                          type="button"
+                          onClick={() => handleSelectBrand(brand)}
+                          className={`w-full flex items-center justify-between px-5 py-4 text-sm transition-colors border-b border-gray-50 last:border-none ${
+                            isSelected
+                              ? "bg-blue-50 text-blue-700 font-bold"
+                              : "text-gray-700 hover:bg-gray-50"
+                          }`}
+                        >
+                          <span className="flex items-center gap-2">
+                            {brand}
+                            {isSelected && expenseData.isShared && (
+                              <span className="text-[9px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded uppercase tracking-tighter">
+                                Añadido
+                              </span>
+                            )}
+                          </span>
+                          {isSelected && (
+                            <Check size={16} className="text-blue-600" />
+                          )}
+                        </button>
+                      );
+                    })
+                  ) : (
+                    <div className="p-4 text-xs text-gray-400 text-center">
+                      No hay resultados
+                    </div>
+                  )}
+                </div>
+              )}
+              {isSearchOpen && (
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setIsSearchOpen(false)}
+                />
+              )}
+            </div>
+          )}
+
           <div>
             <Label>Monto (MXN)</Label>
             <div className="relative group">
