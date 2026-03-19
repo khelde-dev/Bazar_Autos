@@ -22,3 +22,8 @@ export const getUser = async () => {
   const { data } = await api.get('/users/profile');
   return data; 
 };
+
+export const getListUser = async () => {
+  const { data } = await api.get('/users');
+  return data; 
+};
