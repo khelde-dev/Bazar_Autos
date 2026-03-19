@@ -7,18 +7,18 @@ import { RegistrationDate } from "./Components/RegistrationDate";
 import { useSaleForm } from "./Hooks/useSaleForm";
 import { useRegisterInvestment } from "./Hooks/useRegisterInvestmentMutate";
 import { validateInvestment } from "./Functions/Validation";
-import { useUserProfile } from "../Menu/Hooks/UserProfile";
+import { useUserList } from "../Menu/Hooks/UserProfile";
 
 export const SaleVehicle: React.FC = () => {
   const { saleData, handleSaleChange,resetForm } = useSaleForm();
   const { mutate, isPending } = useRegisterInvestment(resetForm);
-  const { data: user, isLoading } = useUserProfile();
+  const {data:ListUsers,isLoading}=useUserList();
 
   const handleSaveInvestment = () => {
     if (!validateInvestment(saleData)) return;
 
     const payload = {
-      user_id:user.data[0].user_id,
+      user_id:saleData.user_id,
       investment_amount:Number(saleData.investment_amount)
     };
 
@@ -35,7 +35,7 @@ export const SaleVehicle: React.FC = () => {
             strokeWidth={3}
           />
         ) : (
-          <Investor value={user.data[0].full_name} />
+          <Investor value={saleData.user_id} onChange={handleSaleChange} listUsers={ListUsers.data} />
         )}
 
         <BoxMoney
