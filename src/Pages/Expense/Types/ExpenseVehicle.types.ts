@@ -1,6 +1,6 @@
 
 export type SubType = 'Activo' | 'Pasivo';
-export const MAIN_MOVEMENT_TYPES = ['Compra', 'Venta', 'Gasto'] as const;
+export const MAIN_MOVEMENT_TYPES = ['Compra', 'Gasto'] as const;
 export type MainType = typeof MAIN_MOVEMENT_TYPES[number];
 export interface VehicleExpense {
   type: MainType;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   ChevronDown,
   Car,
@@ -16,6 +16,7 @@ import { MAIN_MOVEMENT_TYPES } from "./Types/ExpenseVehicle.types";
 import { useCategories, useExpense } from "./Hooks/useExpenseMutate";
 import { validateExpense } from "./Functions/Validation";
 import { useCarModels } from "../Shopping/Hooks/useVehicle";
+import { GenerateArray } from "./Functions/Utils";
 
 export const ExpenseVehicle: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -26,48 +27,43 @@ export const ExpenseVehicle: React.FC = () => {
     handleChange,
     toggleShared,
     removeVehicleTag,
-    resetForm
+    resetForm,
   } = useExpenseForm();
 
   const { mutate, isPending } = useExpense(resetForm);
   const { data: categoriesData, isLoading } = useCategories();
   const { data: modelsData, isLoading: isLoadingModels } = useCarModels();
-  const dataArray = categoriesData?.data || [];
 
-  const categoryTypes: string[] = categoriesData
-    ? Array.from(new Set(dataArray.map((cat: any) => cat.type as string)))
-    : [];
+  const categoriesArray = categoriesData?.data || [];
+  const modelsArray = modelsData?.data || [];
 
-  const carsModels: string[] = modelsData
-    ? Array.from(new Set(modelsData.data.map((car: any) => car.name as string)))
-    : [];
+  const categoryTypes: string[] = useMemo(() => {
+    return Array.from(new Set(categoriesArray.map((cat: any) => cat.type)));
+  }, [categoriesArray]);
 
-  const filteredBrands = carsModels.filter((brand) =>
-    brand.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const carsModels: string[] = useMemo(() => {
+    return Array.from(new Set(modelsArray.map((car: any) => car.name)));
+  }, [modelsArray]);
+
+  const filteredBrands = useMemo(() => {
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    return carsModels.filter((brand) =>
+      brand.toLowerCase().includes(lowerSearchTerm),
+    );
+  }, [carsModels, searchTerm]);
 
   const handleSave = () => {
     if (!validateExpense(expenseData)) return;
 
-    let resultIds:string[]=[];
-    if (expenseData.isShared) {
-      resultIds = modelsData.data
-        .filter((model:any) => expenseData.involvedVehicles.includes(model.name))
-        .map((model:any) => model.id);
-    } else {
-      resultIds = modelsData.data
-        .filter((model:any) => expenseData.mainVehicleId===model.name)
-        .map((model:any) => model.id);
-    }
+    let resultIds: string[] = GenerateArray(expenseData, modelsData.data);
+
+    const { subType, mainVehicleId, involvedVehicles, ...autoMappedData }=expenseData;
 
     const payload = {
-      movements_category_id: expenseData.movements_category_id,
+      ...autoMappedData,
       car_id: resultIds,
-      type: expenseData.type,
-      amount:expenseData.amount,
-      description: expenseData.description,
-      isShared:expenseData.isShared,
     };
+
     mutate(payload);
   };
 
@@ -153,7 +149,7 @@ export const ExpenseVehicle: React.FC = () => {
                     className="w-full bg-gray-50 p-4 rounded-2xl text-sm appearance-none outline-none border border-transparent"
                   >
                     <option value="">Seleccionar...</option>
-                    {dataArray.map(
+                    {categoriesArray.map(
                       (cat: any) =>
                         cat.type === expenseData.subType && (
                           <option key={cat.category_id} value={cat.category_id}>
