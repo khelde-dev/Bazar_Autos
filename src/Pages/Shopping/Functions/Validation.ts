@@ -9,10 +9,9 @@ export const validateVehicleForm = (
   const requiredFields: Record<string, string> = {
     brand: "La marca",
     model: "El modelo",
-    currentYear: "El año actual",
-    carYear: "El año del auto",
+    year_of_car: "El año del auto",
     color: "El color del vehículo",
-    purchaseDate: "La fecha de compra",
+    purchase_date: "La fecha de compra",
     status: "El estatus del vehículo",
   };
 
@@ -26,13 +25,6 @@ export const validateVehicleForm = (
       });
       return false;
     }
-  }
-
-  if (vehicleData.carYear > vehicleData.currentYear + 1) {
-    toast.warning("Revisa los años", {
-      description: "El año del auto no puede ser mayor al año actual + 1.",
-    });
-    return false;
   }
 
   const invalidExpense = Object.entries(expenses).find(([_, value]) => {

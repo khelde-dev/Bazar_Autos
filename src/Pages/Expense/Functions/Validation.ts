@@ -2,7 +2,7 @@ import { toast } from "sonner";
 import type { VehicleExpense } from "../Types/ExpenseVehicle.types";
 
 export const validateExpense = (data: VehicleExpense): boolean => {
-  if (!data.categoryId) {
+  if (!data.movements_category_id) {
     toast.error("Falta la categoría", { description: "Por favor selecciona una categoría válida." });
     return false;
   }

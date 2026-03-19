@@ -1,7 +1,7 @@
 import { api } from "./axiosConfig";
 
 export const createVehicle = async (payload: any) => {
-  const { data } = await api.post('/vehicles', payload);
+  const { data } = await api.post('/cars', payload);
   return data;
 };
 

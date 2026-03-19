@@ -10,7 +10,6 @@ export const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.log(error.response)
     const message = error.response?.data?.error?.message || "Ocurrió un error inesperado";
     const status = error.response?.status;
 
