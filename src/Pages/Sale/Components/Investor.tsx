@@ -2,7 +2,6 @@ import { ChevronDown, User } from "lucide-react";
 import type React from "react";
 import { Card } from "../../../Utils/Screen/Boxes/Card";
 import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
-//import { INVESTOR_OPTIONS } from "../Types/SaleVehicle.types";
 
 interface InvestorProps {
   value: string;
