@@ -30,3 +30,5 @@ dist-ssr
 *.ntvs*
 *.suo
 .DS_Store
+
+.vercel
