@@ -15,14 +15,27 @@ interface DetailsProps {
 
 export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
-  
-  const { data: modelsData, isLoading } =useCarModels();
+  const [isCustomModel, setIsCustomModel] = useState(false);
+
+  const { data: modelsData, isLoading } = useCarModels();
 
   const handleSelectColor = (colorValue: string) => {
     onInputChange({
       target: { name: "color", value: colorValue }
     } as React.ChangeEvent<HTMLInputElement>);
     setShowColorPicker(false);
+  };
+
+  const handleModelSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    if (value === "Otro") {
+      setIsCustomModel(true);
+      // Limpiamos el valor en el estado padre para que el input de texto empiece vacío
+      onInputChange({ target: { name: "model", value: "" } } as React.ChangeEvent<HTMLInputElement>);
+    } else {
+      setIsCustomModel(false);
+      onInputChange(e);
+    }
   };
 
   return (
@@ -44,8 +57,8 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
           <div className="relative">
             <select
               name="model"
-              value={data.model}
-              onChange={onInputChange}
+              value={isCustomModel ? "Otro" : (data.model || "")}
+              onChange={handleModelSelectChange}
               disabled={isLoading}
               className="w-full bg-gray-50 p-3 rounded-xl text-sm appearance-none border border-transparent outline-none focus:border-blue-500 transition-all text-slate-700 disabled:opacity-50"
             >
@@ -55,6 +68,7 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
                   {m.name}
                 </option>
               ))}
+              <option value="Otro">Otro</option>
             </select>
             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
               {isLoading ? (
@@ -65,6 +79,18 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
             </div>
           </div>
         </div>
+
+        {isCustomModel && (
+          <div className="w-full col-span-2 animate-in fade-in slide-in-from-top-2 duration-300">
+            <InputField
+              label="Especificar Modelo"
+              name="model"
+              value={data.model}
+              onChange={onInputChange}
+              placeholder="Ej. Corolla"
+            />
+          </div>
+        )}
 
         <InputField
           label="Año Actual"

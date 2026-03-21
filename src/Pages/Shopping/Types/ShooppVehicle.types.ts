@@ -7,6 +7,7 @@ export interface VehicleDetails {
   purchase_date: string;
   sale_date: string | null;
   status: VehicleStatus;
+  purchase_price: number;
   price_for_sale: number;
 }
 
@@ -18,7 +19,8 @@ export const INITIAL_VEHICLE_DETAILS: VehicleDetails = {
   purchase_date: "",
   sale_date: "",
   status: "Inventario",
-  price_for_sale:0.0
+  purchase_price: 0.0,
+  price_for_sale: 0.0
 };
 
 export type VehicleYear = number;
@@ -54,7 +56,7 @@ export interface VehicleExpenses {
   kit: number;
   hatShelf: number;
   oilService: number;
-  oil:number;
+  oil: number;
   spareCap: number;
   alignment: number;
   handle: number;
@@ -88,7 +90,7 @@ export const EXPENSE_ITEMS: ExpenseConfig[] = [
 export const INITIAL_EXPENSES: VehicleExpenses = {
   tires: 0, bodywork: 0, upholstery: 0, ceiling: 0, steeringWheel: 0,
   cover: 0, mechanic: 0, caps: 0, fine: 0, kit: 0, hatShelf: 0,
-  oilService: 0,oil:0, spareCap: 0, alignment: 0, handle: 0, headlights: 0,
+  oilService: 0, oil: 0, spareCap: 0, alignment: 0, handle: 0, headlights: 0,
 };
 
 export const COST_TYPE_OVERRIDES: Record<string, string> = {
