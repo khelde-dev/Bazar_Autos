@@ -36,7 +36,9 @@ const ShoppVehicle: React.FC = () => {
     0,
   );
 
-  const totalInvestment = Math.round(sum * 100) / 100;
+  const purchasePrice = parseFloat(vehicleData.purchase_price as unknown as string) || 0;
+
+  const totalInvestment = Math.round((sum + purchasePrice) * 100) / 100;
 
   const handleSave = () => {
     if (!validateVehicleForm(vehicleData, expenses)) return;
@@ -69,6 +71,12 @@ const ShoppVehicle: React.FC = () => {
           currentStatus={vehicleData.status}
           onStatusChange={handleStatusChange}
         />
+        <BoxMoney
+          label="PRECIO DE COMPRA"
+          name="purchase_price"
+          value={vehicleData.purchase_price}
+          onChange={handleInputChange}
+        />
 
         <Expense
           expenses={expenses}
@@ -88,9 +96,8 @@ const ShoppVehicle: React.FC = () => {
         <button
           onClick={handleSave}
           disabled={isPending}
-          className={`w-full mt-4 bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98] ${
-            isPending ? "opacity-70 cursor-not-allowed" : "hover:from-[#2552d6]"
-          }`}
+          className={`w-full mt-4 bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98] ${isPending ? "opacity-70 cursor-not-allowed" : "hover:from-[#2552d6]"
+            }`}
         >
           {isPending ? (
             <span className="flex items-center gap-2">
