@@ -17,6 +17,7 @@ import { useCategories, useExpense } from "./Hooks/useExpenseMutate";
 import { validateExpense } from "./Functions/Validation";
 import { useCarModels } from "../Shopping/Hooks/useVehicle";
 import { GenerateArray } from "./Functions/Utils";
+import { InputField } from "../../Utils/Screen/Inputs/InputField";
 
 export const ExpenseVehicle: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -63,7 +64,6 @@ export const ExpenseVehicle: React.FC = () => {
       ...autoMappedData,
       car_id: resultIds,
     };
-
     mutate(payload);
   };
 
@@ -318,6 +318,13 @@ export const ExpenseVehicle: React.FC = () => {
             </div>
           )}
           <div>
+            <InputField
+                      label="Fecha de cierre"
+                      name="closing_date"
+                      type="date"
+                      value={expenseData.closing_date}
+                      onChange={handleChange}
+                    />
             <Label>Descripción</Label>
             <textarea
               name="description"
