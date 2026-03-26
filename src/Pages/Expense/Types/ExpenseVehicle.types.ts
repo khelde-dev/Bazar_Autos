@@ -11,6 +11,7 @@ export interface VehicleExpense {
   isShared: boolean;
   involvedVehicles: string[];
   description: string;
+  closing_date:string;
 }
 
 export const INITIAL_EXPENSE: VehicleExpense = {
@@ -21,5 +22,6 @@ export const INITIAL_EXPENSE: VehicleExpense = {
     amount: 0,
     isShared: false,
     involvedVehicles: [],
-    description: ''
+    description: '',
+    closing_date:''
 };

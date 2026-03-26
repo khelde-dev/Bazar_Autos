@@ -21,6 +21,10 @@ export const validateExpense = (data: VehicleExpense): boolean => {
     toast.error("Monto inválido", { description: "El monto debe ser mayor a 0." });
     return false;
   }
+   if (!data.closing_date) {
+    toast.error("Fecha Invalida", { description: "Por favor selecciona una fecha" });
+    return false;
+  }
 
   return true;
 };
