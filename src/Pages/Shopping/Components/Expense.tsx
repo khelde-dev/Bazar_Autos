@@ -11,12 +11,14 @@ import {
 interface ExpenseProps {
   expenses: VehicleExpenses;
   onExpenseChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  totalInvestment:string
+  onExpenseNoteChange: (key: keyof VehicleExpenses, note: string) => void;
+  totalInvestment: string;
 }
 
 export const Expense: React.FC<ExpenseProps> = ({
   expenses,
   onExpenseChange,
+  onExpenseNoteChange,
   totalInvestment
 }) => {
   return (
@@ -29,12 +31,14 @@ export const Expense: React.FC<ExpenseProps> = ({
             key={item.key}
             label={item.label}
             name={item.key}
-            value={expenses[item.key]}
+            value={expenses[item.key].amount}
             onChange={onExpenseChange}
-            placeholder="0.00"
+            noteValue={expenses[item.key].note}
+            onNoteChange={(newNote) => onExpenseNoteChange(item.key, newNote)}
           />
         ))}
       </div>
+      
       <div className="mt-6 pt-4 border-t border-gray-100">
         <div className="bg-blue-50/50 rounded-2xl p-4 flex items-center justify-between border border-blue-100/50">
           <div className="flex flex-col">
