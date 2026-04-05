@@ -11,7 +11,7 @@ export const Menu: React.FC = () => {
   const { data: user, isLoading } = useUserProfile();
 
   return (
-    <main className="w-full max-w-md mt-10 space-y-6">
+    <main className="w-full max-w-md space-y-6">
       {isLoading ? (
         <Loader2
           size={14}
@@ -22,8 +22,8 @@ export const Menu: React.FC = () => {
         <Header Title={currentHeaderTitle} user={user.data[0].username} />
       )}
 
-      <section>
-        <div className="bg-gray-200/50 p-1.5 rounded-2xl flex gap-1">
+      <section className="px-4">
+        <div className="bg-gray-200 p-1.5 rounded-2xl flex gap-1">
           {TAB_NAMES.map((tab) => (
             <button
               key={tab}
