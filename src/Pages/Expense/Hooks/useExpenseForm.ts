@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { type VehicleExpense,INITIAL_EXPENSE } from "../Types/ExpenseVehicle.types";
-
+import { type VehicleExpense, INITIAL_EXPENSE } from "../Types/ExpenseVehicle.types";
 
 export const useExpenseForm = () => {
   const [expenseData, setExpenseData] = useState<VehicleExpense>(INITIAL_EXPENSE);
@@ -9,49 +8,50 @@ export const useExpenseForm = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setExpenseData(prev => {
-      const updated = { 
-        ...prev, 
-        [name]: name === 'amount' ? parseFloat(value) || 0 : value 
+    setExpenseData((prev) => {
+      const updated = {
+        ...prev,
+        [name]: name === "amount" ? parseFloat(value) || 0 : value,
       };
-      if (name === 'subType') updated.movements_category_id = "";
+      if (name === "subType") updated.movements_category_id = "";
       return updated;
     });
   };
 
-  const toggleShared = () => setExpenseData(prev => ({ 
-    ...prev, 
-    isShared: !prev.isShared,
-    involvedVehicles: !prev.isShared ? [] : prev.involvedVehicles 
-  }));
+  const toggleShared = () =>
+    setExpenseData((prev) => ({
+      ...prev,
+      isShared: !prev.isShared,
+      involvedVehicles: !prev.isShared ? [] : prev.involvedVehicles,
+    }));
 
   const removeVehicleTag = (tag: string) => {
-    setExpenseData(prev => ({
+    setExpenseData((prev) => ({
       ...prev,
-      involvedVehicles: prev.involvedVehicles.filter(t => t !== tag)
+      involvedVehicles: prev.involvedVehicles.filter((t) => t !== tag),
     }));
   };
 
   const addVehicleTag = (tag: string) => {
-    setExpenseData(prev => {
+    setExpenseData((prev) => {
       if (prev.involvedVehicles.includes(tag)) return prev;
-      
+
       return {
         ...prev,
-        involvedVehicles: [...prev.involvedVehicles, tag]
+        involvedVehicles: [...prev.involvedVehicles, tag],
       };
     });
   };
 
-   const resetForm = () =>setExpenseData(INITIAL_EXPENSE);
+  const resetForm = () => setExpenseData(INITIAL_EXPENSE);
 
-  return { 
-    expenseData, 
-    setExpenseData, 
-    handleChange, 
-    toggleShared, 
+  return {
+    expenseData,
+    setExpenseData,
+    handleChange,
+    toggleShared,
     removeVehicleTag,
     addVehicleTag,
-    resetForm
+    resetForm,
   };
 };

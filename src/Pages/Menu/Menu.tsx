@@ -13,11 +13,7 @@ export const Menu: React.FC = () => {
   return (
     <main className="w-full max-w-md space-y-6">
       {isLoading ? (
-        <Loader2
-          size={14}
-          className="animate-spin text-blue-600 opacity-90"
-          strokeWidth={3}
-        />
+        <Loader2 size={14} className="animate-spin text-blue-600 opacity-90" strokeWidth={3} />
       ) : (
         <Header Title={currentHeaderTitle} user={user.data[0].username} />
       )}
@@ -29,9 +25,7 @@ export const Menu: React.FC = () => {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${
-                activeTab === tab
-                  ? "bg-white text-blue-600 shadow-sm"
-                  : "text-gray-500"
+                activeTab === tab ? "bg-white text-blue-600 shadow-sm" : "text-gray-500"
               }`}
             >
               {tab}
@@ -44,10 +38,7 @@ export const Menu: React.FC = () => {
         {TAB_NAMES.map((tabName) => {
           const TabComponent = TABS_CONFIG[tabName].component;
           return (
-            <div
-              key={tabName}
-              className={activeTab === tabName ? "block" : "hidden"}
-            >
+            <div key={tabName} className={activeTab === tabName ? "block" : "hidden"}>
               <TabComponent />
             </div>
           );

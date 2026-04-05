@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  CarFront,
-  ShieldCheck,
-  AtSign,
-  Lock,
-  Eye,
-  EyeOff,
-  ArrowRight,
-} from "lucide-react";
+import { CarFront, ShieldCheck, AtSign, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { initialLoginForm, type LoginForm } from "./types/Login.types";
 import { useLoginMutation } from "./Hooks/UseLoginMutation";
 
@@ -52,9 +44,7 @@ export default function Login() {
         <h1 className="text-[28px] font-bold text-slate-800 tracking-tight mb-2">
           ¡Qué bueno verte!
         </h1>
-        <p className="text-slate-500 text-[15px]">
-          Inicia sesión en el Bazar de Autos
-        </p>
+        <p className="text-slate-500 text-[15px]">Inicia sesión en el Bazar de Autos</p>
       </div>
       <form onSubmit={handleSubmit} className="w-full space-y-5">
         <div className="space-y-2">
@@ -77,9 +67,7 @@ export default function Login() {
           </div>
         </div>
         <div className="space-y-2 pb-1">
-          <label className="block text-[14px] font-semibold text-slate-700">
-            Contraseña
-          </label>
+          <label className="block text-[14px] font-semibold text-slate-700">Contraseña</label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Lock size={20} className="text-slate-400" />

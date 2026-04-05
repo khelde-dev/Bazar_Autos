@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import { ExpenseVehicle } from "../../Expense/ExpenseVehicle";
-import { SaleVehicle } from "../../Sale/SaleVehicle";
-import ShoppVehicle from "../../Shopping/ShoppVehicle";
+import { AddInvestment } from "../../Investments/AddInvestment";
+import { ShoppVehicle } from "../../Shopping/ShoppVehicle";
 
 interface TabConfigItem {
   title: string;
@@ -11,15 +11,15 @@ interface TabConfigItem {
 export const TABS_CONFIG: Record<string, TabConfigItem> = {
   Compra: {
     title: "Agregar Vehículo",
-    component: ShoppVehicle
+    component: ShoppVehicle,
   },
   Inversionista: {
-    title: "Registro de Inversión de Capital",
-    component: SaleVehicle
+    title: "Agregar Inversion",
+    component: AddInvestment,
   },
   Gasto: {
     title: "Detalles del Gasto",
-    component: ExpenseVehicle
+    component: ExpenseVehicle,
   },
 };
 

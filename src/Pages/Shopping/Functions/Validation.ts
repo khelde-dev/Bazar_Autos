@@ -1,12 +1,9 @@
 import { toast } from "sonner";
-import type {
-  VehicleDetails,
-  VehicleExpenses,
-} from "../Types/ShooppVehicle.types";
+import type { VehicleDetails, VehicleExpenses } from "../Types/ShooppVehicle.types";
 
 export const validateVehicleForm = (
   vehicleData: VehicleDetails,
-  expenses: VehicleExpenses,
+  expenses: VehicleExpenses
 ): boolean => {
   const requiredFields: Record<string, string> = {
     brand: "La marca",
@@ -42,8 +39,7 @@ export const validateVehicleForm = (
 
   if (invalidExpense) {
     toast.error("Hay un error en los gastos", {
-      description:
-        "Asegúrate de que todos los montos sean números válidos y positivos.",
+      description: "Asegúrate de que todos los montos sean números válidos y positivos.",
     });
     return false;
   }

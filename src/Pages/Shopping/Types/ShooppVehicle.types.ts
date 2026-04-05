@@ -8,7 +8,7 @@ export interface VehicleDetails {
   purchase_date: string;
   sale_date: string | null;
   status: VehicleStatus;
-  purchase_price: number | string; 
+  purchase_price: number | string;
   price_for_sale: number | string;
 }
 
@@ -20,35 +20,35 @@ export const INITIAL_VEHICLE_DETAILS: VehicleDetails = {
   purchase_date: "",
   sale_date: "",
   status: "Inventario",
-  purchase_price: "", 
-  price_for_sale: ""
+  purchase_price: "",
+  price_for_sale: "",
 };
 
 export type VehicleYear = number;
 
 export const getYearOptions = (): number[] => {
   return Array.from(
-    { length: new Date().getFullYear() - 1950 + 1 }, 
+    { length: new Date().getFullYear() - 1950 + 1 },
     (_, i) => new Date().getFullYear() - i
   );
 };
 export const YEAR_OPTIONS = getYearOptions();
 
 export const COLOR_PRESETS = [
-  { name: 'Blanco', value: '#ffffff' },
-  { name: 'Negro', value: '#000000' },
-  { name: 'Gris', value: '#6b7280' },
-  { name: 'Plata', value: '#d1d5db' },
-  { name: 'Rojo', value: '#ef4444' },
-  { name: 'Azul', value: '#3b82f6' },
-  { name: 'Verde', value: '#22c55e' },
-  { name: 'Amarillo', value: '#eab308' },
+  { name: "Blanco", value: "#ffffff" },
+  { name: "Negro", value: "#000000" },
+  { name: "Gris", value: "#6b7280" },
+  { name: "Plata", value: "#d1d5db" },
+  { name: "Rojo", value: "#ef4444" },
+  { name: "Azul", value: "#3b82f6" },
+  { name: "Verde", value: "#22c55e" },
+  { name: "Amarillo", value: "#eab308" },
 ];
 
 export const STATUS_OPTIONS: VehicleStatus[] = ["Vendido", "Inventario", "En espera", "Reparacion"];
 
 export interface ExpenseDetail {
-  amount: number | string; 
+  amount: number | string;
   note: string;
 }
 
@@ -100,16 +100,27 @@ export const EXPENSE_ITEMS: ExpenseConfig[] = [
 const defaultExpense: ExpenseDetail = { amount: "", note: "" };
 
 export const INITIAL_EXPENSES: VehicleExpenses = {
-  tires: defaultExpense, bodywork: defaultExpense, upholstery: defaultExpense, 
-  ceiling: defaultExpense, steeringWheel: defaultExpense, cover: defaultExpense, 
-  mechanic: defaultExpense, caps: defaultExpense, fine: defaultExpense, 
-  kit: defaultExpense, hatShelf: defaultExpense, oilService: defaultExpense, 
-  oil: defaultExpense, spareCap: defaultExpense, alignment: defaultExpense, 
-  handle: defaultExpense, headlights: defaultExpense,
+  tires: defaultExpense,
+  bodywork: defaultExpense,
+  upholstery: defaultExpense,
+  ceiling: defaultExpense,
+  steeringWheel: defaultExpense,
+  cover: defaultExpense,
+  mechanic: defaultExpense,
+  caps: defaultExpense,
+  fine: defaultExpense,
+  kit: defaultExpense,
+  hatShelf: defaultExpense,
+  oilService: defaultExpense,
+  oil: defaultExpense,
+  spareCap: defaultExpense,
+  alignment: defaultExpense,
+  handle: defaultExpense,
+  headlights: defaultExpense,
 };
 
 export const COST_TYPE_OVERRIDES: Record<string, string> = {
-  'Rin/Llaveta': 'rin_llaveta',
-  'Tapón Facción': 'tapon_facion',
-  'Faros/Calaveras': 'faros_calaveras',
+  "Rin/Llaveta": "rin_llaveta",
+  "Tapón Facción": "tapon_facion",
+  "Faros/Calaveras": "faros_calaveras",
 };

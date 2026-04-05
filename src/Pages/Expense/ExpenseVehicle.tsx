@@ -1,14 +1,5 @@
 import React, { useMemo, useState } from "react";
-import {
-  ChevronDown,
-  Car,
-  DollarSign,
-  Users,
-  X,
-  ReceiptText,
-  Check,
-  Loader2,
-} from "lucide-react";
+import { ChevronDown, Car, DollarSign, Users, X, ReceiptText, Check, Loader2 } from "lucide-react";
 import { Card } from "../../Utils/Screen/Boxes/Card";
 import { Label } from "../../Utils/Screen/Text/Label";
 import { useExpenseForm } from "./Hooks/useExpenseForm";
@@ -22,14 +13,8 @@ import { InputField } from "../../Utils/Screen/Inputs/InputField";
 export const ExpenseVehicle: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const {
-    expenseData,
-    setExpenseData,
-    handleChange,
-    toggleShared,
-    removeVehicleTag,
-    resetForm,
-  } = useExpenseForm();
+  const { expenseData, setExpenseData, handleChange, toggleShared, removeVehicleTag, resetForm } =
+    useExpenseForm();
 
   const { mutate, isPending } = useExpense(resetForm);
   const { data: categoriesData, isLoading } = useCategories();
@@ -48,9 +33,7 @@ export const ExpenseVehicle: React.FC = () => {
 
   const filteredBrands = useMemo(() => {
     const lowerSearchTerm = searchTerm.toLowerCase();
-    return carsModels.filter((brand) =>
-      brand.toLowerCase().includes(lowerSearchTerm),
-    );
+    return carsModels.filter((brand) => brand.toLowerCase().includes(lowerSearchTerm));
   }, [carsModels, searchTerm]);
 
   const handleSave = () => {
@@ -58,7 +41,7 @@ export const ExpenseVehicle: React.FC = () => {
 
     let resultIds: string[] = GenerateArray(expenseData, modelsData.data);
 
-    const { subType, mainVehicleId, involvedVehicles, ...autoMappedData }=expenseData;
+    const { subType, mainVehicleId, involvedVehicles, ...autoMappedData } = expenseData;
 
     const payload = {
       ...autoMappedData,
@@ -95,9 +78,7 @@ export const ExpenseVehicle: React.FC = () => {
                 <button
                   key={t}
                   type="button"
-                  onClick={() =>
-                    setExpenseData((prev) => ({ ...prev, type: t }))
-                  }
+                  onClick={() => setExpenseData((prev) => ({ ...prev, type: t }))}
                   className={`flex-1 py-3 rounded-xl text-[13px] font-black transition-all border ${
                     expenseData.type === t
                       ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-100"
@@ -110,11 +91,7 @@ export const ExpenseVehicle: React.FC = () => {
             </div>
           </div>
           {isLoading ? (
-            <Loader2
-              size={14}
-              className="animate-spin text-blue-600 opacity-90"
-              strokeWidth={3}
-            />
+            <Loader2 size={14} className="animate-spin text-blue-600 opacity-90" strokeWidth={3} />
           ) : (
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -155,7 +132,7 @@ export const ExpenseVehicle: React.FC = () => {
                           <option key={cat.category_id} value={cat.category_id}>
                             {cat.name}
                           </option>
-                        ),
+                        )
                     )}
                   </select>
                   <ChevronDown
@@ -169,21 +146,14 @@ export const ExpenseVehicle: React.FC = () => {
           {!isLoadingModels && (
             <div className="relative">
               <Label>
-                {expenseData.isShared
-                  ? "Añadir Vehículos involucrados"
-                  : "Vehículo Principal"}
+                {expenseData.isShared ? "Añadir Vehículos involucrados" : "Vehículo Principal"}
               </Label>
               <div className="relative">
-                <Car
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                  size={20}
-                />
+                <Car className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 <input
                   type="text"
                   placeholder={
-                    expenseData.isShared
-                      ? "Escribe para añadir varios..."
-                      : "Buscar marca..."
+                    expenseData.isShared ? "Escribe para añadir varios..." : "Buscar marca..."
                   }
                   value={
                     isSearchOpen
@@ -229,24 +199,17 @@ export const ExpenseVehicle: React.FC = () => {
                               </span>
                             )}
                           </span>
-                          {isSelected && (
-                            <Check size={16} className="text-blue-600" />
-                          )}
+                          {isSelected && <Check size={16} className="text-blue-600" />}
                         </button>
                       );
                     })
                   ) : (
-                    <div className="p-4 text-xs text-gray-400 text-center">
-                      No hay resultados
-                    </div>
+                    <div className="p-4 text-xs text-gray-400 text-center">No hay resultados</div>
                   )}
                 </div>
               )}
               {isSearchOpen && (
-                <div
-                  className="fixed inset-0 z-40"
-                  onClick={() => setIsSearchOpen(false)}
-                />
+                <div className="fixed inset-0 z-40" onClick={() => setIsSearchOpen(false)} />
               )}
             </div>
           )}
@@ -273,9 +236,7 @@ export const ExpenseVehicle: React.FC = () => {
           >
             <div className="flex items-center gap-3">
               <Users
-                className={
-                  expenseData.isShared ? "text-blue-600" : "text-gray-400"
-                }
+                className={expenseData.isShared ? "text-blue-600" : "text-gray-400"}
                 size={22}
               />
               <span
@@ -296,9 +257,7 @@ export const ExpenseVehicle: React.FC = () => {
 
           {expenseData.isShared && expenseData.involvedVehicles.length > 0 && (
             <div className="animate-in slide-in-from-top-2 duration-300 space-y-2">
-              <Label>
-                Vehículos Seleccionados ({expenseData.involvedVehicles.length})
-              </Label>
+              <Label>Vehículos Seleccionados ({expenseData.involvedVehicles.length})</Label>
               <div className="bg-gray-50 p-3 rounded-2xl flex flex-wrap gap-2 items-center border border-gray-100/50">
                 {expenseData.involvedVehicles.map((tag) => (
                   <span
@@ -319,12 +278,12 @@ export const ExpenseVehicle: React.FC = () => {
           )}
           <div>
             <InputField
-                      label="Fecha de cierre"
-                      name="closing_date"
-                      type="date"
-                      value={expenseData.closing_date}
-                      onChange={handleChange}
-                    />
+              label="Fecha de cierre"
+              name="closing_date"
+              type="date"
+              value={expenseData.closing_date}
+              onChange={handleChange}
+            />
             <Label>Descripción</Label>
             <textarea
               name="description"

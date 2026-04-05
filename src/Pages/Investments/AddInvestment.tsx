@@ -3,39 +3,37 @@ import { Loader2, Save } from "lucide-react";
 import { Investor } from "./Components/Investor";
 import { BoxMoney } from "../../Utils/Screen/Boxes/BoxMoney";
 import { RegistrationDate } from "./Components/RegistrationDate";
-//import { Notes } from "./Components/Notes";
-import { useSaleForm } from "./Hooks/useSaleForm";
-import { useRegisterInvestment } from "./Hooks/useRegisterInvestmentMutate";
+import { useInvestmentForm } from "./Hooks/useInvestmentForm";
+import { useRegisterInvestment } from "./Hooks/useRegisterInvestment";
 import { validateInvestment } from "./Functions/Validation";
 import { useUserList } from "../Menu/Hooks/UserProfile";
 
-export const SaleVehicle: React.FC = () => {
-  const { saleData, handleSaleChange,resetForm } = useSaleForm();
+export const AddInvestment: React.FC = () => {
+  const { saleData, handleSaleChange, resetForm } = useInvestmentForm();
   const { mutate, isPending } = useRegisterInvestment(resetForm);
-  const {data:ListUsers,isLoading}=useUserList();
+  const { data: ListUsers, isLoading } = useUserList();
 
   const handleSaveInvestment = () => {
     if (!validateInvestment(saleData)) return;
-
-    const payload = {
-      user_id:saleData.user_id,
-      investment_amount:Number(saleData.investment_amount)
-    };
-
-    mutate(payload);
+    mutate({
+      user_id: saleData.user_id,
+      investment_amount: Number(saleData.investment_amount),
+    });
   };
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-10 font-sans">
       <main className="max-w-md mx-auto p-4 space-y-5">
         {isLoading ? (
-          <Loader2
-            size={14}
-            className="animate-spin text-blue-600 opacity-90"
-            strokeWidth={3}
-          />
+          <div className="flex justify-center py-4">
+            <Loader2 size={20} className="animate-spin text-blue-600" strokeWidth={3} />
+          </div>
         ) : (
-          <Investor value={saleData.user_id} onChange={handleSaleChange} listUsers={ListUsers.data} />
+          <Investor
+            value={saleData.user_id}
+            onChange={handleSaleChange}
+            listUsers={ListUsers?.data ?? []}
+          />
         )}
 
         <BoxMoney
@@ -47,9 +45,8 @@ export const SaleVehicle: React.FC = () => {
 
         <RegistrationDate />
 
-        {/*<Notes value={saleData.notes} onChange={handleSaleChange} />*/}
-
         <button
+          type="button"
           onClick={handleSaveInvestment}
           disabled={isPending}
           className={`w-full mt-4 bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98] ${

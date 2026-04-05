@@ -4,7 +4,6 @@ import { Bookmark } from "lucide-react";
 import { Card } from "../../../Utils/Screen/Boxes/Card";
 import { STATUS_OPTIONS, type VehicleStatus } from "../Types/ShooppVehicle.types";
 
-
 interface StatusProps {
   currentStatus: VehicleStatus;
   onStatusChange: (newStatus: VehicleStatus) => void;
@@ -17,7 +16,7 @@ export const Status: React.FC<StatusProps> = ({ currentStatus, onStatusChange })
       <div className="flex gap-2 bg-gray-50/50 p-1 rounded-4xl">
         {STATUS_OPTIONS.map((status) => {
           const isActive = currentStatus === status;
-          
+
           return (
             <button
               key={status}

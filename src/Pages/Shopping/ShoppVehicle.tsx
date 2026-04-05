@@ -15,7 +15,7 @@ import { validateVehicleForm } from "./Functions/Validation";
 import { useCreateVehicle } from "./Hooks/useVehicle";
 import { NormalizeText } from "../../Utils/Functions/Normalize";
 
-const ShoppVehicle: React.FC = () => {
+export const ShoppVehicle: React.FC = () => {
   const {
     vehicleData,
     setVehicleData,
@@ -35,10 +35,10 @@ const ShoppVehicle: React.FC = () => {
   const totalInvestment = useMemo(() => {
     const sumExpenses = Object.values(expenses).reduce(
       (acc, curr) => acc + (Number(curr.amount) || 0),
-      0,
+      0
     );
-    
-    const purchasePrice = Number(vehicleData.purchase_price) || 0; 
+
+    const purchasePrice = Number(vehicleData.purchase_price) || 0;
     return Math.round((sumExpenses + purchasePrice) * 100) / 100;
   }, [expenses, vehicleData.purchase_price]);
 
@@ -48,16 +48,14 @@ const ShoppVehicle: React.FC = () => {
     const formattedCosts = EXPENSE_ITEMS.map((item) => ({
       cost_type: COST_TYPE_OVERRIDES[item.label] || NormalizeText(item.label),
       amount: Number(expenses[item.key].amount) || 0,
-      note: expenses[item.key].note || "", 
+      note: expenses[item.key].note || "",
     }));
 
     const payload = {
       ...vehicleData,
       price_for_sale: Number(vehicleData.price_for_sale) || 0,
       year_of_car: Number(vehicleData.year_of_car) || 0,
-      color:
-        COLOR_PRESETS.find((c) => c.value === vehicleData.color)?.name ||
-        vehicleData.color,
+      color: COLOR_PRESETS.find((c) => c.value === vehicleData.color)?.name || vehicleData.color,
       purchase_price: totalInvestment,
       costs: formattedCosts,
     };
@@ -69,11 +67,8 @@ const ShoppVehicle: React.FC = () => {
       <main className="max-w-md mx-auto p-4 space-y-6">
         <Details data={vehicleData} onInputChange={handleInputChange} />
 
-        <Status
-          currentStatus={vehicleData.status}
-          onStatusChange={handleStatusChange}
-        />
-        
+        <Status currentStatus={vehicleData.status} onStatusChange={handleStatusChange} />
+
         <BoxMoney
           label="PRECIO DE COMPRA"
           name="purchase_price"
@@ -120,5 +115,3 @@ const ShoppVehicle: React.FC = () => {
     </div>
   );
 };
-
-export default ShoppVehicle;

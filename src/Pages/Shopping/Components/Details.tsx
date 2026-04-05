@@ -1,12 +1,11 @@
 import type React from "react";
-import { Check, ChevronDown, Info, Loader2 } from 'lucide-react';
+import { Check, ChevronDown, Info, Loader2 } from "lucide-react";
 import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
 import { InputField } from "../../../Utils/Screen/Inputs/InputField";
 import { Card } from "../../../Utils/Screen/Boxes/Card";
 import { COLOR_PRESETS, YEAR_OPTIONS, type VehicleDetails } from "../Types/ShooppVehicle.types";
 import { useState } from "react";
 import { useCarModels } from "../Hooks/useVehicle";
-
 
 interface DetailsProps {
   data: VehicleDetails;
@@ -21,7 +20,7 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
 
   const handleSelectColor = (colorValue: string) => {
     onInputChange({
-      target: { name: "color", value: colorValue }
+      target: { name: "color", value: colorValue },
     } as React.ChangeEvent<HTMLInputElement>);
     setShowColorPicker(false);
   };
@@ -31,7 +30,9 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
     if (value === "Otro") {
       setIsCustomModel(true);
       // Limpiamos el valor en el estado padre para que el input de texto empiece vacío
-      onInputChange({ target: { name: "model", value: "" } } as React.ChangeEvent<HTMLInputElement>);
+      onInputChange({
+        target: { name: "model", value: "" },
+      } as React.ChangeEvent<HTMLInputElement>);
     } else {
       setIsCustomModel(false);
       onInputChange(e);
@@ -57,7 +58,7 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
           <div className="relative">
             <select
               name="model"
-              value={isCustomModel ? "Otro" : (data.model || "")}
+              value={isCustomModel ? "Otro" : data.model || ""}
               onChange={handleModelSelectChange}
               disabled={isLoading}
               className="w-full bg-gray-50 p-3 rounded-xl text-sm appearance-none border border-transparent outline-none focus:border-blue-500 transition-all text-slate-700 disabled:opacity-50"
@@ -111,8 +112,10 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
             onChange={onInputChange}
             className="bg-gray-50 p-3 rounded-xl text-sm appearance-none border border-transparent outline-none focus:border-blue-500 transition-all"
           >
-            {YEAR_OPTIONS.map(year => (
-              <option key={year} value={year}>{year}</option>
+            {YEAR_OPTIONS.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
             ))}
           </select>
         </div>
@@ -132,7 +135,7 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
             style={{ backgroundColor: data.color }}
           />
           <span className="font-medium">
-            {COLOR_PRESETS.find(c => c.value === data.color)?.name || "Personalizado"}
+            {COLOR_PRESETS.find((c) => c.value === data.color)?.name || "Personalizado"}
           </span>
         </button>
         {showColorPicker && (
@@ -152,7 +155,10 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
                       style={{ backgroundColor: color.value }}
                     >
                       {data.color === color.value && (
-                        <Check size={16} className={color.value === '#ffffff' ? 'text-slate-800' : 'text-white'} />
+                        <Check
+                          size={16}
+                          className={color.value === "#ffffff" ? "text-slate-800" : "text-white"}
+                        />
                       )}
                     </div>
                     <span className="text-[10px] text-slate-500 font-medium">{color.name}</span>
