@@ -12,28 +12,41 @@ export const useVehicleForm = () => {
       ...prev,
       [name]: type === "number" || name === "carYear" ? Number(value) : value,
     }));
-
   };
 
   const handleExpenseChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, value } = e.target;
-  setExpenses(prev => ({
-    ...prev,
-    [name]: value
-  }));
+    const { name, value } = e.target;
+    setExpenses(prev => ({
+      ...prev,
+      [name as keyof VehicleExpenses]: {
+        ...prev[name as keyof VehicleExpenses],
+        amount: value
+      }
+    }));
   };
 
-  const resetForm = () =>{
+  const handleExpenseNoteChange = (name: keyof VehicleExpenses, note: string) => {
+    setExpenses(prev => ({
+      ...prev,
+      [name]: {
+        ...prev[name],
+        note: note
+      }
+    }));
+  };
+
+  const resetForm = () => {
     setVehicleData(INITIAL_VEHICLE_DETAILS);
     setExpenses(INITIAL_EXPENSES);
-  } 
+  };
 
   return {
     vehicleData,
-    handleInputChange,
     setVehicleData,
-    resetForm,
+    handleInputChange,
     expenses,
-    handleExpenseChange
+    handleExpenseChange,
+    handleExpenseNoteChange,
+    resetForm,
   };
 };
