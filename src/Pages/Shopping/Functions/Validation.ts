@@ -1,10 +1,12 @@
-
 import { toast } from "sonner";
-import type { VehicleDetails, VehicleExpenses } from "../Types/ShooppVehicle.types";
+import type {
+  VehicleDetails,
+  VehicleExpenses,
+} from "../Types/ShooppVehicle.types";
 
 export const validateVehicleForm = (
   vehicleData: VehicleDetails,
-  expenses: VehicleExpenses
+  expenses: VehicleExpenses,
 ): boolean => {
   const requiredFields: Record<string, string> = {
     brand: "La marca",
@@ -21,23 +23,29 @@ export const validateVehicleForm = (
     if (value === "" || value === null || value === undefined) {
       toast.error(`¡Faltan datos! ${label} es obligatorio.`, {
         description: "Por favor, completa todos los campos antes de guardar.",
-        style: { background: "#fef2f2", color: "#991b1b", border: "1px solid #fecaca" },
+        style: {
+          background: "#fef2f2",
+          color: "#991b1b",
+          border: "1px solid #fecaca",
+        },
       });
       return false;
     }
   }
 
   const invalidExpense = Object.entries(expenses).find(([_, value]) => {
-    const num = parseFloat(value as string);
+    const amountStr = value.amount;
+    if (amountStr === "") return false;
+    const num = Number(amountStr);
     return isNaN(num) || num < 0;
   });
 
   if (invalidExpense) {
     toast.error("Hay un error en los gastos", {
-      description: "Asegúrate de que todos los montos sean números válidos y positivos.",
+      description:
+        "Asegúrate de que todos los montos sean números válidos y positivos.",
     });
     return false;
   }
-
   return true;
 };

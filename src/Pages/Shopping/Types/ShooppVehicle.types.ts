@@ -1,4 +1,5 @@
 export type VehicleStatus = "Vendido" | "Inventario" | "En espera" | "Reparacion";
+
 export interface VehicleDetails {
   brand: string;
   model: string;
@@ -7,26 +8,29 @@ export interface VehicleDetails {
   purchase_date: string;
   sale_date: string | null;
   status: VehicleStatus;
-  purchase_price: number;
-  price_for_sale: number;
+  purchase_price: number | string; 
+  price_for_sale: number | string;
 }
 
 export const INITIAL_VEHICLE_DETAILS: VehicleDetails = {
   brand: "",
   model: "",
-  year_of_car: 2026,
+  year_of_car: new Date().getFullYear(),
   color: "#3b82f6",
   purchase_date: "",
   sale_date: "",
   status: "Inventario",
-  purchase_price: 0.0,
-  price_for_sale: 0.0
+  purchase_price: "", 
+  price_for_sale: ""
 };
 
 export type VehicleYear = number;
 
 export const getYearOptions = (): number[] => {
-  return Array.from({ length: new Date().getFullYear() - 1950 + 1 }, (_, i) => new Date().getFullYear() - i);
+  return Array.from(
+    { length: new Date().getFullYear() - 1950 + 1 }, 
+    (_, i) => new Date().getFullYear() - i
+  );
 };
 export const YEAR_OPTIONS = getYearOptions();
 
@@ -43,25 +47,31 @@ export const COLOR_PRESETS = [
 
 export const STATUS_OPTIONS: VehicleStatus[] = ["Vendido", "Inventario", "En espera", "Reparacion"];
 
-export interface VehicleExpenses {
-  tires: number;
-  bodywork: number;
-  upholstery: number;
-  ceiling: number;
-  steeringWheel: number;
-  cover: number;
-  mechanic: number;
-  caps: number;
-  fine: number;
-  kit: number;
-  hatShelf: number;
-  oilService: number;
-  oil: number;
-  spareCap: number;
-  alignment: number;
-  handle: number;
-  headlights: number;
+export interface ExpenseDetail {
+  amount: number | string; 
+  note: string;
 }
+
+export interface VehicleExpenses {
+  tires: ExpenseDetail;
+  bodywork: ExpenseDetail;
+  upholstery: ExpenseDetail;
+  ceiling: ExpenseDetail;
+  steeringWheel: ExpenseDetail;
+  cover: ExpenseDetail;
+  mechanic: ExpenseDetail;
+  caps: ExpenseDetail;
+  fine: ExpenseDetail;
+  kit: ExpenseDetail;
+  hatShelf: ExpenseDetail;
+  oilService: ExpenseDetail;
+  oil: ExpenseDetail;
+  spareCap: ExpenseDetail;
+  alignment: ExpenseDetail;
+  handle: ExpenseDetail;
+  headlights: ExpenseDetail;
+}
+
 export interface ExpenseConfig {
   key: keyof VehicleExpenses;
   label: string;
@@ -87,10 +97,15 @@ export const EXPENSE_ITEMS: ExpenseConfig[] = [
   { key: "headlights", label: "Faros/Calaveras" },
 ];
 
+const defaultExpense: ExpenseDetail = { amount: "", note: "" };
+
 export const INITIAL_EXPENSES: VehicleExpenses = {
-  tires: 0, bodywork: 0, upholstery: 0, ceiling: 0, steeringWheel: 0,
-  cover: 0, mechanic: 0, caps: 0, fine: 0, kit: 0, hatShelf: 0,
-  oilService: 0, oil: 0, spareCap: 0, alignment: 0, handle: 0, headlights: 0,
+  tires: defaultExpense, bodywork: defaultExpense, upholstery: defaultExpense, 
+  ceiling: defaultExpense, steeringWheel: defaultExpense, cover: defaultExpense, 
+  mechanic: defaultExpense, caps: defaultExpense, fine: defaultExpense, 
+  kit: defaultExpense, hatShelf: defaultExpense, oilService: defaultExpense, 
+  oil: defaultExpense, spareCap: defaultExpense, alignment: defaultExpense, 
+  handle: defaultExpense, headlights: defaultExpense,
 };
 
 export const COST_TYPE_OVERRIDES: Record<string, string> = {

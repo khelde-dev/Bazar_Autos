@@ -1,5 +1,5 @@
-import React from "react";
-import { Save } from "lucide-react";
+import React, { useMemo } from "react";
+import { Save, Loader2 } from "lucide-react";
 import { Status } from "./Components/Status";
 import { Details } from "./Components/Details";
 import { Expense } from "./Components/Expense";
@@ -22,6 +22,7 @@ const ShoppVehicle: React.FC = () => {
     handleInputChange,
     expenses,
     handleExpenseChange,
+    handleExpenseNoteChange,
     resetForm,
   } = useVehicleForm();
 
@@ -31,22 +32,23 @@ const ShoppVehicle: React.FC = () => {
     setVehicleData((prev) => ({ ...prev, status: newStatus }));
   };
 
-  const sum = Object.values(expenses).reduce(
-    (acc, curr) => acc + (parseFloat(curr as string) || 0),
-    0,
-  );
-
-  const purchasePrice = parseFloat(vehicleData.purchase_price as unknown as string) || 0;
-
-  const totalInvestment = Math.round((sum + purchasePrice) * 100) / 100;
+  const totalInvestment = useMemo(() => {
+    const sumExpenses = Object.values(expenses).reduce(
+      (acc, curr) => acc + (Number(curr.amount) || 0),
+      0,
+    );
+    
+    const purchasePrice = Number(vehicleData.purchase_price) || 0; 
+    return Math.round((sumExpenses + purchasePrice) * 100) / 100;
+  }, [expenses, vehicleData.purchase_price]);
 
   const handleSave = () => {
     if (!validateVehicleForm(vehicleData, expenses)) return;
 
     const formattedCosts = EXPENSE_ITEMS.map((item) => ({
       cost_type: COST_TYPE_OVERRIDES[item.label] || NormalizeText(item.label),
-      amount: Number(expenses[item.key]) || 0,
-      note: "",
+      amount: Number(expenses[item.key].amount) || 0,
+      note: expenses[item.key].note || "", 
     }));
 
     const payload = {
@@ -71,6 +73,7 @@ const ShoppVehicle: React.FC = () => {
           currentStatus={vehicleData.status}
           onStatusChange={handleStatusChange}
         />
+        
         <BoxMoney
           label="PRECIO DE COMPRA"
           name="purchase_price"
@@ -81,6 +84,7 @@ const ShoppVehicle: React.FC = () => {
         <Expense
           expenses={expenses}
           onExpenseChange={handleExpenseChange}
+          onExpenseNoteChange={handleExpenseNoteChange} // Pasamos la prop
           totalInvestment={totalInvestment.toLocaleString("es-MX", {
             minimumFractionDigits: 2,
           })}
@@ -96,12 +100,13 @@ const ShoppVehicle: React.FC = () => {
         <button
           onClick={handleSave}
           disabled={isPending}
-          className={`w-full mt-4 bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98] ${isPending ? "opacity-70 cursor-not-allowed" : "hover:from-[#2552d6]"
-            }`}
+          className={`w-full mt-4 bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98] ${
+            isPending ? "opacity-70 cursor-not-allowed" : "hover:from-[#2552d6]"
+          }`}
         >
           {isPending ? (
             <span className="flex items-center gap-2">
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <Loader2 size={20} className="animate-spin text-white opacity-90" strokeWidth={3} />
               Guardando...
             </span>
           ) : (
