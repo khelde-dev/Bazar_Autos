@@ -1,10 +1,10 @@
-import { useMemo } from "react";
 import { Loader2 } from "lucide-react";
+import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { BackBar } from "./Components/BackBar";
+import { InvestmentItem } from "./Components/InvestmentItem";
 import { TotalBalanceCard } from "./Components/TotalBalanceCard";
 import { YearMonthFilter } from "./Components/YearMonthFilter";
-import { InvestmentItem } from "./Components/InvestmentItem";
 import { useInvestmentsList } from "./Hooks/useInvestmentsList";
 import { useUrlFilters } from "./Hooks/useUrlFilters";
 import { buildYearRange } from "./Utils/format";
@@ -17,7 +17,7 @@ export const ManageInvestments = () => {
   const currentYear = new Date().getFullYear();
   const effectiveYear = year ?? currentYear;
 
-  const { data, isLoading } = useInvestmentsList(userId, {
+  const { data, isLoading, isDebouncing } = useInvestmentsList(userId, {
     year: effectiveYear,
     month,
   });
@@ -49,6 +49,12 @@ export const ManageInvestments = () => {
             onYearChange={setYear}
             onMonthChange={setMonth}
           />
+          {isDebouncing && (
+            <div className="flex items-center justify-center gap-2 pt-3 text-blue-600">
+              <Loader2 size={14} className="animate-spin" strokeWidth={3} />
+              <span className="text-xs font-medium">Aplicando filtros...</span>
+            </div>
+          )}
         </section>
 
         <section aria-label="Inversiones">
@@ -71,7 +77,7 @@ export const ManageInvestments = () => {
                 No hay inversiones en este periodo.
               </p>
             ) : (
-              <div className="space-y-3" role="list" aria-label="Lista de inversiones">
+              <div className="space-y-3">
                 {investments.map((inv) => (
                   <InvestmentItem
                     key={inv.investor_id}

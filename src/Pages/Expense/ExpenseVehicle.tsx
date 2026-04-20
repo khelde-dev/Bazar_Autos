@@ -1,14 +1,15 @@
-import React, { useMemo, useState } from "react";
-import { ChevronDown, Car, DollarSign, Users, X, ReceiptText, Check, Loader2 } from "lucide-react";
+import { Car, Check, ChevronDown, DollarSign, Loader2, ReceiptText, Users, X } from "lucide-react";
+import type React from "react";
+import { useMemo, useState } from "react";
 import { Card } from "../../Utils/Screen/Boxes/Card";
+import { InputField } from "../../Utils/Screen/Inputs/InputField";
 import { Label } from "../../Utils/Screen/Text/Label";
-import { useExpenseForm } from "./Hooks/useExpenseForm";
-import { MAIN_MOVEMENT_TYPES } from "./Types/ExpenseVehicle.types";
-import { useCategories, useExpense } from "./Hooks/useExpenseMutate";
-import { validateExpense } from "./Functions/Validation";
 import { useCarModels } from "../Shopping/Hooks/useVehicle";
 import { GenerateArray } from "./Functions/Utils";
-import { InputField } from "../../Utils/Screen/Inputs/InputField";
+import { validateExpense } from "./Functions/Validation";
+import { useExpenseForm } from "./Hooks/useExpenseForm";
+import { useCategories, useExpense } from "./Hooks/useExpenseMutate";
+import { MAIN_MOVEMENT_TYPES } from "./Types/ExpenseVehicle.types";
 
 export const ExpenseVehicle: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -39,7 +40,7 @@ export const ExpenseVehicle: React.FC = () => {
   const handleSave = () => {
     if (!validateExpense(expenseData)) return;
 
-    let resultIds: string[] = GenerateArray(expenseData, modelsData.data);
+    const resultIds: string[] = GenerateArray(expenseData, modelsData.data);
 
     const { subType, mainVehicleId, involvedVehicles, ...autoMappedData } = expenseData;
 

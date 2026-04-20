@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { ChevronDown, User } from "lucide-react";
+import { useState } from "react";
 import { Card } from "../../../Utils/Screen/Boxes/Card";
 import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
-import { InvestorAvatarCard } from "./InvestorAvatarCard";
 import { HistoryShortcut } from "./HistoryShortcut";
+import { InvestorAvatarCard } from "./InvestorAvatarCard";
 
 interface UserItem {
   id: string;

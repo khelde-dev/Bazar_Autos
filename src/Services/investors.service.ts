@@ -1,4 +1,3 @@
-import { api } from "./axiosConfig";
 import type {
   InvestmentsListResponse,
   RegisterInvestmentPayload,
@@ -6,6 +5,7 @@ import type {
   TransactionPayload,
   TransactionTypeFilter,
 } from "../Pages/Investments/Types/Investments.types";
+import { api } from "./axiosConfig";
 
 // POST /investors — registrar una nueva inversión
 export const registerInvestment = async (payload: RegisterInvestmentPayload) => {

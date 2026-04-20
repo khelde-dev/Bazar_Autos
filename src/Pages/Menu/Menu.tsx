@@ -1,14 +1,21 @@
+import { Loader2 } from "lucide-react";
 import type React from "react";
 import { Header } from "../../Utils/Screen/Header/Header";
 import { useMenuNavigation } from "./Hooks/UseNavigation";
-import { TAB_NAMES, TABS_CONFIG } from "./Types/Tabs";
 import { useUserProfile } from "./Hooks/UserProfile";
-import { Loader2 } from "lucide-react";
+import { TAB_NAMES, TABS_CONFIG } from "./Types/Tabs";
+
+const INVESTOR_USER_ID = "f272776e-7033-44c4-82de-f7c668f17cf0";
 
 export const Menu: React.FC = () => {
-  const { activeTab, setActiveTab, currentHeaderTitle } = useMenuNavigation();
+  const { activeTab, setActiveTab } = useMenuNavigation();
 
   const { data: user, isLoading } = useUserProfile();
+
+  const isInvestor = !isLoading && user?.data?.[0]?.user_id === INVESTOR_USER_ID;
+  const visibleTabs = TAB_NAMES.filter((tab) => tab !== "Inversionista" || isInvestor);
+  const effectiveTab = visibleTabs.includes(activeTab) ? activeTab : visibleTabs[0];
+  const currentHeaderTitle = TABS_CONFIG[effectiveTab].title;
 
   return (
     <main className="w-full max-w-md space-y-6">
@@ -20,12 +27,12 @@ export const Menu: React.FC = () => {
 
       <section className="px-4">
         <div className="bg-gray-200 p-1.5 rounded-2xl flex gap-1">
-          {TAB_NAMES.map((tab) => (
+          {visibleTabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${
-                activeTab === tab ? "bg-white text-blue-600 shadow-sm" : "text-gray-500"
+                effectiveTab === tab ? "bg-white text-blue-600 shadow-sm" : "text-gray-500"
               }`}
             >
               {tab}
@@ -35,10 +42,10 @@ export const Menu: React.FC = () => {
       </section>
 
       <section className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-        {TAB_NAMES.map((tabName) => {
+        {visibleTabs.map((tabName) => {
           const TabComponent = TABS_CONFIG[tabName].component;
           return (
-            <div key={tabName} className={activeTab === tabName ? "block" : "hidden"}>
+            <div key={tabName} className={effectiveTab === tabName ? "block" : "hidden"}>
               <TabComponent />
             </div>
           );

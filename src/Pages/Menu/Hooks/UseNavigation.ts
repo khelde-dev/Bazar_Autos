@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { TABS_CONFIG, TAB_NAMES } from "../Types/Tabs";
 import type { TabType } from "../Types/Tabs";
+import { TAB_NAMES, TABS_CONFIG } from "../Types/Tabs";
 
 const STORAGE_KEY = "menu.activeTab";
 

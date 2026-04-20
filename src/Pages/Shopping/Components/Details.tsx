@@ -1,11 +1,11 @@
-import type React from "react";
 import { Check, ChevronDown, Info, Loader2 } from "lucide-react";
-import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
-import { InputField } from "../../../Utils/Screen/Inputs/InputField";
-import { Card } from "../../../Utils/Screen/Boxes/Card";
-import { COLOR_PRESETS, YEAR_OPTIONS, type VehicleDetails } from "../Types/ShooppVehicle.types";
+import type React from "react";
 import { useState } from "react";
+import { Card } from "../../../Utils/Screen/Boxes/Card";
+import { InputField } from "../../../Utils/Screen/Inputs/InputField";
+import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
 import { useCarModels } from "../Hooks/useVehicle";
+import { COLOR_PRESETS, type VehicleDetails, YEAR_OPTIONS } from "../Types/ShooppVehicle.types";
 
 interface DetailsProps {
   data: VehicleDetails;

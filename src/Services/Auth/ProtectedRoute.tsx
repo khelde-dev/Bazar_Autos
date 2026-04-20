@@ -1,5 +1,5 @@
-import { Navigate, Outlet } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { Navigate, Outlet } from "react-router-dom";
 import { validateSession } from "../auth.service";
 
 export const ProtectedRoute = () => {

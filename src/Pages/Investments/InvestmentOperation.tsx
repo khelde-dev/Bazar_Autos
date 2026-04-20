@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Save, Wallet } from "lucide-react";
-import { BackBar } from "./Components/BackBar";
-import { OperationTypeTabs } from "./Components/OperationTypeTabs";
+import { useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { BoxMoney } from "../../Utils/Screen/Boxes/BoxMoney";
 import { Card } from "../../Utils/Screen/Boxes/Card";
-import { useRegisterTransaction } from "./Hooks/useRegisterTransaction";
+import { BackBar } from "./Components/BackBar";
+import { OperationTypeTabs } from "./Components/OperationTypeTabs";
 import { validateTransaction } from "./Functions/Validation";
+import { useRegisterTransaction } from "./Hooks/useRegisterTransaction";
 import {
   INITIAL_TRANSACTION_STATE,
   type TransactionFormState,

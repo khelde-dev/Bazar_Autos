@@ -1,19 +1,20 @@
-import React, { useMemo } from "react";
-import { Save, Loader2 } from "lucide-react";
-import { Status } from "./Components/Status";
+import { Loader2, Save } from "lucide-react";
+import type React from "react";
+import { useMemo } from "react";
+import { NormalizeText } from "../../Utils/Functions/Normalize";
+import { BoxMoney } from "../../Utils/Screen/Boxes/BoxMoney";
 import { Details } from "./Components/Details";
 import { Expense } from "./Components/Expense";
-import { BoxMoney } from "../../Utils/Screen/Boxes/BoxMoney";
+import { Status } from "./Components/Status";
+import { validateVehicleForm } from "./Functions/Validation";
+import { useCreateVehicle } from "./Hooks/useVehicle";
 import { useVehicleForm } from "./Hooks/useVehicleForm";
 import {
   COLOR_PRESETS,
-  EXPENSE_ITEMS,
   COST_TYPE_OVERRIDES,
+  EXPENSE_ITEMS,
   type VehicleStatus,
 } from "./Types/ShooppVehicle.types";
-import { validateVehicleForm } from "./Functions/Validation";
-import { useCreateVehicle } from "./Hooks/useVehicle";
-import { NormalizeText } from "../../Utils/Functions/Normalize";
 
 export const ShoppVehicle: React.FC = () => {
   const {

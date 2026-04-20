@@ -1,7 +1,7 @@
-import type React from "react";
-import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
 import { Bookmark } from "lucide-react";
+import type React from "react";
 import { Card } from "../../../Utils/Screen/Boxes/Card";
+import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
 import { STATUS_OPTIONS, type VehicleStatus } from "../Types/ShooppVehicle.types";
 
 interface StatusProps {

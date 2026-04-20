@@ -3,7 +3,7 @@ export const SectionTitle = ({
   title,
   extra,
 }: {
-  icon: any;
+  icon: React.ElementType;
   title: string;
   extra?: React.ReactNode;
 }) => (

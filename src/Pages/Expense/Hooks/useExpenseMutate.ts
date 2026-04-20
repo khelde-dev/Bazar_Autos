@@ -11,9 +11,10 @@ export const useExpense = (resetForm: () => void) => {
       });
       resetForm();
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
+      const msg = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
       toast.error("Error al registrar", {
-        description: error.response?.data?.message || "Hubo un fallo en la conexión.",
+        description: msg || "Hubo un fallo en la conexión.",
       });
     },
   });

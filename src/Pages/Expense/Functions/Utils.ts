@@ -1,13 +1,17 @@
 import type { VehicleExpense } from "../Types/ExpenseVehicle.types";
 
-export const GenerateArray = (expenseData: VehicleExpense, modelsData: any) => {
+interface ModelItem {
+  id: string;
+  name: string;
+}
+
+export const GenerateArray = (expenseData: VehicleExpense, modelsData: ModelItem[]) => {
   if (expenseData.isShared) {
     return modelsData
-      .filter((model: any) => expenseData.involvedVehicles.includes(model.name))
-      .map((model: any) => model.id);
-  } else {
-    return modelsData
-      .filter((model: any) => expenseData.mainVehicleId === model.name)
-      .map((model: any) => model.id);
+      .filter((model) => expenseData.involvedVehicles.includes(model.name))
+      .map((model) => model.id);
   }
+  return modelsData
+    .filter((model) => expenseData.mainVehicleId === model.name)
+    .map((model) => model.id);
 };

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { type VehicleExpense, INITIAL_EXPENSE } from "../Types/ExpenseVehicle.types";
+import { INITIAL_EXPENSE, type VehicleExpense } from "../Types/ExpenseVehicle.types";
 
 export const useExpenseForm = () => {
   const [expenseData, setExpenseData] = useState<VehicleExpense>(INITIAL_EXPENSE);

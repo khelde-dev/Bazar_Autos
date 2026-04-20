@@ -1,8 +1,8 @@
-import type React from "react";
-import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
 import { FileText } from "lucide-react";
-import { MoneyInput } from "../../../Utils/Screen/Inputs/MoneyInput";
+import type React from "react";
 import { Card } from "../../../Utils/Screen/Boxes/Card";
+import { MoneyInput } from "../../../Utils/Screen/Inputs/MoneyInput";
+import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
 import { EXPENSE_ITEMS, type VehicleExpenses } from "../Types/ShooppVehicle.types";
 
 interface ExpenseProps {

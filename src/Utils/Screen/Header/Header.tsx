@@ -1,5 +1,5 @@
-import React from "react";
-import { LogOut, Loader2 } from "lucide-react";
+import { Loader2, LogOut } from "lucide-react";
+import type React from "react";
 import { useLogOutMutation } from "../../../Pages/Login/Hooks/UseLoginMutation";
 
 interface HeaderProps {

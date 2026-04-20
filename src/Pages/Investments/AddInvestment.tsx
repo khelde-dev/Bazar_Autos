@@ -1,12 +1,12 @@
-import React from "react";
 import { Loader2, Save } from "lucide-react";
-import { Investor } from "./Components/Investor";
+import type React from "react";
 import { BoxMoney } from "../../Utils/Screen/Boxes/BoxMoney";
+import { useUserList } from "../Menu/Hooks/UserProfile";
+import { Investor } from "./Components/Investor";
 import { RegistrationDate } from "./Components/RegistrationDate";
+import { validateInvestment } from "./Functions/Validation";
 import { useInvestmentForm } from "./Hooks/useInvestmentForm";
 import { useRegisterInvestment } from "./Hooks/useRegisterInvestment";
-import { validateInvestment } from "./Functions/Validation";
-import { useUserList } from "../Menu/Hooks/UserProfile";
 
 export const AddInvestment: React.FC = () => {
   const { saleData, handleSaleChange, resetForm } = useInvestmentForm();

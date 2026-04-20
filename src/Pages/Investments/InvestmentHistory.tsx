@@ -1,10 +1,10 @@
+import { Loader2 } from "lucide-react";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { Loader2 } from "lucide-react";
 import { BackBar } from "./Components/BackBar";
-import { YearMonthFilter } from "./Components/YearMonthFilter";
-import { TransactionTypeFilter } from "./Components/TransactionTypeFilter";
 import { TransactionRow } from "./Components/TransactionRow";
+import { TransactionTypeFilter } from "./Components/TransactionTypeFilter";
+import { YearMonthFilter } from "./Components/YearMonthFilter";
 import { useInvestmentHistory } from "./Hooks/useInvestmentHistory";
 import { useUrlFilters } from "./Hooks/useUrlFilters";
 import { buildYearRange } from "./Utils/format";
@@ -23,7 +23,7 @@ export const InvestmentHistory = () => {
   const currentYear = new Date().getFullYear();
   const effectiveYear = year ?? currentYear;
 
-  const { data, isLoading } = useInvestmentHistory(investmentId, {
+  const { data, isLoading, isDebouncing } = useInvestmentHistory(investmentId, {
     year: effectiveYear,
     month,
     type,
@@ -77,7 +77,12 @@ export const InvestmentHistory = () => {
             </div>
           </div>
         )}
-
+        {isDebouncing && (
+          <div className="flex items-center justify-center gap-2 pt-3 text-blue-600">
+            <Loader2 size={14} className="animate-spin" strokeWidth={3} />
+            <span className="text-xs font-medium">Aplicando filtros...</span>
+          </div>
+        )}
         <section aria-label="Transacciones">
           <h2 className="font-bold text-slate-800 text-base mb-3 px-1">Transacciones Recientes</h2>
 
@@ -100,7 +105,7 @@ export const InvestmentHistory = () => {
                 Sin transacciones en este periodo.
               </p>
             ) : (
-              <div className="space-y-3" role="list" aria-label="Lista de transacciones">
+              <div className="space-y-3">
                 {transactions.map((tx) => (
                   <TransactionRow key={tx.transaction_id} tx={tx} />
                 ))}
