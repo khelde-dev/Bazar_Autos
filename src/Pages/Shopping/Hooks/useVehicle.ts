@@ -14,17 +14,19 @@ export const useCreateVehicle = (resetForm: () => void) => {
       resetForm();
       queryClient.invalidateQueries({ queryKey: ["car-models"] });
     },
-    onError: (error: any) => {
-      const message = error.response?.data?.message || "Error al conectar con el servidor";
+    onError: (error: unknown) => {
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Error al conectar con el servidor";
       toast.error("No se pudo guardar", { description: message });
     },
   });
 };
 
-export const useCarModels = () => {
+export const useCarModels = (inStock?: boolean) => {
   return useQuery({
-    queryKey: ["car-models"],
-    queryFn: getCarModels,
+    queryKey: inStock ? ["car-models", "inStock"] : ["car-models"],
+    queryFn: () => getCarModels(inStock),
     staleTime: 1000 * 60 * 10,
   });
 };

@@ -5,16 +5,30 @@ import { Card } from "../../../Utils/Screen/Boxes/Card";
 import { InputField } from "../../../Utils/Screen/Inputs/InputField";
 import { SectionTitle } from "../../../Utils/Screen/Text/SectionTitle";
 import { useCarModels } from "../Hooks/useVehicle";
-import { COLOR_PRESETS, type VehicleDetails, YEAR_OPTIONS } from "../Types/ShooppVehicle.types";
+import {
+  type CarModel,
+  COLOR_PRESETS,
+  type VehicleDetails,
+  type VehicleStatus,
+  YEAR_OPTIONS,
+} from "../Types/ShooppVehicle.types";
 
 interface DetailsProps {
   data: VehicleDetails;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  onAutoStatusChange?: (status: VehicleStatus) => void;
 }
 
-export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
+export const Details: React.FC<DetailsProps> = ({ data, onInputChange, onAutoStatusChange }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [isCustomModel, setIsCustomModel] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    onInputChange(e);
+    if (e.target.name === "sale_date" && e.target.value) {
+      onAutoStatusChange?.("Vendido");
+    }
+  };
 
   const { data: modelsData, isLoading } = useCarModels();
 
@@ -52,11 +66,12 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
           placeholder="Ej. Toyota"
         />
         <div className="flex flex-col gap-1.5">
-          <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">
+          <label htmlFor="model" className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">
             Modelo
           </label>
           <div className="relative">
             <select
+              id="model"
               name="model"
               value={isCustomModel ? "Otro" : data.model || ""}
               onChange={handleModelSelectChange}
@@ -64,9 +79,9 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
               className="w-full bg-gray-50 p-3 rounded-xl text-sm appearance-none border border-transparent outline-none focus:border-blue-500 transition-all text-slate-700 disabled:opacity-50"
             >
               <option value="">{isLoading ? "Cargando..." : "Seleccionar..."}</option>
-              {modelsData?.data.map((m: any) => (
+              {modelsData?.data.map((m: CarModel) => (
                 <option key={m.id} value={m.name}>
-                  {m.name}
+                  {m.full_name}
                 </option>
               ))}
               <option value="Otro">Otro</option>
@@ -103,10 +118,11 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
         />
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">
+          <label htmlFor="year_of_car" className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">
             Año del Auto
           </label>
           <select
+            id="year_of_car"
             name="year_of_car"
             value={data.year_of_car}
             onChange={onInputChange}
@@ -122,7 +138,7 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
       </div>
 
       <div className="flex flex-col gap-1.5 mt-4 relative">
-        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">
+        <label htmlFor="color" className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">
           Color del Vehículo
         </label>
         <button
@@ -139,47 +155,44 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
           </span>
         </button>
         {showColorPicker && (
-          <>
-            <div className="fixed inset-0 z-10" onClick={() => setShowColorPicker(false)} />
-            <div className="absolute top-16 left-0 w-full bg-white p-4 rounded-2xl shadow-xl border border-slate-100 z-20 animate-in fade-in zoom-in duration-200">
-              <div className="grid grid-cols-4 gap-3">
-                {COLOR_PRESETS.map((color) => (
-                  <button
-                    key={color.value}
-                    type="button"
-                    onClick={() => handleSelectColor(color.value)}
-                    className="group relative flex flex-col items-center gap-1"
+          <div className="absolute top-16 left-0 w-full bg-white p-4 rounded-2xl shadow-xl border border-slate-100 z-20 animate-in fade-in zoom-in duration-200">
+            <div className="grid grid-cols-4 gap-3">
+              {COLOR_PRESETS.map((color) => (
+                <button
+                  key={color.value}
+                  type="button"
+                  onClick={() => handleSelectColor(color.value)}
+                  className="group relative flex flex-col items-center gap-1"
+                >
+                  <div
+                    className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center transition-transform group-hover:scale-110"
+                    style={{ backgroundColor: color.value }}
                   >
-                    <div
-                      className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center transition-transform group-hover:scale-110"
-                      style={{ backgroundColor: color.value }}
-                    >
-                      {data.color === color.value && (
-                        <Check
-                          size={16}
-                          className={color.value === "#ffffff" ? "text-slate-800" : "text-white"}
-                        />
-                      )}
-                    </div>
-                    <span className="text-[10px] text-slate-500 font-medium">{color.name}</span>
-                  </button>
-                ))}
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-50">
-                <label className="flex items-center justify-between text-[11px] text-slate-400 font-bold px-1">
-                  MÁS COLORES
-                  <input
-                    type="color"
-                    value={data.color}
-                    onChange={(e) => onInputChange(e)}
-                    name="color"
-                    className="w-6 h-6 bg-transparent border-none cursor-pointer"
-                  />
-                </label>
-              </div>
+                    {data.color === color.value && (
+                      <Check
+                        size={16}
+                        className={color.value === "#ffffff" ? "text-slate-800" : "text-white"}
+                      />
+                    )}
+                  </div>
+                  <span className="text-[10px] text-slate-500 font-medium">{color.name}</span>
+                </button>
+              ))}
             </div>
-          </>
+
+            <div className="mt-4 pt-3 border-t border-slate-50">
+              <label className="flex items-center justify-between text-[11px] text-slate-400 font-bold px-1">
+                MÁS COLORES
+                <input
+                  type="color"
+                  value={data.color}
+                  onChange={(e) => onInputChange(e)}
+                  name="color"
+                  className="w-6 h-6 bg-transparent border-none cursor-pointer"
+                />
+              </label>
+            </div>
+          </div>
         )}
       </div>
 
@@ -189,14 +202,14 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange }) => {
           name="purchase_date"
           type="date"
           value={data.purchase_date}
-          onChange={onInputChange}
+          onChange={handleInputChange}
         />
         <InputField
           label="Fecha de Venta"
           name="sale_date"
           type="date"
           value={data.sale_date || ""}
-          onChange={onInputChange}
+          onChange={handleInputChange}
         />
       </div>
     </Card>

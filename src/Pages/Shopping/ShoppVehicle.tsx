@@ -66,7 +66,11 @@ export const ShoppVehicle: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#F4F7F9] pb-10">
       <main className="max-w-md mx-auto p-4 space-y-6">
-        <Details data={vehicleData} onInputChange={handleInputChange} />
+        <Details
+          data={vehicleData}
+          onInputChange={handleInputChange}
+          onAutoStatusChange={handleStatusChange}
+        />
 
         <Status currentStatus={vehicleData.status} onStatusChange={handleStatusChange} />
 

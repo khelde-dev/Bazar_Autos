@@ -1,3 +1,25 @@
+export interface CarModel {
+  id: string;
+  brand: string;
+  name: string;
+  year_of_car: number;
+  full_name: string;
+}
+
+export interface CarModelsMetadata {
+  timestamp: string;
+  requestId: string;
+  dataCount: number;
+  dataCountFormatted: string;
+}
+
+export interface CarModelsResponse {
+  success: boolean;
+  data: CarModel[];
+  message: string;
+  metadata: CarModelsMetadata;
+}
+
 export type VehicleStatus = "Vendido" | "Inventario" | "En espera" | "Reparacion";
 
 export interface VehicleDetails {

@@ -1,6 +1,7 @@
 import { Car, Check, ChevronDown, DollarSign, Loader2, ReceiptText, Users, X } from "lucide-react";
 import type React from "react";
 import { useMemo, useState } from "react";
+import type { CarModel } from "../Shopping/Types/ShooppVehicle.types";
 import { Card } from "../../Utils/Screen/Boxes/Card";
 import { InputField } from "../../Utils/Screen/Inputs/InputField";
 import { Label } from "../../Utils/Screen/Text/Label";
@@ -9,7 +10,7 @@ import { GenerateArray } from "./Functions/Utils";
 import { validateExpense } from "./Functions/Validation";
 import { useExpenseForm } from "./Hooks/useExpenseForm";
 import { useCategories, useExpense } from "./Hooks/useExpenseMutate";
-import { MAIN_MOVEMENT_TYPES } from "./Types/ExpenseVehicle.types";
+import { type Category, MAIN_MOVEMENT_TYPES } from "./Types/ExpenseVehicle.types";
 
 export const ExpenseVehicle: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -19,51 +20,53 @@ export const ExpenseVehicle: React.FC = () => {
 
   const { mutate, isPending } = useExpense(resetForm);
   const { data: categoriesData, isLoading } = useCategories();
-  const { data: modelsData, isLoading: isLoadingModels } = useCarModels();
+  const { data: modelsData, isLoading: isLoadingModels } = useCarModels(true);
 
-  const categoriesArray = categoriesData?.data || [];
-  const modelsArray = modelsData?.data || [];
+  const categoriesArray = useMemo<Category[]>(
+    () => categoriesData?.data ?? [],
+    [categoriesData]
+  );
+  const modelsArray = useMemo<CarModel[]>(() => modelsData?.data ?? [], [modelsData]);
 
   const categoryTypes: string[] = useMemo(() => {
-    return Array.from(new Set(categoriesArray.map((cat: any) => cat.type)));
+    return Array.from(new Set(categoriesArray.map((cat) => cat.type)));
   }, [categoriesArray]);
 
-  const carsModels: string[] = useMemo(() => {
-    return Array.from(new Set(modelsArray.map((car: any) => car.name)));
-  }, [modelsArray]);
-
-  const filteredBrands = useMemo(() => {
+  const filteredModels = useMemo(() => {
     const lowerSearchTerm = searchTerm.toLowerCase();
-    return carsModels.filter((brand) => brand.toLowerCase().includes(lowerSearchTerm));
-  }, [carsModels, searchTerm]);
+    return modelsArray.filter((car) => car.full_name.toLowerCase().includes(lowerSearchTerm));
+  }, [modelsArray, searchTerm]);
 
   const handleSave = () => {
     if (!validateExpense(expenseData)) return;
 
-    const resultIds: string[] = GenerateArray(expenseData, modelsData.data);
-
-    const { subType, mainVehicleId, involvedVehicles, ...autoMappedData } = expenseData;
+    const resultIds: string[] = GenerateArray(expenseData, modelsArray);
 
     const payload = {
-      ...autoMappedData,
+      type: expenseData.type,
+      movements_category_id: expenseData.movements_category_id,
+      amount: expenseData.amount,
+      isShared: expenseData.isShared,
+      description: expenseData.description,
+      closing_date: expenseData.closing_date,
       car_id: resultIds,
     };
     mutate(payload);
   };
 
-  const handleSelectBrand = (brand: string) => {
+  const handleSelectModel = (fullName: string) => {
     if (expenseData.isShared) {
       setExpenseData((prev) => {
-        if (prev.involvedVehicles.includes(brand)) return prev;
+        if (prev.involvedVehicles.includes(fullName)) return prev;
         return {
           ...prev,
-          involvedVehicles: [...prev.involvedVehicles, brand],
+          involvedVehicles: [...prev.involvedVehicles, fullName],
         };
       });
       setSearchTerm("");
     } else {
-      setExpenseData((prev) => ({ ...prev, mainVehicleId: brand }));
-      setSearchTerm(brand);
+      setExpenseData((prev) => ({ ...prev, mainVehicleId: fullName }));
+      setSearchTerm(fullName);
       setIsSearchOpen(false);
     }
   };
@@ -128,7 +131,7 @@ export const ExpenseVehicle: React.FC = () => {
                   >
                     <option value="">Seleccionar...</option>
                     {categoriesArray.map(
-                      (cat: any) =>
+                      (cat) =>
                         cat.type === expenseData.subType && (
                           <option key={cat.category_id} value={cat.category_id}>
                             {cat.name}
@@ -175,17 +178,17 @@ export const ExpenseVehicle: React.FC = () => {
 
               {isSearchOpen && (
                 <div className="absolute z-50 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 max-h-60 overflow-y-auto animate-in zoom-in-95 duration-150">
-                  {filteredBrands.length > 0 ? (
-                    filteredBrands.map((brand: any) => {
+                  {filteredModels.length > 0 ? (
+                    filteredModels.map((model: CarModel) => {
                       const isSelected = expenseData.isShared
-                        ? expenseData.involvedVehicles.includes(brand)
-                        : expenseData.mainVehicleId === brand;
+                        ? expenseData.involvedVehicles.includes(model.full_name)
+                        : expenseData.mainVehicleId === model.full_name;
 
                       return (
                         <button
-                          key={brand}
+                          key={model.id}
                           type="button"
-                          onClick={() => handleSelectBrand(brand)}
+                          onClick={() => handleSelectModel(model.full_name)}
                           className={`w-full flex items-center justify-between px-5 py-4 text-sm transition-colors border-b border-gray-50 last:border-none ${
                             isSelected
                               ? "bg-blue-50 text-blue-700 font-bold"
@@ -193,7 +196,10 @@ export const ExpenseVehicle: React.FC = () => {
                           }`}
                         >
                           <span className="flex items-center gap-2">
-                            {brand}
+                            <span>{model.full_name}</span>
+                            <span className="text-[10px] text-gray-400 font-medium">
+                              {model.year_of_car}
+                            </span>
                             {isSelected && expenseData.isShared && (
                               <span className="text-[9px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded uppercase tracking-tighter">
                                 Añadido
@@ -210,7 +216,12 @@ export const ExpenseVehicle: React.FC = () => {
                 </div>
               )}
               {isSearchOpen && (
-                <div className="fixed inset-0 z-40" onClick={() => setIsSearchOpen(false)} />
+                <button
+                  type="button"
+                  aria-label="Cerrar buscador"
+                  className="fixed inset-0 z-40 cursor-default bg-transparent"
+                  onClick={() => setIsSearchOpen(false)}
+                />
               )}
             </div>
           )}
@@ -247,6 +258,7 @@ export const ExpenseVehicle: React.FC = () => {
               </span>
             </div>
             <button
+              type="button"
               onClick={toggleShared}
               className={`w-14 h-8 rounded-full transition-colors relative ${expenseData.isShared ? "bg-blue-600" : "bg-gray-300"}`}
             >
@@ -267,6 +279,7 @@ export const ExpenseVehicle: React.FC = () => {
                   >
                     {tag}
                     <button
+                      type="button"
                       onClick={() => removeVehicleTag(tag)}
                       className="hover:bg-blue-700 rounded-md p-0.5 transition-colors"
                     >
@@ -297,6 +310,7 @@ export const ExpenseVehicle: React.FC = () => {
           </div>
         </Card>
         <button
+          type="button"
           onClick={handleSave}
           disabled={isPending}
           className={`w-full mt-4 bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98] ${

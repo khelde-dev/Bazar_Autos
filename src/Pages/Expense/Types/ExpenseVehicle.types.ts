@@ -1,3 +1,9 @@
+export interface Category {
+  category_id: string;
+  type: string;
+  name: string;
+}
+
 export type SubType = "Activo" | "Pasivo";
 export const MAIN_MOVEMENT_TYPES = ["Compra", "Gasto"] as const;
 export type MainType = (typeof MAIN_MOVEMENT_TYPES)[number];
