@@ -6,7 +6,7 @@ export interface CarModel {
   full_name: string;
 }
 
-export interface CarModelsMetadata {
+interface CarModelsMetadata {
   timestamp: string;
   requestId: string;
   dataCount: number;
@@ -46,14 +46,12 @@ export const INITIAL_VEHICLE_DETAILS: VehicleDetails = {
   price_for_sale: "",
 };
 
-export type VehicleYear = number;
-
-export const getYearOptions = (): number[] => {
-  return Array.from(
+const getYearOptions = (): number[] =>
+  Array.from(
     { length: new Date().getFullYear() - 1950 + 1 },
     (_, i) => new Date().getFullYear() - i
   );
-};
+
 export const YEAR_OPTIONS = getYearOptions();
 
 export const COLOR_PRESETS = [
@@ -69,7 +67,7 @@ export const COLOR_PRESETS = [
 
 export const STATUS_OPTIONS: VehicleStatus[] = ["Vendido", "Inventario", "En espera", "Reparacion"];
 
-export interface ExpenseDetail {
+interface ExpenseDetail {
   amount: number | string;
   note: string;
 }
@@ -94,7 +92,7 @@ export interface VehicleExpenses {
   headlights: ExpenseDetail;
 }
 
-export interface ExpenseConfig {
+interface ExpenseConfig {
   key: keyof VehicleExpenses;
   label: string;
 }

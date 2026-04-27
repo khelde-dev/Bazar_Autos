@@ -4,9 +4,9 @@ export interface Category {
   name: string;
 }
 
-export type SubType = "Activo" | "Pasivo";
+type SubType = "Activo" | "Pasivo";
 export const MAIN_MOVEMENT_TYPES = ["Compra", "Gasto"] as const;
-export type MainType = (typeof MAIN_MOVEMENT_TYPES)[number];
+type MainType = (typeof MAIN_MOVEMENT_TYPES)[number];
 export interface VehicleExpense {
   type: MainType;
   subType: SubType;

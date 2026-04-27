@@ -40,9 +40,9 @@ export const Investor = ({ value, onChange, listUsers }: InvestorProps) => {
     return (
       <div className="space-y-3">
         <div className="flex items-center justify-between px-2">
-          <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
             Inversionista seleccionado
-          </label>
+          </p>
         </div>
         <InvestorAvatarCard name={selected.name} id={selected.id} onEdit={handleEdit} />
         <HistoryShortcut userId={selected.id} />

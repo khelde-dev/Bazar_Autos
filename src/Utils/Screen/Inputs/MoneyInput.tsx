@@ -80,7 +80,6 @@ export const MoneyInput = ({
             </div>
             <div className="p-4">
               <textarea
-                autoFocus
                 value={noteValue || ""}
                 onChange={(e) => onNoteChange?.(e.target.value)}
                 placeholder="Ej. Lavado de vestiduras, cambio de aceite sintético..."

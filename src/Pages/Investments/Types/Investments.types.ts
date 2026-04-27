@@ -44,7 +44,7 @@ export type InvestmentsListResponse = ApiEnvelope<{
   data: Investment[];
 }>;
 
-export interface TransactionSummary {
+interface TransactionSummary {
   total_entradas: number;
   total_salidas: number;
   total_neto: number;

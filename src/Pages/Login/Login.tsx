@@ -49,7 +49,7 @@ export default function Login() {
       </div>
       <form onSubmit={handleSubmit} className="w-full space-y-5">
         <div className="space-y-2">
-          <label className="block text-[14px] font-semibold text-slate-700">
+          <label htmlFor="login-email" className="block text-[14px] font-semibold text-slate-700">
             Correo Electrónico
           </label>
           <div className="relative">
@@ -57,6 +57,7 @@ export default function Login() {
               <AtSign size={20} className="text-slate-400" />
             </div>
             <input
+              id="login-email"
               name="email"
               type="email"
               value={formData.email}
@@ -68,12 +69,13 @@ export default function Login() {
           </div>
         </div>
         <div className="space-y-2 pb-1">
-          <label className="block text-[14px] font-semibold text-slate-700">Contraseña</label>
+          <label htmlFor="login-password" className="block text-[14px] font-semibold text-slate-700">Contraseña</label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Lock size={20} className="text-slate-400" />
             </div>
             <input
+              id="login-password"
               name="password"
               type={showPassword ? "text" : "password"}
               value={formData.password}

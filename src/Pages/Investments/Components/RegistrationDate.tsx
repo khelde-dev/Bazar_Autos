@@ -6,11 +6,15 @@ export const RegistrationDate = () => (
   <Card>
     <SectionTitle icon={Calendar} title="Fecha de Registro" />
     <div className="space-y-2">
-      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+      <label
+        htmlFor="registrationDate"
+        className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1"
+      >
         FECHA AUTOMÁTICA
       </label>
       <div className="relative">
         <input
+          id="registrationDate"
           type="date"
           name="registrationDate"
           disabled

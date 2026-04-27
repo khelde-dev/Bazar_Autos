@@ -25,7 +25,7 @@ export const InvestorAvatarCard = ({
     <button
       type="button"
       onClick={onEdit}
-      className="p-2 rounded-full text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors active:scale-95"
+      className="p-2 rounded-full text-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-colors active:scale-95"
       aria-label="Cambiar inversionista"
       title="Cambiar inversionista"
     >
