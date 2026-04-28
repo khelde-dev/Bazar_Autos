@@ -26,13 +26,15 @@ export const Menu: React.FC = () => {
       )}
 
       <section className="px-4">
-        <div className="bg-gray-200 p-1.5 rounded-2xl flex gap-1">
+        <div className="bg-gray-200 dark:bg-slate-800 p-1.5 rounded-2xl flex gap-1">
           {visibleTabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${
-                effectiveTab === tab ? "bg-white text-blue-600 shadow-sm" : "text-gray-500"
+                effectiveTab === tab
+                  ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm"
+                  : "text-gray-500 dark:text-slate-400"
               }`}
             >
               {tab}

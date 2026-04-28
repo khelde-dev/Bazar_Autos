@@ -1,5 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "../Components/Layout";
+import { CarEditPage } from "../Pages/Cars/CarEditPage";
+import { CarListPage } from "../Pages/Cars/CarListPage";
 import { InvestmentHistory } from "../Pages/Investments/InvestmentHistory";
 import { InvestmentOperation } from "../Pages/Investments/InvestmentOperation";
 import { ManageInvestments } from "../Pages/Investments/ManageInvestments";
@@ -16,6 +18,8 @@ export const AppRoutes = () => {
           <Route path="/login" element={<Login />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Menu />} />
+            <Route path="/cars" element={<CarListPage />} />
+            <Route path="/cars/:id/edit" element={<CarEditPage />} />
             <Route element={<InvestorRoute />}>
               <Route path="/investments/:userId" element={<ManageInvestments />} />
               <Route

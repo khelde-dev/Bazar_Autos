@@ -14,11 +14,13 @@ export const ProtectedRoute = () => {
   });
 
   if (!isAuthSignal) return <Navigate to="/login" replace />;
-  if (isLoading) return <div className="h-screen bg-[#F8FAFC]" />;
+  if (isLoading) return <div className="h-screen bg-[#F8FAFC] dark:bg-slate-900" />;
   if (isError) {
     localStorage.removeItem("isAuthenticated");
     return <Navigate to="/login" replace />;
   }
 
-  return <Outlet />;
+  return (
+      <Outlet />
+  );
 };

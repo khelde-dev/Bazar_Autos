@@ -63,6 +63,10 @@ export const COLOR_PRESETS = [
   { name: "Azul", value: "#3b82f6" },
   { name: "Verde", value: "#22c55e" },
   { name: "Amarillo", value: "#eab308" },
+  { name: "Arena", value: "#c2b280" },
+  { name: "Café", value: "#6f4e37" },
+  { name: "Naranja", value: "#f97316" },
+  { name: "Vino", value: "#722f37" },
 ];
 
 export const STATUS_OPTIONS: VehicleStatus[] = ["Vendido", "Inventario", "En espera", "Reparacion"];

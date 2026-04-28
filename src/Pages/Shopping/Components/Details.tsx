@@ -66,7 +66,7 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange, onAutoSta
           placeholder="Ej. Toyota"
         />
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="model" className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">
+          <label htmlFor="model" className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider ml-1">
             Modelo
           </label>
           <div className="relative">
@@ -76,7 +76,7 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange, onAutoSta
               value={isCustomModel ? "Otro" : data.model || ""}
               onChange={handleModelSelectChange}
               disabled={isLoading}
-              className="w-full bg-gray-50 p-3 rounded-xl text-sm appearance-none border border-transparent outline-none focus:border-blue-500 transition-all text-slate-700 disabled:opacity-50"
+              className="w-full bg-gray-50 dark:bg-slate-900 p-3 rounded-xl text-sm appearance-none border border-transparent dark:border-slate-700 outline-none focus:border-blue-500 transition-all text-slate-700 dark:text-slate-200 disabled:opacity-50"
             >
               <option value="">{isLoading ? "Cargando..." : "Seleccionar..."}</option>
               {modelsData?.data.map((m: CarModel) => (
@@ -86,7 +86,7 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange, onAutoSta
               ))}
               <option value="Otro">Otro</option>
             </select>
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 dark:text-slate-500">
               {isLoading ? (
                 <Loader2 size={16} className="animate-spin text-blue-500" />
               ) : (
@@ -118,7 +118,7 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange, onAutoSta
         />
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="year_of_car" className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">
+          <label htmlFor="year_of_car" className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider ml-1">
             Año del Auto
           </label>
           <select
@@ -138,13 +138,13 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange, onAutoSta
       </div>
 
       <div className="flex flex-col gap-1.5 mt-4 relative">
-        <label htmlFor="color" className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">
+        <label htmlFor="color" className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider ml-1">
           Color del Vehículo
         </label>
         <button
           type="button"
           onClick={() => setShowColorPicker(!showColorPicker)}
-          className="flex items-center gap-3 bg-gray-50 p-3 rounded-xl text-sm text-slate-700 border border-transparent hover:bg-gray-100 transition-all active:scale-[0.98]"
+          className="flex items-center gap-3 bg-gray-50 dark:bg-slate-900 p-3 rounded-xl text-sm text-slate-700 dark:text-slate-200 border border-transparent dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all active:scale-[0.98]"
         >
           <div
             className="w-6 h-6 rounded-md shadow-inner border border-black/10"
@@ -155,7 +155,7 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange, onAutoSta
           </span>
         </button>
         {showColorPicker && (
-          <div className="absolute top-16 left-0 w-full bg-white p-4 rounded-2xl shadow-xl border border-slate-100 z-20 animate-in fade-in zoom-in duration-200">
+          <div className="absolute top-16 left-0 w-full bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 z-20 animate-in fade-in zoom-in duration-200">
             <div className="grid grid-cols-4 gap-3">
               {COLOR_PRESETS.map((color) => (
                 <button
@@ -165,7 +165,7 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange, onAutoSta
                   className="group relative flex flex-col items-center gap-1"
                 >
                   <div
-                    className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center transition-transform group-hover:scale-110"
+                    className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-600 flex items-center justify-center transition-transform group-hover:scale-110"
                     style={{ backgroundColor: color.value }}
                   >
                     {data.color === color.value && (
@@ -175,13 +175,13 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange, onAutoSta
                       />
                     )}
                   </div>
-                  <span className="text-[10px] text-slate-500 font-medium">{color.name}</span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{color.name}</span>
                 </button>
               ))}
             </div>
 
-            <div className="mt-4 pt-3 border-t border-slate-50">
-              <label className="flex items-center justify-between text-[11px] text-slate-400 font-bold px-1">
+            <div className="mt-4 pt-3 border-t border-slate-50 dark:border-slate-700">
+              <label className="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 font-bold px-1">
                 MÁS COLORES
                 <input
                   type="color"

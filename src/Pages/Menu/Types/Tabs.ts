@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { CarListPage } from "../../Cars/CarListPage";
 import { ExpenseVehicle } from "../../Expense/ExpenseVehicle";
 import { AddInvestment } from "../../Investments/AddInvestment";
 import { ShoppVehicle } from "../../Shopping/ShoppVehicle";
@@ -13,13 +14,17 @@ export const TABS_CONFIG: Record<string, TabConfigItem> = {
     title: "Agregar Vehículo",
     component: ShoppVehicle,
   },
-  Inversionista: {
-    title: "Agregar Inversion",
-    component: AddInvestment,
+  Catálogo: {
+    title: "Catálogo de Autos",
+    component: CarListPage,
   },
   Gasto: {
     title: "Detalles del Gasto",
     component: ExpenseVehicle,
+  },
+  Inversionista: {
+    title: "Agregar Inversion",
+    component: AddInvestment,
   },
 };
 

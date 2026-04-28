@@ -40,7 +40,7 @@ const PillButton = ({
     className={`shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-all ${
       active
         ? "bg-blue-600 text-white shadow-sm"
-        : "bg-white text-gray-500 border border-gray-200 hover:border-blue-300"
+        : "bg-white dark:bg-slate-800 text-gray-500 dark:text-slate-300 border border-gray-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-500"
     }`}
   >
     {children}
