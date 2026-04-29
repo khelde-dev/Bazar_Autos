@@ -13,6 +13,7 @@ import { useCategories, useExpense } from "./Hooks/useExpenseMutate";
 import { type Category, MAIN_MOVEMENT_TYPES } from "./Types/ExpenseVehicle.types";
 import { SharedVehiclesSection } from "./Components/SharedVehiclesSection";
 import { VehicleSearchInput } from "./Components/VehicleSearchInput";
+import { Link } from "react-router-dom";
 
 export const ExpenseVehicle: React.FC = () => {
   const { expenseData, setExpenseData, handleChange, toggleShared, removeVehicleTag, resetForm } =
@@ -55,8 +56,16 @@ export const ExpenseVehicle: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-10 font-sans">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-gray-900 pb-10 font-sans">
       <main className="max-w-md mx-auto p-4 space-y-6">
+
+        <Link
+          to="/expenses/list"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+        >
+          Ver / editar gastos registrados →
+        </Link>
+
         <Card>
           <div className="space-y-2">
             <Label>Tipo de Movimiento</Label>
@@ -66,11 +75,10 @@ export const ExpenseVehicle: React.FC = () => {
                   key={t}
                   type="button"
                   onClick={() => setExpenseData((prev) => ({ ...prev, type: t }))}
-                  className={`flex-1 py-3 rounded-xl text-[13px] font-black transition-all border ${
-                    expenseData.type === t
-                      ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-100"
-                      : "bg-white text-gray-400 border-gray-100 hover:bg-gray-50"
-                  }`}
+                  className={`flex-1 py-3 rounded-xl text-[13px] font-black transition-all border ${expenseData.type === t
+                      ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-100 dark:shadow-blue-900/40"
+                      : "bg-white dark:bg-gray-700 text-gray-400 dark:text-gray-400 border-gray-100 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
+                    }`}
                 >
                   {t}
                 </button>
@@ -89,7 +97,7 @@ export const ExpenseVehicle: React.FC = () => {
                     name="subType"
                     value={expenseData.subType}
                     onChange={handleChange}
-                    className="w-full bg-gray-50 p-4 rounded-2xl text-sm font-bold outline-none border border-transparent appearance-none"
+                    className="w-full bg-gray-50 dark:bg-gray-700 p-4 rounded-2xl text-sm font-bold text-gray-700 dark:text-gray-200 outline-none border border-transparent appearance-none"
                   >
                     {categoryTypes.map((c) => (
                       <option key={c} value={c}>
@@ -110,7 +118,7 @@ export const ExpenseVehicle: React.FC = () => {
                     name="movements_category_id"
                     value={expenseData.movements_category_id}
                     onChange={handleChange}
-                    className="w-full bg-gray-50 p-4 rounded-2xl text-sm appearance-none outline-none border border-transparent"
+                    className="w-full bg-gray-50 dark:bg-gray-700 p-4 rounded-2xl text-sm text-gray-700 dark:text-gray-200 appearance-none outline-none border border-transparent"
                   >
                     <option value="">Seleccionar...</option>
                     {categoriesArray.map(
@@ -145,9 +153,8 @@ export const ExpenseVehicle: React.FC = () => {
             <Label>Monto (MXN)</Label>
             <div className="relative">
               <DollarSign
-                className={`absolute left-4 top-1/2 -translate-y-1/2 font-bold transition-colors ${
-                  expenseData.subType === "Activo" ? "text-emerald-500" : "text-blue-500"
-                }`}
+                className={`absolute left-4 top-1/2 -translate-y-1/2 font-bold transition-colors ${expenseData.subType === "Activo" ? "text-emerald-500" : "text-blue-500"
+                  }`}
                 size={22}
               />
               <input
@@ -156,7 +163,7 @@ export const ExpenseVehicle: React.FC = () => {
                 placeholder="0.00"
                 value={expenseData.amount || ""}
                 onChange={handleChange}
-                className="w-full bg-gray-50 pl-12 py-5 rounded-2xl text-xl font-bold text-gray-700 outline-none border border-transparent focus:bg-white transition-all"
+                className="w-full bg-gray-50 dark:bg-gray-700 pl-12 py-5 rounded-2xl text-xl font-bold text-gray-700 dark:text-gray-200 outline-none border border-transparent focus:bg-white dark:focus:bg-gray-600 transition-all"
               />
             </div>
           </div>
@@ -183,7 +190,7 @@ export const ExpenseVehicle: React.FC = () => {
               onChange={handleChange}
               placeholder="Detalles adicionales..."
               rows={3}
-              className="w-full bg-gray-50 p-4 rounded-2xl text-sm outline-none border border-transparent focus:border-blue-500/20 resize-none text-gray-700"
+              className="w-full bg-gray-50 dark:bg-gray-700 p-4 rounded-2xl text-sm outline-none border border-transparent focus:border-blue-500/20 resize-none text-gray-700 dark:text-gray-200"
             />
           </div>
         </Card>
@@ -192,9 +199,8 @@ export const ExpenseVehicle: React.FC = () => {
           type="button"
           onClick={handleSave}
           disabled={isPending}
-          className={`w-full mt-4 bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98] ${
-            isPending ? "opacity-70 cursor-not-allowed" : "hover:from-[#2552d6]"
-          }`}
+          className={`w-full mt-4 bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98] ${isPending ? "opacity-70 cursor-not-allowed" : "hover:from-[#2552d6]"
+            }`}
         >
           {isPending ? (
             <div className="flex items-center gap-2">

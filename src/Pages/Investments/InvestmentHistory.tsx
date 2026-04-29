@@ -34,7 +34,7 @@ export const InvestmentHistory = () => {
   const summary = data?.data.summary ?? null;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-10 font-sans w-full">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-gray-900 pb-10 font-sans w-full">
       <main className="max-w-md mx-auto p-4 space-y-4" aria-label="Historial de inversión">
         <BackBar title="Historial de inversión" />
 
@@ -84,7 +84,7 @@ export const InvestmentHistory = () => {
           </div>
         )}
         <section aria-label="Transacciones">
-          <h2 className="font-bold text-slate-800 text-base mb-3 px-1">Transacciones Recientes</h2>
+          <h2 className="font-bold text-slate-800 dark:text-slate-100 text-base mb-3 px-1">Transacciones Recientes</h2>
 
           <div aria-live="polite" aria-busy={isLoading}>
             {isLoading ? (

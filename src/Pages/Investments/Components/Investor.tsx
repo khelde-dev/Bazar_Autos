@@ -40,7 +40,7 @@ export const Investor = ({ value, onChange, listUsers }: InvestorProps) => {
     return (
       <div className="space-y-3">
         <div className="flex items-center justify-between px-2">
-          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+          <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
             Inversionista seleccionado
           </p>
         </div>
@@ -59,7 +59,7 @@ export const Investor = ({ value, onChange, listUsers }: InvestorProps) => {
             name="user_id"
             value={value}
             onChange={handleSelect}
-            className="w-full bg-gray-50 border border-transparent focus:border-blue-500/20 focus:bg-white p-4 rounded-2xl text-gray-700 text-sm appearance-none outline-none transition-all cursor-pointer"
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-transparent focus:border-blue-500/20 focus:bg-white dark:focus:bg-gray-600 p-4 rounded-2xl text-gray-700 dark:text-gray-200 text-sm appearance-none outline-none transition-all cursor-pointer"
           >
             <option value="" disabled>
               Seleccione un inversionista

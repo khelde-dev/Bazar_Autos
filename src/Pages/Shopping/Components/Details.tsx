@@ -126,7 +126,7 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange, onAutoSta
             name="year_of_car"
             value={data.year_of_car}
             onChange={onInputChange}
-            className="bg-gray-50 p-3 rounded-xl text-sm appearance-none border border-transparent outline-none focus:border-blue-500 transition-all"
+            className="bg-gray-50 dark:bg-slate-900 p-3 rounded-xl text-sm appearance-none border border-transparent dark:border-slate-700 outline-none focus:border-blue-500 transition-all text-slate-700 dark:text-slate-200"
           >
             {YEAR_OPTIONS.map((year) => (
               <option key={year} value={year}>

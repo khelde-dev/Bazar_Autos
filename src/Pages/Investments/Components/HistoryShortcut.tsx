@@ -8,7 +8,7 @@ interface HistoryShortcutProps {
 export const HistoryShortcut = ({ userId }: HistoryShortcutProps) => (
   <Link
     to={`/investments/${userId}`}
-    className="w-full flex items-center justify-between px-4 py-4 bg-white rounded-2xl text-gray-600 hover:bg-gray-50 transition-colors active:scale-[0.98] duration-200 border border-gray-100"
+    className="w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-gray-800 rounded-2xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors active:scale-[0.98] duration-200 border border-gray-100 dark:border-gray-700"
   >
     <div className="flex items-center gap-3">
       <History size={20} className="text-blue-600" />

@@ -22,7 +22,7 @@ export const AddInvestment: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-10 font-sans">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-gray-900 pb-10 font-sans">
       <main className="max-w-md mx-auto p-4 space-y-5">
         {isLoading ? (
           <div className="flex justify-center py-4">

@@ -48,7 +48,7 @@ export const VehicleSearchInput: React.FC<VehicleSearchInputProps> = ({
           value={isSearchOpen ? searchTerm : isShared ? "" : mainVehicleId}
           onFocus={() => setIsSearchOpen(true)}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full bg-gray-50 pl-12 pr-10 py-4 rounded-2xl text-sm outline-none border border-transparent focus:border-blue-500/20 text-gray-700"
+          className="w-full bg-gray-50 dark:bg-gray-700 pl-12 pr-10 py-4 rounded-2xl text-sm outline-none border border-transparent focus:border-blue-500/20 text-gray-700 dark:text-gray-200"
         />
         <ChevronDown
           size={18}
@@ -57,7 +57,7 @@ export const VehicleSearchInput: React.FC<VehicleSearchInputProps> = ({
       </div>
 
       {isSearchOpen && (
-        <div className="absolute z-50 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 max-h-60 overflow-y-auto animate-in zoom-in-95 duration-150">
+        <div className="absolute z-50 w-full mt-2 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 max-h-60 overflow-y-auto animate-in zoom-in-95 duration-150">
           {filteredModels.length > 0 ? (
             filteredModels.map((model) => {
               const isSelected = isShared
@@ -71,8 +71,8 @@ export const VehicleSearchInput: React.FC<VehicleSearchInputProps> = ({
                   onClick={() => handleSelect(model.full_name)}
                   className={`w-full flex items-center justify-between px-5 py-4 text-sm transition-colors border-b border-gray-50 last:border-none ${
                     isSelected
-                      ? "bg-blue-50 text-blue-700 font-bold"
-                      : "text-gray-700 hover:bg-gray-50"
+                      ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-bold"
+                      : "text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
                   }`}
                 >
                   <span className="flex items-center gap-2">
@@ -91,7 +91,7 @@ export const VehicleSearchInput: React.FC<VehicleSearchInputProps> = ({
               );
             })
           ) : (
-            <div className="p-4 text-xs text-gray-400 text-center">No hay resultados</div>
+            <div className="p-4 text-xs text-gray-400 dark:text-gray-500 text-center">No hay resultados</div>
           )}
         </div>
       )}

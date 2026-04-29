@@ -28,7 +28,7 @@ export const InputField = ({
       disabled={disable}
       onChange={onChange}
       placeholder={placeholder}
-      className="bg-gray-50 dark:bg-slate-900 border border-transparent dark:border-slate-700 focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 p-3 rounded-xl text-sm transition-all outline-none text-slate-700 dark:text-slate-200 placeholder:text-gray-400 dark:placeholder:text-slate-500"
+      className="bg-gray-50 dark:bg-slate-900 border border-transparent dark:border-slate-700 focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 p-3 rounded-xl text-sm transition-all outline-none text-slate-700 dark:text-slate-200 placeholder:text-gray-400 dark:placeholder:text-slate-500 dark:[color-scheme:dark]"
     />
   </div>
 );

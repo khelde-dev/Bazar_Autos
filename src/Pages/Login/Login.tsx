@@ -24,13 +24,13 @@ export default function Login() {
   };
 
   return (
-    <main className="flex flex-col items-center justify-center bg-white w-full max-w-105 h-[90vh] rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 sm:p-10 relative z-10">
+    <main className="flex flex-col items-center justify-center bg-white dark:bg-gray-800 w-full max-w-105 h-[90vh] rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] p-8 sm:p-10 relative z-10">
       <div className="relative mb-6 mt-2">
         <div className="w-20 h-20 bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] rounded-3xl flex items-center justify-center shadow-lg shadow-blue-500/30">
           <CarFront size={60} className="text-white stroke-[1.5] rotate-12" />
         </div>
-        <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-1.5 shadow-sm">
-          <div className="bg-white rounded-full flex items-center justify-center">
+        <div className="absolute -bottom-2 -right-2 bg-white dark:bg-gray-700 rounded-full p-1.5 shadow-sm">
+          <div className="bg-white dark:bg-gray-700 rounded-full flex items-center justify-center">
             <ShieldCheck
               size={20}
               className="text-[#3b6df6]"
@@ -42,14 +42,14 @@ export default function Login() {
         </div>
       </div>
       <div className="text-center mb-10 w-full">
-        <h1 className="text-[28px] font-bold text-slate-800 tracking-tight mb-2">
+        <h1 className="text-[28px] font-bold text-slate-800 dark:text-slate-100 tracking-tight mb-2">
           ¡Qué bueno verte!
         </h1>
-        <p className="text-slate-500 text-[15px]">Inicia sesión en el Bazar de Autos</p>
+        <p className="text-slate-500 dark:text-slate-400 text-[15px]">Inicia sesión en el Bazar de Autos</p>
       </div>
       <form onSubmit={handleSubmit} className="w-full space-y-5">
         <div className="space-y-2">
-          <label htmlFor="login-email" className="block text-[14px] font-semibold text-slate-700">
+          <label htmlFor="login-email" className="block text-[14px] font-semibold text-slate-700 dark:text-slate-300">
             Correo Electrónico
           </label>
           <div className="relative">
@@ -63,13 +63,13 @@ export default function Login() {
               value={formData.email}
               onChange={handleChange}
               placeholder="tu@correo.com"
-              className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-2xl text-[15px] text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+              className="w-full pl-11 pr-4 py-3.5 bg-white dark:bg-gray-700 border border-slate-200 dark:border-gray-600 rounded-2xl text-[15px] text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
               required
             />
           </div>
         </div>
         <div className="space-y-2 pb-1">
-          <label htmlFor="login-password" className="block text-[14px] font-semibold text-slate-700">Contraseña</label>
+          <label htmlFor="login-password" className="block text-[14px] font-semibold text-slate-700 dark:text-slate-300">Contraseña</label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Lock size={20} className="text-slate-400" />
@@ -81,7 +81,7 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
               placeholder="••••••••"
-              className="w-full pl-11 pr-12 py-3.5 bg-white border border-slate-200 rounded-2xl text-[15px] text-slate-800 placeholder:text-slate-400 placeholder:text-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all tracking-wider"
+              className="w-full pl-11 pr-12 py-3.5 bg-white dark:bg-gray-700 border border-slate-200 dark:border-gray-600 rounded-2xl text-[15px] text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 placeholder:text-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all tracking-wider"
               required
             />
             <button

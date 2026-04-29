@@ -9,7 +9,7 @@ export const OperationTypeTabs = ({ value, onChange }: OperationTypeTabsProps) =
   <div
     role="tablist"
     aria-label="Tipo de operación"
-    className="bg-gray-200 p-1.5 rounded-2xl flex gap-1"
+    className="bg-gray-200 dark:bg-gray-700 p-1.5 rounded-2xl flex gap-1"
   >
     {TRANSACTION_TYPES.map((tab) => {
       const active = value === tab;
@@ -21,7 +21,7 @@ export const OperationTypeTabs = ({ value, onChange }: OperationTypeTabsProps) =
           aria-selected={active}
           onClick={() => onChange(tab)}
           className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${
-            active ? "bg-white text-blue-600 shadow-sm" : "text-gray-500"
+            active ? "bg-white dark:bg-gray-800 text-blue-600 shadow-sm" : "text-gray-500 dark:text-gray-400"
           }`}
         >
           {tab}

@@ -17,7 +17,7 @@ import { formatMoney } from "./Utils/format";
 const RequiredLabel = ({ children, htmlFor }: { children: React.ReactNode; htmlFor?: string }) => (
   <label
     htmlFor={htmlFor}
-    className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 mb-1.5 block"
+    className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1 mb-1.5 block"
   >
     {children}{" "}
     <span className="text-red-500" aria-hidden="true">
@@ -57,7 +57,7 @@ export const InvestmentOperation = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-10 font-sans w-full">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-gray-900 pb-10 font-sans w-full">
       <main className="max-w-md mx-auto p-4 space-y-5" aria-label="Nueva transacción">
         <BackBar title="Nueva transacción" />
 
@@ -66,7 +66,7 @@ export const InvestmentOperation = () => {
           <OperationTypeTabs value={form.type} onChange={handleTypeChange} />
         </div>
         {investmentAmount && (
-          <div className="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-2xl p-4 flex items-center justify-between shadow-xs">
+          <div className="bg-gradient-to-br from-blue-50 to-white dark:from-blue-900/20 dark:to-gray-800 border border-blue-100 dark:border-blue-800 rounded-2xl p-4 flex items-center justify-between shadow-xs">
             <div className="flex items-center gap-3">
               <div className="bg-blue-600/10 p-2.5 rounded-xl text-blue-600">
                 <Wallet size={20} strokeWidth={2.5} />
@@ -75,7 +75,7 @@ export const InvestmentOperation = () => {
                 <span className="text-[11px] font-black text-blue-600 uppercase tracking-widest">
                   Monto actual
                 </span>
-                <span className="text-xs font-medium text-slate-500 mt-0.5">
+                <span className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">
                   Total de inversión activa
                 </span>
               </div>
@@ -105,7 +105,7 @@ export const InvestmentOperation = () => {
               placeholder="Describe el motivo de la operación..."
               aria-required="true"
               aria-label="Concepto de la operación"
-              className="w-full bg-gray-50 border border-transparent focus:border-blue-500 focus:bg-white p-3 rounded-xl text-sm transition-all outline-none text-slate-700 resize-none"
+              className="w-full bg-gray-50 dark:bg-gray-700 border border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-gray-600 p-3 rounded-xl text-sm transition-all outline-none text-slate-700 dark:text-slate-200 resize-none"
             />
           </div>
         </Card>

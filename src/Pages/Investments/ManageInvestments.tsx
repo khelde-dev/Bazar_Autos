@@ -35,7 +35,7 @@ export const ManageInvestments = () => {
     navigate(`/investments/${userId}/${investorId}/history`);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-10 font-sans w-full">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-gray-900 pb-10 font-sans w-full">
       <main className="max-w-md mx-auto p-4 space-y-4" aria-label="Gestionar inversiones">
         <BackBar title="Gestionar inversiones" to="/dashboard" />
 
