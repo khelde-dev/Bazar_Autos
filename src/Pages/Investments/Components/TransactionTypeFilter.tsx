@@ -5,6 +5,12 @@ interface TransactionTypeFilterProps {
   onChange: (type: TType | null) => void;
 }
 
+const getActiveColor = (key: TType | null) => {
+  if (key === "Entrada") return "text-green-600 dark:text-green-400";
+  if (key === "Salida") return "text-red-600 dark:text-red-400";
+  return "text-blue-600";
+};
+
 export const TransactionTypeFilter = ({ value, onChange }: TransactionTypeFilterProps) => {
   const options: Array<{ key: TType | null; label: string }> = [
     { key: null, label: "Todos" },
@@ -27,7 +33,9 @@ export const TransactionTypeFilter = ({ value, onChange }: TransactionTypeFilter
             aria-selected={active}
             onClick={() => onChange(opt.key)}
             className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${
-              active ? "bg-white dark:bg-gray-800 text-blue-600 shadow-sm" : "text-gray-500 dark:text-gray-400"
+              active
+                ? `bg-white dark:bg-gray-800 ${getActiveColor(opt.key)} shadow-sm`
+                : "text-gray-500 dark:text-gray-400"
             }`}
           >
             {opt.label}

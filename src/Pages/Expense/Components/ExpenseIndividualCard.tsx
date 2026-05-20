@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { resolveCarColor } from "../../../Utils/Functions/colorUtils";
 import type { IndividualExpenseRow } from "../Types/ExpenseList.types";
 
-const formatMoney = (v: number) =>
-  new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }).format(v);
+const mxnFormatter = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
+
+const formatMoney = (v: number) => mxnFormatter.format(v);
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString("es-MX", { day: "2-digit", month: "short", year: "numeric" });

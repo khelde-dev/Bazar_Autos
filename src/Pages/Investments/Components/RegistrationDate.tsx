@@ -17,7 +17,7 @@ export const RegistrationDate = () => (
           id="registrationDate"
           type="date"
           name="registrationDate"
-          disabled
+          readOnly
           value={new Date().toLocaleDateString("en-CA")}
           className="w-full bg-gray-50 dark:bg-gray-700 border border-transparent focus:border-blue-500/20 p-4 rounded-2xl text-gray-700 dark:text-gray-400 text-sm font-medium outline-none transition-all appearance-none"
         />

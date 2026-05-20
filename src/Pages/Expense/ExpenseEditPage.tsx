@@ -1,24 +1,42 @@
-import { ChevronDown, DollarSign, Loader2, Save } from "lucide-react";
+import { ArrowLeft, Calendar, Car, Check, DollarSign, Loader2, Save, Search, Users, X } from "lucide-react";
+import type React from "react";
 import { useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import type { CarModel } from "../Shopping/Types/ShooppVehicle.types";
-import { Card } from "../../Utils/Screen/Boxes/Card";
-import { BoxMoney } from "../../Utils/Screen/Boxes/BoxMoney";
-import { InputField } from "../../Utils/Screen/Inputs/InputField";
-import { Label } from "../../Utils/Screen/Text/Label";
 import { useCarModels } from "../Shopping/Hooks/useVehicle";
-import { BackBar } from "../Investments/Components/BackBar";
 import { GenerateArray } from "./Functions/Utils";
 import { validateExpense } from "./Functions/Validation";
 import { useCategories, useUpdateExpense } from "./Hooks/useExpenseMutate";
-import { SharedVehiclesSection } from "./Components/SharedVehiclesSection";
-import { VehicleSearchInput } from "./Components/VehicleSearchInput";
-import { MAIN_MOVEMENT_TYPES, type VehicleExpense } from "./Types/ExpenseVehicle.types";
-import type { Category } from "./Types/ExpenseVehicle.types";
 import type { IndividualExpenseRow, SharedExpenseRow } from "./Types/ExpenseList.types";
+import {
+  type Category,
+  MAIN_MOVEMENT_TYPES,
+  type VehicleExpense,
+} from "./Types/ExpenseVehicle.types";
 
 const formatDateForInput = (iso: string) => iso.split("T")[0];
-
 const isSharedMovement = (description: string) => description.startsWith("[Compartido]");
 
 const buildInitialState = (row: IndividualExpenseRow): VehicleExpense => ({
@@ -66,11 +84,11 @@ export const ExpenseEditPage = () => {
   const row = location.state?.row as IndividualExpenseRow | undefined;
   const sharedRow = location.state?.sharedRow as SharedExpenseRow | undefined;
 
-  const pageTitle = sharedRow
-    ? `Editar: ${sharedRow.category.name}`
+  const pageSubtitle = sharedRow
+    ? sharedRow.category.name
     : row
-    ? "Editar Gasto"
-    : "Editar Gasto";
+      ? `${row.car.brand} ${row.car.model}`
+      : "Movimiento";
 
   const [expenseData, setExpenseData] = useState<VehicleExpense>(() => {
     if (row) return buildInitialState(row);
@@ -87,11 +105,23 @@ export const ExpenseEditPage = () => {
 
   const categoryTypes = useMemo(
     () => Array.from(new Set(categoriesArray.map((cat) => cat.type))),
-    [categoriesArray]
+    [categoriesArray],
+  );
+  const filteredCategories = useMemo(
+    () => categoriesArray.filter((c) => c.type === expenseData.subType),
+    [categoriesArray, expenseData.subType],
   );
 
+  const [vehicleSearch, setVehicleSearch] = useState("");
+  const [vehiclePopover, setVehiclePopover] = useState(false);
+
+  const filteredModels = useMemo(() => {
+    const q = vehicleSearch.toLowerCase();
+    return modelsArray.filter((m) => m.full_name.toLowerCase().includes(q));
+  }, [modelsArray, vehicleSearch]);
+
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setExpenseData((prev) => {
@@ -117,14 +147,16 @@ export const ExpenseEditPage = () => {
       involvedVehicles: prev.involvedVehicles.filter((t) => t !== tag),
     }));
 
-  const handleSelectModel = (fullName: string) => {
+  const handleSelectVehicle = (fullName: string) => {
     if (expenseData.isShared) {
       setExpenseData((prev) => {
         if (prev.involvedVehicles.includes(fullName)) return prev;
         return { ...prev, involvedVehicles: [...prev.involvedVehicles, fullName] };
       });
+      setVehicleSearch("");
     } else {
       setExpenseData((prev) => ({ ...prev, mainVehicleId: fullName }));
+      setVehiclePopover(false);
     }
   };
 
@@ -145,168 +177,286 @@ export const ExpenseEditPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-gray-900 pb-10 font-sans">
-      <main className="max-w-md mx-auto p-4 space-y-6">
-        <BackBar title={pageTitle} to="/expenses/list" />
-
-        <Card>
-          {/* Tipo de movimiento */}
-          <div className="space-y-2">
-            <Label>Tipo de Movimiento</Label>
-            <div className="flex gap-2">
-              {MAIN_MOVEMENT_TYPES.map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() => setExpenseData((prev) => ({ ...prev, type: t }))}
-                  className={`flex-1 py-3 rounded-xl text-[13px] font-black transition-all border ${
-                    expenseData.type === t
-                      ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-100 dark:shadow-blue-900/40"
-                      : "bg-white dark:bg-gray-700 text-gray-400 border-gray-100 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
+    <div className="mx-auto w-full max-w-5xl space-y-6 p-4 lg:p-6">
+      {/* Header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => navigate("/expenses/list")}
+            aria-label="Volver a lista"
+          >
+            <ArrowLeft />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Editar movimiento</h1>
+            <p className="text-sm text-muted-foreground">{pageSubtitle}</p>
           </div>
+        </div>
+        <Button onClick={handleSave} disabled={isPending} size="lg">
+          {isPending ? <Loader2 className="animate-spin" /> : <Save />}
+          {isPending ? "Guardando..." : "Guardar cambios"}
+        </Button>
+      </div>
 
-          {/* Subtipo + Categoría */}
-          {isLoadingCats ? (
-            <Loader2 size={14} className="animate-spin text-blue-600 opacity-90" strokeWidth={3} />
-          ) : (
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Subtipo</Label>
-                <div className="relative">
-                  <select
-                    name="subType"
-                    value={expenseData.subType}
-                    onChange={handleChange}
-                    className="w-full bg-gray-50 dark:bg-gray-700 p-4 rounded-2xl text-sm font-bold text-gray-700 dark:text-gray-200 outline-none border border-transparent appearance-none"
-                  >
-                    {categoryTypes.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown
-                    size={16}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                  />
-                </div>
-              </div>
-              <div>
-                <Label>Categoría</Label>
-                <div className="relative">
-                  <select
-                    name="movements_category_id"
-                    value={expenseData.movements_category_id}
-                    onChange={handleChange}
-                    className="w-full bg-gray-50 dark:bg-gray-700 p-4 rounded-2xl text-sm text-gray-700 dark:text-gray-200 appearance-none outline-none border border-transparent"
-                  >
-                    <option value="">Seleccionar...</option>
-                    {categoriesArray.map(
-                      (cat) =>
-                        cat.type === expenseData.subType && (
-                          <option key={cat.category_id} value={cat.category_id}>
-                            {cat.name}
-                          </option>
-                        )
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Left column */}
+        <div className="space-y-6">
+          {/* Tipo */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Tipo de movimiento</CardTitle>
+              <CardDescription>Origen de la operación</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-2">
+                {MAIN_MOVEMENT_TYPES.map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setExpenseData((prev) => ({ ...prev, type: t }))}
+                    className={cn(
+                      "rounded-lg border px-3 py-2.5 text-sm font-semibold transition-all",
+                      expenseData.type === t
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-background text-muted-foreground hover:bg-muted",
                     )}
-                  </select>
-                  <ChevronDown
-                    size={16}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                  />
-                </div>
+                  >
+                    {t}
+                  </button>
+                ))}
               </div>
-            </div>
-          )}
+            </CardContent>
+          </Card>
+
+          {/* Categoría */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Categoría</CardTitle>
+              <CardDescription>Clasificación del movimiento</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoadingCats ? (
+                <Loader2 className="size-5 animate-spin text-primary" />
+              ) : (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="subType">Subtipo</Label>
+                    <Select
+                      value={expenseData.subType}
+                      onValueChange={(v) =>
+                        handleChange({
+                          target: { name: "subType", value: v },
+                        } as React.ChangeEvent<HTMLSelectElement>)
+                      }
+                    >
+                      <SelectTrigger id="subType">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categoryTypes.map((c) => (
+                          <SelectItem key={c} value={c}>
+                            {c}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="movements_category_id">Categoría</Label>
+                    <Select
+                      value={expenseData.movements_category_id || ""}
+                      onValueChange={(v) =>
+                        handleChange({
+                          target: { name: "movements_category_id", value: v },
+                        } as React.ChangeEvent<HTMLSelectElement>)
+                      }
+                    >
+                      <SelectTrigger id="movements_category_id">
+                        <SelectValue placeholder="Seleccionar..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {filteredCategories.map((cat) => (
+                          <SelectItem key={cat.category_id} value={cat.category_id}>
+                            {cat.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Vehículo */}
-          {!isLoadingModels && (
-            <VehicleSearchInput
-              modelsArray={modelsArray}
-              isShared={expenseData.isShared}
-              mainVehicleId={expenseData.mainVehicleId}
-              involvedVehicles={expenseData.involvedVehicles}
-              onSelectModel={handleSelectModel}
-            />
-          )}
+          <Card>
+            <CardHeader>
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <CardTitle className="text-base">Vehículo(s)</CardTitle>
+                  <CardDescription>Asocia uno o varios autos</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="shared-toggle" className="text-xs text-muted-foreground">
+                    Compartido
+                  </Label>
+                  <Switch
+                    id="shared-toggle"
+                    checked={expenseData.isShared}
+                    onCheckedChange={toggleShared}
+                  />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {isLoadingModels ? (
+                <Loader2 className="size-5 animate-spin text-primary" />
+              ) : (
+                <Popover open={vehiclePopover} onOpenChange={setVehiclePopover}>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="h-10 w-full justify-start font-normal">
+                      <Car className="size-4" />
+                      {expenseData.isShared
+                        ? "Añadir vehículos involucrados..."
+                        : expenseData.mainVehicleId || "Seleccionar vehículo principal..."}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                    <div className="relative border-b border-border">
+                      <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        autoFocus
+                        value={vehicleSearch}
+                        onChange={(e) => setVehicleSearch(e.target.value)}
+                        placeholder="Buscar..."
+                        className="rounded-none border-0 pl-9 focus-visible:ring-0"
+                      />
+                    </div>
+                    <div className="max-h-60 overflow-y-auto">
+                      {filteredModels.length === 0 ? (
+                        <p className="p-4 text-center text-xs text-muted-foreground">
+                          Sin resultados
+                        </p>
+                      ) : (
+                        filteredModels.map((m) => {
+                          const selected = expenseData.isShared
+                            ? expenseData.involvedVehicles.includes(m.full_name)
+                            : expenseData.mainVehicleId === m.full_name;
+                          return (
+                            <button
+                              key={m.id}
+                              type="button"
+                              onClick={() => handleSelectVehicle(m.full_name)}
+                              className={cn(
+                                "flex w-full items-center justify-between px-3 py-2.5 text-sm hover:bg-accent",
+                                selected && "bg-accent",
+                              )}
+                            >
+                              <span className="flex items-center gap-2">
+                                <span className="font-medium">{m.full_name}</span>
+                                <span className="text-xs text-muted-foreground">
+                                  {m.year_of_car}
+                                </span>
+                              </span>
+                              {selected && <Check className="size-4 text-primary" />}
+                            </button>
+                          );
+                        })
+                      )}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              )}
 
+              {expenseData.isShared && expenseData.involvedVehicles.length > 0 && (
+                <div className="flex items-start gap-2 rounded-xl border border-border bg-muted/40 p-3">
+                  <Users className="size-4 shrink-0 text-blue-600" />
+                  <div className="flex flex-wrap gap-1.5">
+                    {expenseData.involvedVehicles.map((tag) => (
+                      <Badge key={tag} variant="secondary" className="gap-1 pr-1">
+                        {tag}
+                        <button
+                          type="button"
+                          onClick={() => removeVehicleTag(tag)}
+                          className="rounded p-0.5 hover:bg-background"
+                          aria-label={`Quitar ${tag}`}
+                        >
+                          <X className="size-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right column */}
+        <div className="space-y-6">
           {/* Monto */}
-          <div>
-            <Label>Monto (MXN)</Label>
-            <div className="relative">
-              <DollarSign
-                className={`absolute left-4 top-1/2 -translate-y-1/2 font-bold transition-colors ${
-                  expenseData.subType === "Activo" ? "text-emerald-500" : "text-blue-500"
-                }`}
-                size={22}
-              />
-              <input
-                name="amount"
-                type="number"
-                placeholder="0.00"
-                value={expenseData.amount || ""}
-                onChange={handleChange}
-                className="w-full bg-gray-50 dark:bg-gray-700 pl-12 py-5 rounded-2xl text-xl font-bold text-gray-700 dark:text-gray-200 outline-none border border-transparent focus:bg-white dark:focus:bg-gray-600 transition-all"
-              />
-            </div>
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Monto</CardTitle>
+              <CardDescription>Cantidad en MXN</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="relative">
+                <DollarSign
+                  className={cn(
+                    "absolute left-3 top-1/2 size-5 -translate-y-1/2",
+                    expenseData.subType === "Activo" ? "text-emerald-500" : "text-blue-500",
+                  )}
+                />
+                <Input
+                  name="amount"
+                  type="number"
+                  value={expenseData.amount || ""}
+                  onChange={handleChange}
+                  placeholder="0.00"
+                  className="h-14 pl-10 text-2xl font-bold"
+                />
+              </div>
+            </CardContent>
+          </Card>
 
-          {/* Compartido */}
-          <SharedVehiclesSection
-            isShared={expenseData.isShared}
-            involvedVehicles={expenseData.involvedVehicles}
-            onToggle={toggleShared}
-            onRemoveTag={removeVehicleTag}
-          />
-
-          {/* Fecha + Descripción */}
-          <div>
-            <InputField
-              label="Fecha de cierre"
-              name="closing_date"
-              type="date"
-              value={expenseData.closing_date}
-              onChange={handleChange}
-            />
-            <Label>Descripción</Label>
-            <textarea
-              name="description"
-              value={expenseData.description}
-              onChange={handleChange}
-              placeholder="Detalles adicionales..."
-              rows={3}
-              className="w-full bg-gray-50 dark:bg-gray-700 p-4 rounded-2xl text-sm outline-none border border-transparent focus:border-blue-500/20 resize-none text-gray-700 dark:text-gray-200"
-            />
-          </div>
-        </Card>
-
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={isPending}
-          className={`w-full mt-4 bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98] ${
-            isPending ? "opacity-70 cursor-not-allowed" : "hover:from-[#2552d6]"
-          }`}
-        >
-          {isPending ? (
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Guardando...
-            </div>
-          ) : (
-            <>
-              <Save size={22} />
-              Guardar Cambios
-            </>
-          )}
-        </button>
-      </main>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Detalles</CardTitle>
+              <CardDescription>Fecha de cierre y notas</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-1.5">
+                <Label htmlFor="closing_date">Fecha de cierre</Label>
+                <div className="relative">
+                  <Calendar className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    id="closing_date"
+                    name="closing_date"
+                    type="date"
+                    value={expenseData.closing_date}
+                    onChange={handleChange}
+                    className="pl-9"
+                  />
+                </div>
+              </div>
+              <div className="grid gap-1.5">
+                <Label htmlFor="description">Descripción</Label>
+                <Textarea
+                  id="description"
+                  name="description"
+                  value={expenseData.description}
+                  onChange={handleChange}
+                  placeholder="Detalles adicionales..."
+                  rows={4}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };

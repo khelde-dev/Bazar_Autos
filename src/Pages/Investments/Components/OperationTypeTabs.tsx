@@ -5,6 +5,12 @@ interface OperationTypeTabsProps {
   onChange: (type: TransactionType) => void;
 }
 
+const getActiveColor = (tab: string) => {
+  if (tab === "Entrada") return "text-green-600 dark:text-green-400";
+  if (tab === "Salida") return "text-red-600 dark:text-red-400";
+  return "text-blue-600";
+};
+
 export const OperationTypeTabs = ({ value, onChange }: OperationTypeTabsProps) => (
   <div
     role="tablist"
@@ -21,7 +27,9 @@ export const OperationTypeTabs = ({ value, onChange }: OperationTypeTabsProps) =
           aria-selected={active}
           onClick={() => onChange(tab)}
           className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${
-            active ? "bg-white dark:bg-gray-800 text-blue-600 shadow-sm" : "text-gray-500 dark:text-gray-400"
+            active
+              ? `bg-white dark:bg-gray-800 ${getActiveColor(tab)} shadow-sm`
+              : "text-gray-500 dark:text-gray-400"
           }`}
         >
           {tab}

@@ -9,7 +9,7 @@ function App() {
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <Toaster position="top-center" richColors />
+        <Toaster position="bottom-right" richColors />
         <AppRoutes />
         <ReactQueryDevtools initialIsOpen={true} buttonPosition="bottom-left" />
       </QueryClientProvider>

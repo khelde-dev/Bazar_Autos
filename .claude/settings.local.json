@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "Bash(npx tsc:*)",
-      "Bash(npx:*)"
+      "Bash(npx:*)",
+      "Bash(npm install *)",
+      "Bash(git mv *)",
+      "PowerShell(cmd /c \"rename C:\\\\Users\\\\MikeT\\\\Documentos\\\\Bazar_Autos\\\\src\\\\Components _tmpcomp\")",
+      "PowerShell(cmd /c \"rename C:\\\\Users\\\\MikeT\\\\Documentos\\\\Bazar_Autos\\\\src\\\\_tmpcomp components\")",
+      "Bash(tasklist //FI \"IMAGENAME eq node.exe\")",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(npm run *)"
     ]
   }
 }

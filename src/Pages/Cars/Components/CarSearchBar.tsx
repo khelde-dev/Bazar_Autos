@@ -1,6 +1,6 @@
 import { Search, X } from "lucide-react";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface CarSearchBarProps {
   value: string;
@@ -14,11 +14,13 @@ export const CarSearchBar: React.FC<CarSearchBarProps> = ({
   placeholder = "Buscar por marca, modelo...",
 }) => {
   const [local, setLocal] = useState(value);
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
 
   useEffect(() => {
-    const timer = setTimeout(() => onChange(local), 400);
+    const timer = setTimeout(() => onChangeRef.current(local), 400);
     return () => clearTimeout(timer);
-  }, [local, onChange]);
+  }, [local]);
 
   useEffect(() => {
     setLocal(value);

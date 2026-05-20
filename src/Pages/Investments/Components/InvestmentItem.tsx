@@ -18,7 +18,6 @@ export const InvestmentItem = ({
 
   return (
     <div
-      role="listitem"
       className="bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm flex items-center gap-3"
     >
       <button
@@ -32,14 +31,13 @@ export const InvestmentItem = ({
           <div className="mt-1 text-lg font-black text-blue-600 truncate">{amount}</div>
           <div
             className="text-[10px] text-gray-400 font-mono truncate"
-            aria-label={`ID: ${shortId}`}
           >
             #{shortId}
           </div>
         </div>
       </button>
 
-      <div className="flex shrink-0" role="group" aria-label="Acciones de inversión">
+      <div className="flex shrink-0">
         <button
           type="button"
           onClick={() => onAddTransaction(investment.investor_id, investment.investment_amount)}

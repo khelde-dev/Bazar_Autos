@@ -37,10 +37,13 @@ export const formatShortDate = (iso: string): string => {
   return `${day} ${monthCap} ${year}`;
 };
 
-// Genera años desde 2026 hasta max(añoActual, 2026)
-export const buildYearRange = (startYear = 2026): number[] => {
+/**
+ * Returns years from max(currentYear, defaultEnd) DOWN to startYear.
+ * Default: from current year down to 2018.
+ */
+export const buildYearRange = (startYear = 2018, defaultEnd = 2026): number[] => {
   const current = new Date().getFullYear();
-  const end = Math.max(current, startYear);
+  const end = Math.max(current, defaultEnd);
   const years: number[] = [];
   for (let y = end; y >= startYear; y--) years.push(y);
   return years;

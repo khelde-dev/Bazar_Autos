@@ -22,7 +22,7 @@ export const MoneyInput = ({
 }: MoneyInputProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const filterNumericInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     if (val === "" || /^\d*\.?\d*$/.test(val)) {
       onChange(e);
@@ -44,7 +44,7 @@ export const MoneyInput = ({
             type="text"
             inputMode="decimal"
             value={value}
-            onChange={handleChange}
+            onChange={filterNumericInput}
             placeholder={placeholder}
             className="w-full bg-gray-50 dark:bg-slate-900 p-3 pl-8 rounded-xl text-sm border border-transparent dark:border-slate-700 focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all text-slate-700 dark:text-slate-200 placeholder:text-gray-400 dark:placeholder:text-slate-500"
           />

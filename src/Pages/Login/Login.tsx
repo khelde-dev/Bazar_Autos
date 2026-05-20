@@ -1,6 +1,9 @@
 import { ArrowRight, AtSign, CarFront, Eye, EyeOff, Lock, ShieldCheck } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useLoginMutation } from "./Hooks/UseLoginMutation";
 import { initialLoginForm, type LoginForm } from "./types/Login.types";
 
@@ -10,12 +13,9 @@ export default function Login() {
 
   const { mutate, isPending } = useLoginMutation();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name as keyof LoginForm]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name as keyof LoginForm]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -24,83 +24,133 @@ export default function Login() {
   };
 
   return (
-    <main className="flex flex-col items-center justify-center bg-white dark:bg-gray-800 w-full max-w-105 h-[90vh] rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] p-8 sm:p-10 relative z-10">
-      <div className="relative mb-6 mt-2">
-        <div className="w-20 h-20 bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] rounded-3xl flex items-center justify-center shadow-lg shadow-blue-500/30">
-          <CarFront size={60} className="text-white stroke-[1.5] rotate-12" />
-        </div>
-        <div className="absolute -bottom-2 -right-2 bg-white dark:bg-gray-700 rounded-full p-1.5 shadow-sm">
-          <div className="bg-white dark:bg-gray-700 rounded-full flex items-center justify-center">
-            <ShieldCheck
-              size={20}
-              className="text-[#3b6df6]"
-              fill="#3b6df6"
-              stroke="white"
-              strokeWidth={2}
-            />
+    <div className="min-h-screen w-full bg-background text-foreground lg:grid lg:grid-cols-2">
+      {/* Brand panel — visible on lg+ only */}
+      <aside className="relative hidden overflow-hidden bg-gradient-to-br from-[#1a4bd3] via-[#2f63f6] to-[#3b6df6] p-12 text-white lg:flex lg:flex-col lg:justify-between">
+        <div
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 20% 20%, white 0%, transparent 40%), radial-gradient(circle at 80% 80%, white 0%, transparent 40%)",
+          }}
+          aria-hidden="true"
+        />
+        <div className="relative flex items-center gap-3">
+          <div className="flex size-12 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm">
+            <CarFront size={28} className="rotate-12 text-white" strokeWidth={1.75} />
+          </div>
+          <div className="flex flex-col leading-tight">
+            <span className="text-lg font-semibold tracking-tight">Bazar de Autos</span>
+            <span className="text-xs uppercase tracking-[0.3em] text-white/70">
+              Acceso profesional
+            </span>
           </div>
         </div>
-      </div>
-      <div className="text-center mb-10 w-full">
-        <h1 className="text-[28px] font-bold text-slate-800 dark:text-slate-100 tracking-tight mb-2">
-          ¡Qué bueno verte!
-        </h1>
-        <p className="text-slate-500 dark:text-slate-400 text-[15px]">Inicia sesión en el Bazar de Autos</p>
-      </div>
-      <form onSubmit={handleSubmit} className="w-full space-y-5">
-        <div className="space-y-2">
-          <label htmlFor="login-email" className="block text-[14px] font-semibold text-slate-700 dark:text-slate-300">
-            Correo Electrónico
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <AtSign size={20} className="text-slate-400" />
+
+        <div className="relative space-y-6">
+          <h2 className="text-4xl font-semibold leading-tight tracking-tight">
+            Gestión integral
+            <br />
+            <span className="text-white/70">para tu bazar de autos.</span>
+          </h2>
+          <p className="max-w-md text-sm leading-relaxed text-white/80">
+            Catálogo, inversionistas, gastos y rendimiento en una sola plataforma.
+            Información consolidada y decisiones basadas en datos reales.
+          </p>
+        </div>
+
+        <div className="relative flex items-center gap-2 text-xs text-white/70">
+          <ShieldCheck size={16} />
+          <span>Conexión cifrada · Sesión protegida</span>
+        </div>
+      </aside>
+
+      {/* Form panel */}
+      <main className="flex min-h-screen items-center justify-center px-6 py-10 sm:px-10">
+        <div className="w-full max-w-md space-y-8">
+          {/* Mobile brand */}
+          <div className="flex flex-col items-center gap-3 lg:hidden">
+            <div className="relative">
+              <div className="flex size-20 items-center justify-center rounded-3xl bg-gradient-to-br from-[#2f63f6] to-[#1a4bd3] shadow-lg shadow-blue-500/30">
+                <CarFront size={48} className="rotate-12 text-white" strokeWidth={1.5} />
+              </div>
+              <div className="absolute -bottom-1 -right-1 rounded-full bg-background p-1 shadow-sm">
+                <ShieldCheck
+                  size={18}
+                  className="text-[#3b6df6]"
+                  fill="#3b6df6"
+                  stroke="white"
+                  strokeWidth={2}
+                />
+              </div>
             </div>
-            <input
-              id="login-email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="tu@correo.com"
-              className="w-full pl-11 pr-4 py-3.5 bg-white dark:bg-gray-700 border border-slate-200 dark:border-gray-600 rounded-2xl text-[15px] text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-              required
-            />
           </div>
-        </div>
-        <div className="space-y-2 pb-1">
-          <label htmlFor="login-password" className="block text-[14px] font-semibold text-slate-700 dark:text-slate-300">Contraseña</label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Lock size={20} className="text-slate-400" />
+
+          <div className="space-y-2 text-center lg:text-left">
+            <h1 className="text-3xl font-semibold tracking-tight">¡Qué bueno verte!</h1>
+            <p className="text-sm text-muted-foreground">
+              Inicia sesión para entrar al Bazar de Autos.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="login-email">Correo electrónico</Label>
+              <div className="relative">
+                <AtSign
+                  size={18}
+                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                />
+                <Input
+                  id="login-email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={formData.email}
+                  onChange={handleFieldChange}
+                  placeholder="tu@correo.com"
+                  className="h-11 pl-10"
+                />
+              </div>
             </div>
-            <input
-              id="login-password"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              className="w-full pl-11 pr-12 py-3.5 bg-white dark:bg-gray-700 border border-slate-200 dark:border-gray-600 rounded-2xl text-[15px] text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 placeholder:text-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all tracking-wider"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="login-password">Contraseña</Label>
+              <div className="relative">
+                <Lock
+                  size={18}
+                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                />
+                <Input
+                  id="login-password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  required
+                  value={formData.password}
+                  onChange={handleFieldChange}
+                  placeholder="••••••••"
+                  className="h-11 pl-10 pr-10 tracking-wider"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            <Button type="submit" disabled={isPending} className="h-11 w-full text-base">
+              {isPending ? "Iniciando sesión..." : "Iniciar sesión"}
+              {!isPending && <ArrowRight />}
+            </Button>
+          </form>
         </div>
-        <button
-          type="submit"
-          className="w-full mt-4 bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] hover:from-[#2552d6] hover:to-[#163fa8] text-white font-semibold text-[16px] py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-[0_8px_20px_-6px_rgba(47,99,246,0.5)] active:scale-[0.98]"
-        >
-          {isPending ? "Iniciando sesión..." : "Iniciar Sesión"}
-          {!isPending && <ArrowRight size={20} />}
-        </button>
-      </form>
-    </main>
+      </main>
+    </div>
   );
 }

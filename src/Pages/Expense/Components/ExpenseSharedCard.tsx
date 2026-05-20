@@ -2,8 +2,9 @@ import { Pencil } from "lucide-react";
 import { resolveCarColor } from "../../../Utils/Functions/colorUtils";
 import type { SharedExpenseRow } from "../Types/ExpenseList.types";
 
-const formatMoney = (v: number) =>
-  new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }).format(v);
+const mxnFormatter = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
+
+const formatMoney = (v: number) => mxnFormatter.format(v);
 
 const SubTypeBadge = ({ type }: { type: string }) => (
   <span

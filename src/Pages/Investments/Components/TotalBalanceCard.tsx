@@ -5,12 +5,13 @@ interface TotalBalanceCardProps {
   label?: string;
 }
 
-const formatMoney = (value: number) =>
-  new Intl.NumberFormat("es-MX", {
-    style: "currency",
-    currency: "MXN",
-    minimumFractionDigits: 2,
-  }).format(value);
+const mxnFormatter = new Intl.NumberFormat("es-MX", {
+  style: "currency",
+  currency: "MXN",
+  minimumFractionDigits: 2,
+});
+
+const formatMoney = (value: number) => mxnFormatter.format(value);
 
 export const TotalBalanceCard = ({
   amount,

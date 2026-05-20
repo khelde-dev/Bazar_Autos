@@ -23,7 +23,7 @@ export const BackBar = ({ title, to }: BackBarProps) => {
       >
         <ArrowLeft size={20} strokeWidth={2.5} />
       </button>
-      <h1 className="font-bold text-slate-800 dark:text-slate-100 text-lg tracking-tight">{title}</h1>
+      <h1 className="font-semibold text-slate-800 dark:text-slate-100 text-lg tracking-tight">{title}</h1>
     </div>
   );
 };
