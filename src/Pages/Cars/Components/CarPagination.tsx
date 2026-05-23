@@ -1,11 +1,35 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type React from "react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+} from "@/components/ui/pagination";
+import { cn } from "@/lib/utils";
 import type { CarPagination as CarPaginationType } from "../Types/Cars.types";
 
 interface CarPaginationProps {
   pagination: CarPaginationType;
   onPageChange: (page: number) => void;
   isLoading?: boolean;
+}
+
+/** Smart page list: always shows first, last, and a window around current page. */
+function getPageNumbers(current: number, total: number): (number | "ellipsis")[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+
+  const left = Math.max(2, current - 1);
+  const right = Math.min(total - 1, current + 1);
+
+  const result: (number | "ellipsis")[] = [1];
+  if (left > 2) result.push("ellipsis");
+  for (let i = left; i <= right; i++) result.push(i);
+  if (right < total - 1) result.push("ellipsis");
+  result.push(total);
+
+  return result;
 }
 
 export const CarPagination: React.FC<CarPaginationProps> = ({
@@ -17,53 +41,73 @@ export const CarPagination: React.FC<CarPaginationProps> = ({
 
   if (totalPages <= 1) return null;
 
-  const visiblePages = Array.from(
-    { length: Math.min(totalPages, 7) },
-    (_, i) => i + 1
-  );
+  const pages = getPageNumbers(currentPage, totalPages);
 
   return (
-    <div className="flex items-center justify-between px-2 pt-2">
-      <button
-        type="button"
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={!hasPrevPage || isLoading}
-        aria-label="Página anterior"
-        className="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 text-gray-500 dark:text-slate-400 shadow-sm hover:border-blue-300 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-      >
-        <ChevronLeft size={18} />
-      </button>
-
-      <div className="flex items-center gap-1.5">
-        {visiblePages.map((p) => (
-          <button
-            key={p}
-            type="button"
-            onClick={() => onPageChange(p)}
-            disabled={isLoading}
-            className={`w-8 h-8 rounded-full text-xs font-bold transition-all ${
-              currentPage === p
-                ? "bg-blue-600 text-white shadow-sm"
-                : "text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 disabled:opacity-50"
-            }`}
+    <Pagination>
+      <PaginationContent className="gap-0.5">
+        {/* Previous */}
+        <PaginationItem>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={!hasPrevPage || isLoading}
+            className="size-9"
+            aria-label="Página anterior"
           >
-            {p}
-          </button>
-        ))}
-        {totalPages > 7 && (
-          <span className="text-gray-400 dark:text-slate-500 text-xs font-bold px-1">… {totalPages}</span>
-        )}
-      </div>
+            <ChevronLeft className="size-4" />
+          </Button>
+        </PaginationItem>
 
-      <button
-        type="button"
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={!hasNextPage || isLoading}
-        aria-label="Página siguiente"
-        className="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 text-gray-500 dark:text-slate-400 shadow-sm hover:border-blue-300 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-      >
-        <ChevronRight size={18} />
-      </button>
-    </div>
+        {/* Mobile: compact current/total indicator */}
+        <PaginationItem className="sm:hidden">
+          <span className="px-2 text-sm tabular-nums text-muted-foreground">
+            {currentPage} / {totalPages}
+          </span>
+        </PaginationItem>
+
+        {/* Desktop: smart page numbers with ellipsis */}
+        {pages.map((page, idx) =>
+          page === "ellipsis" ? (
+            <PaginationItem key={`e-${idx}`} className="hidden sm:flex">
+              <PaginationEllipsis />
+            </PaginationItem>
+          ) : (
+            <PaginationItem key={page} className="hidden sm:flex">
+              <button
+                type="button"
+                onClick={() => onPageChange(page)}
+                disabled={isLoading}
+                aria-label={`Página ${page}`}
+                aria-current={currentPage === page ? "page" : undefined}
+                className={cn(
+                  buttonVariants({ variant: "ghost", size: "icon" }),
+                  "size-9 text-sm",
+                  currentPage === page &&
+                    "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground",
+                )}
+              >
+                {page}
+              </button>
+            </PaginationItem>
+          ),
+        )}
+
+        {/* Next */}
+        <PaginationItem>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={!hasNextPage || isLoading}
+            className="size-9"
+            aria-label="Página siguiente"
+          >
+            <ChevronRight className="size-4" />
+          </Button>
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
   );
 };

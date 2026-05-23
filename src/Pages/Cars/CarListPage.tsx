@@ -1,6 +1,6 @@
 import { Car, Loader2, Pencil, Search, Trash2, X } from "lucide-react";
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -93,17 +93,24 @@ export const CarListPage: React.FC = () => {
 
   // Debounced search input
   const [searchLocal, setSearchLocal] = useState(filters.search);
+  // Derived state: sync searchLocal when filters.search changes externally (e.g. reset).
+  // setState during render = React-recommended escape hatch for derived state.
+  const [prevFilterSearch, setPrevFilterSearch] = useState(filters.search);
+  if (prevFilterSearch !== filters.search) {
+    setPrevFilterSearch(filters.search);
+    setSearchLocal(filters.search);
+  }
+
   const onSearchRef = useRef(handleSearchChange);
-  onSearchRef.current = handleSearchChange;
+  // Update ref after render (React 19: never mutate ref during render)
+  useLayoutEffect(() => {
+    onSearchRef.current = handleSearchChange;
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => onSearchRef.current(searchLocal), 300);
     return () => clearTimeout(timer);
   }, [searchLocal]);
-
-  useEffect(() => {
-    setSearchLocal(filters.search);
-  }, [filters.search]);
 
   const rows = data?.data.rows ?? [];
   const pagination = data?.data.pagination ?? DEFAULT_PAGINATION;
@@ -246,6 +253,7 @@ export const CarListPage: React.FC = () => {
                   <TableHead>Color</TableHead>
                   <TableHead>Estatus</TableHead>
                   <TableHead className="text-right">Compra</TableHead>
+                  <TableHead className="text-right">Inversion total</TableHead>
                   <TableHead className="text-right">Venta</TableHead>
                   <TableHead className="w-24 text-right">Acciones</TableHead>
                 </TableRow>
@@ -285,6 +293,9 @@ export const CarListPage: React.FC = () => {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right text-muted-foreground">
+                      {formatPrice(car.initial_purchase_price)}
+                    </TableCell>
+                     <TableCell className="text-right text-muted-foreground">
                       {formatPrice(car.purchase_price)}
                     </TableCell>
                     <TableCell className="text-right font-semibold">

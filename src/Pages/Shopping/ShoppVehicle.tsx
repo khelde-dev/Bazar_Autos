@@ -1,4 +1,5 @@
-import { Bookmark, Check, DollarSign, FileText, Info, Loader2, Save, StickyNote } from "lucide-react";
+import { Bookmark, CalendarIcon, Check, DollarSign, FileText, Info, Loader2, Save, StickyNote } from "lucide-react";
+import { format, parseISO } from "date-fns";
 import type React from "react";
 import { useMemo, useState } from "react";
 import { NormalizeText } from "../../Utils/Functions/Normalize";
@@ -28,6 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Calendar } from "@/components/ui/calendar";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { validateVehicleForm } from "./Functions/Validation";
@@ -48,6 +50,10 @@ const mxnFormatter = new Intl.NumberFormat("es-MX", {
   currency: "MXN",
   minimumFractionDigits: 2,
 });
+
+const toDate = (str: string) => (str ? parseISO(str) : undefined);
+const toStr = (date: Date) => format(date, "yyyy-MM-dd");
+const displayDate = (str: string) => (str ? format(parseISO(str), "dd/MM/yyyy") : null);
 
 const STATUS_STYLES: Record<VehicleStatus, string> = {
   Vendido: "bg-emerald-600 text-white border-emerald-600",
@@ -99,11 +105,6 @@ export const ShoppVehicle: React.FC = () => {
       setIsCustomModel(false);
       setField("model", value);
     }
-  };
-
-  const handleSaleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleInputChange(e);
-    if (e.target.value) handleStatusChange("Vendido");
   };
 
   const handleAmountChange = (key: keyof VehicleExpenses, raw: string) => {
@@ -289,24 +290,59 @@ export const ShoppVehicle: React.FC = () => {
               </div>
 
               <div className="grid gap-1.5">
-                <Label htmlFor="purchase_date">Fecha de compra</Label>
-                <Input
-                  id="purchase_date"
-                  name="purchase_date"
-                  type="date"
-                  value={vehicleData.purchase_date}
-                  onChange={handleInputChange}
-                />
+                <Label>Fecha de compra</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "h-9 w-full justify-start font-normal",
+                        !vehicleData.purchase_date && "text-muted-foreground",
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 size-4" />
+                      {vehicleData.purchase_date
+                        ? displayDate(vehicleData.purchase_date)
+                        : "Seleccionar fecha"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={toDate(vehicleData.purchase_date)}
+                      onSelect={(date) => setField("purchase_date", date ? toStr(date) : "")}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
               <div className="grid gap-1.5">
-                <Label htmlFor="sale_date">Fecha de venta</Label>
-                <Input
-                  id="sale_date"
-                  name="sale_date"
-                  type="date"
-                  value={vehicleData.sale_date || ""}
-                  onChange={handleSaleDateChange}
-                />
+                <Label>Fecha de venta</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "h-9 w-full justify-start font-normal",
+                        !vehicleData.sale_date && "text-muted-foreground",
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 size-4" />
+                      {vehicleData.sale_date
+                        ? displayDate(vehicleData.sale_date)
+                        : "Seleccionar fecha"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={toDate(vehicleData.sale_date || "")}
+                      onSelect={(date) => {
+                        setField("sale_date", date ? toStr(date) : "");
+                        if (date) handleStatusChange("Vendido");
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
             </CardContent>
           </Card>

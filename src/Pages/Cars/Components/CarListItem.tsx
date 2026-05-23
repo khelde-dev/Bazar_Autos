@@ -1,6 +1,10 @@
 import { Trash2 } from "lucide-react";
 import type React from "react";
 import { useRef, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import type { CarListItem as CarListItemType } from "../Types/Cars.types";
 
 interface CarListItemProps {
@@ -13,12 +17,12 @@ const AVATAR_COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#
 const getBrandColor = (brand: string) => AVATAR_COLORS[brand.charCodeAt(0) % AVATAR_COLORS.length];
 
 const STATUS_STYLES: Record<string, string> = {
-  Inventario: "bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300",
-  Vendido: "bg-green-100 text-green-700 dark:bg-green-950/60 dark:text-green-300",
-  Apartado: "bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300",
+  Inventario: "bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border-transparent",
+  Vendido: "bg-green-100 text-green-700 dark:bg-green-950/60 dark:text-green-300 border-transparent",
+  Apartado: "bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-transparent",
+  "En espera": "bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-transparent",
+  Reparacion: "bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-transparent",
 };
-const getStatusStyle = (status: string) =>
-  STATUS_STYLES[status] ?? "bg-gray-100 text-gray-600 dark:bg-slate-700 dark:text-slate-300";
 
 const SWIPE_THRESHOLD = 80;
 
@@ -26,7 +30,7 @@ const formatPrice = (value: string | number | null | undefined) => {
   if (value === null || value === undefined) return "—";
   const cleaned = typeof value === "string" ? value.replace(/[^0-9.-]/g, "") : value;
   const n = Number(cleaned);
-  return Number.isNaN(n) ? "—" : n.toLocaleString("es-MX", { minimumFractionDigits: 2 });
+  return Number.isNaN(n) ? "—" : n.toLocaleString("es-MX", { minimumFractionDigits: 0 });
 };
 
 export const CarListItem: React.FC<CarListItemProps> = ({ car, onClick, onDeleteRequest }) => {
@@ -50,64 +54,90 @@ export const CarListItem: React.FC<CarListItemProps> = ({ car, onClick, onDelete
 
   return (
     <div className="relative overflow-hidden rounded-2xl">
-      <div className="absolute inset-y-0 right-0 w-24 bg-red-500 dark:bg-red-600 flex items-center justify-center rounded-2xl">
-        <Trash2 className="text-white" size={22} />
+      {/* Swipe-to-delete background */}
+      <div className="absolute inset-y-0 right-0 flex w-20 items-center justify-center rounded-2xl bg-red-500 dark:bg-red-600">
+        <Trash2 className="text-white" size={20} />
       </div>
 
+      {/* Swipe wrapper — role="none" keeps gesture handler off interactive AT tree */}
       <div
-        role="button"
-        tabIndex={0}
+        role="none"
         style={{
           transform: `translateX(${swipeX}px)`,
           transition: swipeX === 0 ? "transform 0.2s ease" : "none",
         }}
-        className="relative bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 shadow-sm rounded-2xl cursor-pointer active:scale-[0.99] transition-colors"
-        onClick={onClick}
-        onKeyDown={(e) => e.key === "Enter" && onClick()}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <div className="flex items-center gap-3 p-4">
-          <div
-            className="w-11 h-11 rounded-full flex-shrink-0 flex items-center justify-center shadow-sm"
-            style={{ backgroundColor: avatarColor }}
-          >
-            <span className="text-white font-black text-base">{brandInitial}</span>
-          </div>
+        <Card className="rounded-2xl border-border p-0">
+          <div className="relative flex items-center gap-3 p-3.5">
+            {/* Stretched button — semantic click + keyboard target */}
+            <button
+              type="button"
+              onClick={onClick}
+              className="absolute inset-0 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+              aria-label={`${car.brand} ${car.model}, ${car.year_of_car}`}
+            />
 
-          <div className="flex-1 min-w-0">
-            <p className="font-bold text-slate-800 dark:text-slate-100 text-sm truncate">
-              {car.brand} {car.model}
-            </p>
-            <p className="text-xs text-gray-400 dark:text-slate-500 font-medium">{car.year_of_car}</p>
-            <span
-              className={`inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${getStatusStyle(car.status)}`}
+            {/* Avatar */}
+            <div
+              className="flex size-10 shrink-0 items-center justify-center rounded-full shadow-sm"
+              style={{ backgroundColor: avatarColor }}
             >
-              {car.status}
-            </span>
-          </div>
-
-          <div className="text-right flex-shrink-0 space-y-0.5">
-            <div>
-              <p className="text-[10px] text-gray-400 dark:text-slate-500 font-medium">Compra</p>
-              <p className="text-xs font-bold text-slate-500 dark:text-slate-300">${formatPrice(car.purchase_price)}</p>
+              <span className="text-sm font-black text-white">{brandInitial}</span>
             </div>
-            <div>
-              <p className="text-[10px] text-gray-400 dark:text-slate-500 font-medium">Venta</p>
-              <p className="text-sm font-black text-slate-700 dark:text-slate-100">${formatPrice(car.price_for_sale)}</p>
-            </div>
-          </div>
 
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); onDeleteRequest(car); }}
-            className="hidden sm:flex p-2 rounded-full text-gray-200 dark:text-slate-600 hover:text-red-500 hover:bg-red-50 dark:hover:text-red-400 dark:hover:bg-red-950/40 transition-colors ml-1"
-            aria-label="Eliminar vehículo"
-          >
-            <Trash2 size={16} />
-          </button>
-        </div>
+            {/* Brand / model / year / status */}
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-bold text-foreground">
+                {car.brand} {car.model}
+              </p>
+              <p className="text-xs text-muted-foreground">{car.year_of_car}</p>
+              <Badge
+                variant="secondary"
+                className={cn("mt-1 px-1.5 py-0 text-[10px]", STATUS_STYLES[car.status])}
+              >
+                {car.status}
+              </Badge>
+            </div>
+
+            {/* Prices — inversión + venta (base queda en tabla desktop) */}
+            <div className="shrink-0 text-right">
+              <div>
+                <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
+                  Inversión
+                </p>
+                <p className="text-xs font-bold text-foreground">
+                  ${formatPrice(car.purchase_price)}
+                </p>
+              </div>
+              <div className="mt-1">
+                <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
+                  Venta
+                </p>
+                <p className="text-sm font-black text-foreground">
+                  ${formatPrice(car.price_for_sale)}
+                </p>
+              </div>
+            </div>
+
+            {/* Desktop delete — z-10 floats above stretched button */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="relative z-10 hidden size-8 text-muted-foreground hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-950/40 dark:hover:text-red-400 sm:flex"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDeleteRequest(car);
+              }}
+              aria-label="Eliminar vehículo"
+            >
+              <Trash2 size={15} />
+            </Button>
+          </div>
+        </Card>
       </div>
     </div>
   );
