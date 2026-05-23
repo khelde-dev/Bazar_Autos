@@ -3,17 +3,23 @@ import type { VehicleExpense } from "../Types/ExpenseVehicle.types";
 
 export const validateExpense = (data: VehicleExpense): boolean => {
   if (!data.movements_category_id) {
-    toast.error("Falta la categoría", { description: "Por favor selecciona una categoría válida." });
+    toast.error("Falta la categoría", {
+      description: "Por favor selecciona una categoría válida.",
+    });
     return false;
   }
 
   if (!data.isShared && !data.mainVehicleId) {
-    toast.error("Vehículo no seleccionado", { description: "Debes elegir un vehículo para este movimiento." });
+    toast.error("Vehículo no seleccionado", {
+      description: "Debes elegir un vehículo para este movimiento.",
+    });
     return false;
   }
 
   if (data.isShared && data.involvedVehicles.length === 0) {
-    toast.error("Lista vacía", { description: "Agrega al menos un vehículo a la lista de compartidos." });
+    toast.error("Lista vacía", {
+      description: "Agrega al menos un vehículo a la lista de compartidos.",
+    });
     return false;
   }
 
@@ -21,7 +27,7 @@ export const validateExpense = (data: VehicleExpense): boolean => {
     toast.error("Monto inválido", { description: "El monto debe ser mayor a 0." });
     return false;
   }
-   if (!data.closing_date) {
+  if (!data.closing_date) {
     toast.error("Fecha Invalida", { description: "Por favor selecciona una fecha" });
     return false;
   }

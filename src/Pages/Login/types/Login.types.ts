@@ -5,5 +5,5 @@ export interface LoginForm {
 
 export const initialLoginForm: LoginForm = {
   email: "",
-  password: ""
+  password: "",
 };

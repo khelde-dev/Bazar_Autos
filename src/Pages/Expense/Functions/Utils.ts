@@ -1,13 +1,13 @@
+import type { CarModel } from "../../Shopping/Types/ShooppVehicle.types";
 import type { VehicleExpense } from "../Types/ExpenseVehicle.types";
 
-export const GenerateArray = (expenseData: VehicleExpense, modelsData: any) => {
+export const GenerateArray = (expenseData: VehicleExpense, modelsData: CarModel[]) => {
   if (expenseData.isShared) {
     return modelsData
-      .filter((model: any) => expenseData.involvedVehicles.includes(model.name))
-      .map((model: any) => model.id);
-  } else {
-    return modelsData
-      .filter((model: any) => expenseData.mainVehicleId === model.name)
-      .map((model: any) => model.id);
+      .filter((model) => expenseData.involvedVehicles.includes(model.full_name))
+      .map((model) => model.id);
   }
+  return modelsData
+    .filter((model) => expenseData.mainVehicleId === model.full_name)
+    .map((model) => model.id);
 };

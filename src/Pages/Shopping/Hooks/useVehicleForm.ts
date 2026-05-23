@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { INITIAL_EXPENSES, INITIAL_VEHICLE_DETAILS, type VehicleDetails, type VehicleExpenses } from "../Types/ShooppVehicle.types";
+import {
+  INITIAL_EXPENSES,
+  INITIAL_VEHICLE_DETAILS,
+  type VehicleDetails,
+  type VehicleExpenses,
+} from "../Types/ShooppVehicle.types";
 
 export const useVehicleForm = () => {
   const [vehicleData, setVehicleData] = useState<VehicleDetails>(INITIAL_VEHICLE_DETAILS);
@@ -7,7 +12,7 @@ export const useVehicleForm = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-  
+
     setVehicleData((prev) => ({
       ...prev,
       [name]: type === "number" || name === "carYear" ? Number(value) : value,
@@ -16,22 +21,22 @@ export const useVehicleForm = () => {
 
   const handleExpenseChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setExpenses(prev => ({
+    setExpenses((prev) => ({
       ...prev,
       [name as keyof VehicleExpenses]: {
         ...prev[name as keyof VehicleExpenses],
-        amount: value
-      }
+        amount: value,
+      },
     }));
   };
 
   const handleExpenseNoteChange = (name: keyof VehicleExpenses, note: string) => {
-    setExpenses(prev => ({
+    setExpenses((prev) => ({
       ...prev,
       [name]: {
         ...prev[name],
-        note: note
-      }
+        note: note,
+      },
     }));
   };
 

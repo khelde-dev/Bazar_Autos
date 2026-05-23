@@ -1,13 +1,12 @@
-
-import { Navigate, Outlet } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { validateSession } from '../auth.service';
+import { useQuery } from "@tanstack/react-query";
+import { Navigate, Outlet } from "react-router-dom";
+import { validateSession } from "../auth.service";
 
 export const ProtectedRoute = () => {
-  const isAuthSignal = localStorage.getItem('isAuthenticated') === 'true';
+  const isAuthSignal = localStorage.getItem("isAuthenticated") === "true";
 
   const { isLoading, isError } = useQuery({
-    queryKey: ['check-auth'],
+    queryKey: ["check-auth"],
     queryFn: validateSession,
     enabled: isAuthSignal,
     retry: false,
@@ -15,11 +14,13 @@ export const ProtectedRoute = () => {
   });
 
   if (!isAuthSignal) return <Navigate to="/login" replace />;
-  if (isLoading) return <div className="h-screen bg-[#F8FAFC]" />; 
+  if (isLoading) return <div className="h-screen bg-[#F8FAFC] dark:bg-slate-900" />;
   if (isError) {
-    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem("isAuthenticated");
     return <Navigate to="/login" replace />;
   }
 
-  return <Outlet />;
+  return (
+      <Outlet />
+  );
 };

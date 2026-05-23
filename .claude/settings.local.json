@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(npx:*)",
+      "Bash(npm install *)",
+      "Bash(git mv *)",
+      "PowerShell(cmd /c \"rename C:\\\\Users\\\\MikeT\\\\Documentos\\\\Bazar_Autos\\\\src\\\\components _tmpcomp\")",
+      "PowerShell(cmd /c \"rename C:\\\\Users\\\\MikeT\\\\Documentos\\\\Bazar_Autos\\\\src\\\\_tmpcomp components\")",
+      "Bash(tasklist //FI \"IMAGENAME eq node.exe\")",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(npm run *)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({k:d.get\\(k,{}\\) for k in ['dependencies','devDependencies']}, indent=2\\)\\)\")",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(gh pr create --title 'fix\\(ui\\): Select scroll, DatePicker shadcn y refactor lista de autos' --body ' *)",
+      "Bash(where gh *)",
+      "Bash(winget list *)",
+      "Bash(winget install *)",
+      "Bash(\"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" auth status)"
+    ]
+  }
+}

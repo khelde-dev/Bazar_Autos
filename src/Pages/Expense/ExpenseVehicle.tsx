@@ -1,361 +1,378 @@
-import React, { useMemo, useState } from "react";
+import { Calendar, Car, Check, DollarSign, Loader2, PencilLine, ReceiptText, Search, Users, X } from "lucide-react";
+import type React from "react";
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
-  ChevronDown,
-  Car,
-  DollarSign,
-  Users,
-  X,
-  ReceiptText,
-  Check,
-  Loader2,
-} from "lucide-react";
-import { Card } from "../../Utils/Screen/Boxes/Card";
-import { Label } from "../../Utils/Screen/Text/Label";
-import { useExpenseForm } from "./Hooks/useExpenseForm";
-import { MAIN_MOVEMENT_TYPES } from "./Types/ExpenseVehicle.types";
-import { useCategories, useExpense } from "./Hooks/useExpenseMutate";
-import { validateExpense } from "./Functions/Validation";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import type { CarModel } from "../Shopping/Types/ShooppVehicle.types";
 import { useCarModels } from "../Shopping/Hooks/useVehicle";
 import { GenerateArray } from "./Functions/Utils";
-import { InputField } from "../../Utils/Screen/Inputs/InputField";
+import { validateExpense } from "./Functions/Validation";
+import { useExpenseForm } from "./Hooks/useExpenseForm";
+import { useCategories, useExpense } from "./Hooks/useExpenseMutate";
+import { type Category, MAIN_MOVEMENT_TYPES } from "./Types/ExpenseVehicle.types";
 
 export const ExpenseVehicle: React.FC = () => {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const {
     expenseData,
     setExpenseData,
     handleChange,
     toggleShared,
     removeVehicleTag,
-    resetForm,
   } = useExpenseForm();
 
-  const { mutate, isPending } = useExpense(resetForm);
-  const { data: categoriesData, isLoading } = useCategories();
-  const { data: modelsData, isLoading: isLoadingModels } = useCarModels();
+  const { mutate, isPending } = useExpense(() => {
+    setExpenseData((p) => ({ ...p, amount: 0, description: "", involvedVehicles: [] }));
+  });
+  const { data: categoriesData, isLoading: isLoadingCategories } = useCategories();
+  const { data: modelsData, isLoading: isLoadingModels } = useCarModels(true);
 
-  const categoriesArray = categoriesData?.data || [];
-  const modelsArray = modelsData?.data || [];
+  const categoriesArray = useMemo<Category[]>(
+    () => categoriesData?.data ?? [],
+    [categoriesData],
+  );
+  const modelsArray = useMemo<CarModel[]>(() => modelsData?.data ?? [], [modelsData]);
 
-  const categoryTypes: string[] = useMemo(() => {
-    return Array.from(new Set(categoriesArray.map((cat: any) => cat.type)));
-  }, [categoriesArray]);
+  const categoryTypes = useMemo(
+    () => Array.from(new Set(categoriesArray.map((c) => c.type))),
+    [categoriesArray],
+  );
 
-  const carsModels: string[] = useMemo(() => {
-    return Array.from(new Set(modelsArray.map((car: any) => car.name)));
-  }, [modelsArray]);
+  const filteredCategories = useMemo(
+    () => categoriesArray.filter((c) => c.type === expenseData.subType),
+    [categoriesArray, expenseData.subType],
+  );
 
-  const filteredBrands = useMemo(() => {
-    const lowerSearchTerm = searchTerm.toLowerCase();
-    return carsModels.filter((brand) =>
-      brand.toLowerCase().includes(lowerSearchTerm),
-    );
-  }, [carsModels, searchTerm]);
+  const [vehicleSearch, setVehicleSearch] = useState("");
+  const [vehiclePopover, setVehiclePopover] = useState(false);
 
-  const handleSave = () => {
-    if (!validateExpense(expenseData)) return;
+  const filteredModels = useMemo(() => {
+    const q = vehicleSearch.toLowerCase();
+    return modelsArray.filter((m) => m.full_name.toLowerCase().includes(q));
+  }, [modelsArray, vehicleSearch]);
 
-    let resultIds: string[] = GenerateArray(expenseData, modelsData.data);
-
-    const { subType, mainVehicleId, involvedVehicles, ...autoMappedData }=expenseData;
-
-    const payload = {
-      ...autoMappedData,
-      car_id: resultIds,
-    };
-    mutate(payload);
-  };
-
-  const handleSelectBrand = (brand: string) => {
+  const handleSelectVehicle = (fullName: string) => {
     if (expenseData.isShared) {
       setExpenseData((prev) => {
-        if (prev.involvedVehicles.includes(brand)) return prev;
-        return {
-          ...prev,
-          involvedVehicles: [...prev.involvedVehicles, brand],
-        };
+        if (prev.involvedVehicles.includes(fullName)) return prev;
+        return { ...prev, involvedVehicles: [...prev.involvedVehicles, fullName] };
       });
-      setSearchTerm("");
+      setVehicleSearch("");
     } else {
-      setExpenseData((prev) => ({ ...prev, mainVehicleId: brand }));
-      setSearchTerm(brand);
-      setIsSearchOpen(false);
+      setExpenseData((prev) => ({ ...prev, mainVehicleId: fullName }));
+      setVehiclePopover(false);
     }
   };
 
+  const handleSave = () => {
+    if (!validateExpense(expenseData)) return;
+    mutate({
+      type: expenseData.type,
+      movements_category_id: expenseData.movements_category_id,
+      amount: expenseData.amount,
+      isShared: expenseData.isShared,
+      description: expenseData.description,
+      closing_date: expenseData.closing_date,
+      car_id: GenerateArray(expenseData, modelsArray),
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-10 font-sans">
-      <main className="max-w-md mx-auto p-4 space-y-6">
-        <Card>
-          <div className="space-y-2">
-            <Label>Tipo de Movimiento</Label>
-            <div className="flex gap-2">
-              {MAIN_MOVEMENT_TYPES.map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() =>
-                    setExpenseData((prev) => ({ ...prev, type: t }))
-                  }
-                  className={`flex-1 py-3 rounded-xl text-[13px] font-black transition-all border ${
-                    expenseData.type === t
-                      ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-100"
-                      : "bg-white text-gray-400 border-gray-100 hover:bg-gray-50"
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
-          </div>
-          {isLoading ? (
-            <Loader2
-              size={14}
-              className="animate-spin text-blue-600 opacity-90"
-              strokeWidth={3}
-            />
-          ) : (
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Subtipo</Label>
-                <div className="relative">
-                  <select
-                    name="subType"
-                    value={expenseData.subType}
-                    onChange={handleChange}
-                    className="w-full bg-gray-50 p-4 rounded-2xl text-sm font-bold outline-none border border-transparent appearance-none"
-                  >
-                    {categoryTypes.map((c: string) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown
-                    size={16}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                  />
-                </div>
-              </div>
+    <div className="mx-auto w-full max-w-5xl space-y-6 p-4 lg:p-6">
+      {/* Header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Registrar movimiento</h1>
+          <p className="text-sm text-muted-foreground">Compras y gastos asociados al inventario</p>
+        </div>
+        <Button asChild variant="outline">
+          <Link to="/expenses/list">
+            <PencilLine />
+            Ver / editar registrados
+          </Link>
+        </Button>
+      </div>
 
-              <div className="animate-in fade-in duration-300">
-                <Label>Categoría</Label>
-                <div className="relative">
-                  <select
-                    name="movements_category_id"
-                    value={expenseData.movements_category_id}
-                    onChange={handleChange}
-                    className="w-full bg-gray-50 p-4 rounded-2xl text-sm appearance-none outline-none border border-transparent"
-                  >
-                    <option value="">Seleccionar...</option>
-                    {categoriesArray.map(
-                      (cat: any) =>
-                        cat.type === expenseData.subType && (
-                          <option key={cat.category_id} value={cat.category_id}>
-                            {cat.name}
-                          </option>
-                        ),
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Left column */}
+        <div className="space-y-6">
+          {/* Tipo */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Tipo de movimiento</CardTitle>
+              <CardDescription>Define el origen del gasto o compra</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-2">
+                {MAIN_MOVEMENT_TYPES.map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setExpenseData((prev) => ({ ...prev, type: t }))}
+                    className={cn(
+                      "rounded-lg border px-3 py-2.5 text-sm font-semibold transition-all",
+                      expenseData.type === t
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-background text-muted-foreground hover:bg-muted",
                     )}
-                  </select>
-                  <ChevronDown
-                    size={16}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-          {!isLoadingModels && (
-            <div className="relative">
-              <Label>
-                {expenseData.isShared
-                  ? "Añadir Vehículos involucrados"
-                  : "Vehículo Principal"}
-              </Label>
-              <div className="relative">
-                <Car
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                  size={20}
-                />
-                <input
-                  type="text"
-                  placeholder={
-                    expenseData.isShared
-                      ? "Escribe para añadir varios..."
-                      : "Buscar marca..."
-                  }
-                  value={
-                    isSearchOpen
-                      ? searchTerm
-                      : expenseData.isShared
-                        ? ""
-                        : expenseData.mainVehicleId
-                  }
-                  onFocus={() => setIsSearchOpen(true)}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-gray-50 pl-12 pr-10 py-4 rounded-2xl text-sm outline-none border border-transparent focus:border-blue-500/20 text-gray-700"
-                />
-                <ChevronDown
-                  size={18}
-                  className={`absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 transition-transform ${isSearchOpen ? "rotate-180" : ""}`}
-                />
-              </div>
-
-              {isSearchOpen && (
-                <div className="absolute z-50 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 max-h-60 overflow-y-auto animate-in zoom-in-95 duration-150">
-                  {filteredBrands.length > 0 ? (
-                    filteredBrands.map((brand: any) => {
-                      const isSelected = expenseData.isShared
-                        ? expenseData.involvedVehicles.includes(brand)
-                        : expenseData.mainVehicleId === brand;
-
-                      return (
-                        <button
-                          key={brand}
-                          type="button"
-                          onClick={() => handleSelectBrand(brand)}
-                          className={`w-full flex items-center justify-between px-5 py-4 text-sm transition-colors border-b border-gray-50 last:border-none ${
-                            isSelected
-                              ? "bg-blue-50 text-blue-700 font-bold"
-                              : "text-gray-700 hover:bg-gray-50"
-                          }`}
-                        >
-                          <span className="flex items-center gap-2">
-                            {brand}
-                            {isSelected && expenseData.isShared && (
-                              <span className="text-[9px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded uppercase tracking-tighter">
-                                Añadido
-                              </span>
-                            )}
-                          </span>
-                          {isSelected && (
-                            <Check size={16} className="text-blue-600" />
-                          )}
-                        </button>
-                      );
-                    })
-                  ) : (
-                    <div className="p-4 text-xs text-gray-400 text-center">
-                      No hay resultados
-                    </div>
-                  )}
-                </div>
-              )}
-              {isSearchOpen && (
-                <div
-                  className="fixed inset-0 z-40"
-                  onClick={() => setIsSearchOpen(false)}
-                />
-              )}
-            </div>
-          )}
-
-          <div>
-            <Label>Monto (MXN)</Label>
-            <div className="relative group">
-              <DollarSign
-                className={`absolute left-4 top-1/2 -translate-y-1/2 font-bold transition-colors ${expenseData.subType === "Activo" ? "text-emerald-500" : "text-blue-500"}`}
-                size={22}
-              />
-              <input
-                name="amount"
-                type="number"
-                placeholder="0.00"
-                value={expenseData.amount || ""}
-                onChange={handleChange}
-                className="w-full bg-gray-50 pl-12 py-5 rounded-2xl text-xl font-bold text-gray-700 outline-none border border-transparent focus:bg-white transition-all"
-              />
-            </div>
-          </div>
-          <div
-            className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${expenseData.isShared ? "bg-blue-50 border-blue-100" : "bg-gray-50 border-transparent"}`}
-          >
-            <div className="flex items-center gap-3">
-              <Users
-                className={
-                  expenseData.isShared ? "text-blue-600" : "text-gray-400"
-                }
-                size={22}
-              />
-              <span
-                className={`font-bold text-sm ${expenseData.isShared ? "text-blue-900" : "text-gray-500"}`}
-              >
-                ¿Monto compartido?
-              </span>
-            </div>
-            <button
-              onClick={toggleShared}
-              className={`w-14 h-8 rounded-full transition-colors relative ${expenseData.isShared ? "bg-blue-600" : "bg-gray-300"}`}
-            >
-              <div
-                className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-sm transition-transform ${expenseData.isShared ? "left-7" : "left-1"}`}
-              />
-            </button>
-          </div>
-
-          {expenseData.isShared && expenseData.involvedVehicles.length > 0 && (
-            <div className="animate-in slide-in-from-top-2 duration-300 space-y-2">
-              <Label>
-                Vehículos Seleccionados ({expenseData.involvedVehicles.length})
-              </Label>
-              <div className="bg-gray-50 p-3 rounded-2xl flex flex-wrap gap-2 items-center border border-gray-100/50">
-                {expenseData.involvedVehicles.map((tag) => (
-                  <span
-                    key={tag}
-                    className="flex items-center gap-1.5 bg-blue-600 text-white pl-3 pr-2 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-tight shadow-sm"
                   >
-                    {tag}
-                    <button
-                      onClick={() => removeVehicleTag(tag)}
-                      className="hover:bg-blue-700 rounded-md p-0.5 transition-colors"
-                    >
-                      <X size={14} />
-                    </button>
-                  </span>
+                    {t}
+                  </button>
                 ))}
               </div>
-            </div>
-          )}
-          <div>
-            <InputField
-                      label="Fecha de cierre"
-                      name="closing_date"
-                      type="date"
-                      value={expenseData.closing_date}
-                      onChange={handleChange}
-                    />
-            <Label>Descripción</Label>
-            <textarea
-              name="description"
-              value={expenseData.description}
-              onChange={handleChange}
-              placeholder="Detalles adicionales..."
-              rows={3}
-              className="w-full bg-gray-50 p-4 rounded-2xl text-sm outline-none border border-transparent focus:border-blue-500/20 resize-none text-gray-700"
-            />
-          </div>
-        </Card>
-        <button
-          onClick={handleSave}
-          disabled={isPending}
-          className={`w-full mt-4 bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98] ${
-            isPending ? "opacity-70 cursor-not-allowed" : "hover:from-[#2552d6]"
-          }`}
-        >
-          {isPending ? (
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Procesando...
-            </div>
-          ) : (
-            <>
-              <ReceiptText size={22} />
-              Registrar Movimiento
-            </>
-          )}
-        </button>
-      </main>
+            </CardContent>
+          </Card>
+
+          {/* Categoría */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Categoría</CardTitle>
+              <CardDescription>Clasificación del movimiento</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoadingCategories ? (
+                <Loader2 className="size-5 animate-spin text-primary" />
+              ) : (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="subType">Subtipo</Label>
+                    <Select
+                      value={expenseData.subType}
+                      onValueChange={(v) =>
+                        handleChange({
+                          target: { name: "subType", value: v },
+                        } as React.ChangeEvent<HTMLSelectElement>)
+                      }
+                    >
+                      <SelectTrigger id="subType">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categoryTypes.map((c) => (
+                          <SelectItem key={c} value={c}>
+                            {c}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="movements_category_id">Categoría</Label>
+                    <Select
+                      value={expenseData.movements_category_id || ""}
+                      onValueChange={(v) =>
+                        handleChange({
+                          target: { name: "movements_category_id", value: v },
+                        } as React.ChangeEvent<HTMLSelectElement>)
+                      }
+                    >
+                      <SelectTrigger id="movements_category_id">
+                        <SelectValue placeholder="Seleccionar..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {filteredCategories.map((cat) => (
+                          <SelectItem key={cat.category_id} value={cat.category_id}>
+                            {cat.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Vehículo */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <CardTitle className="text-base">Vehículo(s)</CardTitle>
+                  <CardDescription>Asocia uno o varios autos</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="shared-toggle" className="text-xs text-muted-foreground">
+                    Compartido
+                  </Label>
+                  <Switch
+                    id="shared-toggle"
+                    checked={expenseData.isShared}
+                    onCheckedChange={toggleShared}
+                  />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {isLoadingModels ? (
+                <Loader2 className="size-5 animate-spin text-primary" />
+              ) : (
+                <Popover open={vehiclePopover} onOpenChange={setVehiclePopover}>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="h-10 w-full justify-start font-normal">
+                      <Car className="size-4" />
+                      {expenseData.isShared
+                        ? "Añadir vehículos involucrados..."
+                        : expenseData.mainVehicleId || "Seleccionar vehículo principal..."}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                    <div className="relative border-b border-border">
+                      <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        autoFocus
+                        value={vehicleSearch}
+                        onChange={(e) => setVehicleSearch(e.target.value)}
+                        placeholder="Buscar marca/modelo..."
+                        className="rounded-none border-0 pl-9 focus-visible:ring-0"
+                      />
+                    </div>
+                    <div className="max-h-60 overflow-y-auto">
+                      {filteredModels.length === 0 ? (
+                        <p className="p-4 text-center text-xs text-muted-foreground">Sin resultados</p>
+                      ) : (
+                        filteredModels.map((m) => {
+                          const selected = expenseData.isShared
+                            ? expenseData.involvedVehicles.includes(m.full_name)
+                            : expenseData.mainVehicleId === m.full_name;
+                          return (
+                            <button
+                              key={m.id}
+                              type="button"
+                              onClick={() => handleSelectVehicle(m.full_name)}
+                              className={cn(
+                                "flex w-full items-center justify-between px-3 py-2.5 text-sm transition-colors hover:bg-accent",
+                                selected && "bg-accent",
+                              )}
+                            >
+                              <span className="flex items-center gap-2">
+                                <span className="font-medium">{m.full_name}</span>
+                                <span className="text-xs text-muted-foreground">{m.year_of_car}</span>
+                              </span>
+                              {selected && <Check className="size-4 text-primary" />}
+                            </button>
+                          );
+                        })
+                      )}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              )}
+
+              {expenseData.isShared && expenseData.involvedVehicles.length > 0 && (
+                <div className="flex items-start gap-2 rounded-xl border border-border bg-muted/40 p-3">
+                  <Users className="size-4 shrink-0 text-blue-600" />
+                  <div className="flex flex-wrap gap-1.5">
+                    {expenseData.involvedVehicles.map((tag) => (
+                      <Badge key={tag} variant="secondary" className="gap-1 pr-1">
+                        {tag}
+                        <button
+                          type="button"
+                          onClick={() => removeVehicleTag(tag)}
+                          className="rounded p-0.5 hover:bg-background"
+                          aria-label={`Quitar ${tag}`}
+                        >
+                          <X className="size-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right column */}
+        <div className="space-y-6">
+          {/* Monto */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Monto</CardTitle>
+              <CardDescription>Cantidad en MXN</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="relative">
+                <DollarSign
+                  className={cn(
+                    "absolute left-3 top-1/2 size-5 -translate-y-1/2 font-bold",
+                    expenseData.subType === "Activo" ? "text-emerald-500" : "text-blue-500",
+                  )}
+                />
+                <Input
+                  name="amount"
+                  type="number"
+                  value={expenseData.amount || ""}
+                  onChange={handleChange}
+                  placeholder="0.00"
+                  className="h-14 pl-10 text-2xl font-bold"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Fecha + Descripción */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Detalles</CardTitle>
+              <CardDescription>Fecha de cierre y notas</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-1.5">
+                <Label htmlFor="closing_date">Fecha de cierre</Label>
+                <div className="relative">
+                  <Calendar className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    id="closing_date"
+                    name="closing_date"
+                    type="date"
+                    value={expenseData.closing_date}
+                    onChange={handleChange}
+                    className="pl-9"
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-1.5">
+                <Label htmlFor="description">Descripción</Label>
+                <Textarea
+                  id="description"
+                  name="description"
+                  value={expenseData.description}
+                  onChange={handleChange}
+                  placeholder="Detalles adicionales..."
+                  rows={4}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Button onClick={handleSave} disabled={isPending} size="lg" className="w-full">
+            {isPending ? <Loader2 className="animate-spin" /> : <ReceiptText />}
+            {isPending ? "Procesando..." : "Registrar movimiento"}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
