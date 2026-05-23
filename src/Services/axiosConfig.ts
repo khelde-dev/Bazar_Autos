@@ -2,9 +2,9 @@ import axios from "axios";
 import { toast } from "sonner";
 
 export const api = axios.create({
-  // baseURL: "http://localhost:3000/api/v1",
+  baseURL: "http://localhost:3000/api/v1",
   // baseURL: 'http://104.248.178.41:3000/api/v1',
-  baseURL: 'https://api.bazar-auto.com/api/v1',
+  // baseURL: 'https://api.bazar-auto.com/api/v1',
   withCredentials: true,
 });
 

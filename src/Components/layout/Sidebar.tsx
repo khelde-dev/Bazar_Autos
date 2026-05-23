@@ -22,14 +22,11 @@ export const Sidebar = ({ className, onNavigate }: SidebarProps) => {
       aria-label="Navegación principal"
     >
       <div className="flex h-16 items-center gap-2.5 border-b border-sidebar-border px-5">
-        <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-sm">
+        <div className="flex size-9 items-center justify-center rounded-xl bg-linear-to-br from-blue-500 to-blue-700 shadow-sm">
           <CarFront size={20} className="text-white" strokeWidth={2.25} />
         </div>
         <div className="flex flex-col leading-tight">
           <span className="text-sm font-semibold tracking-tight">Bazar Autos</span>
-          <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-            Acceso pro
-          </span>
         </div>
       </div>
 
