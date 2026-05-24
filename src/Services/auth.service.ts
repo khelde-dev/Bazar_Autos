@@ -38,7 +38,7 @@ export const createUser = async (payload: {
 
 export const updateUser = async (
   userId: string,
-  payload: { username: string; password: string; full_name: string },
+  payload: { username: string; password: string; full_name: string }
 ) => {
   const { data } = await api.put(`/users/${userId}`, payload);
   return data;

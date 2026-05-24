@@ -1,16 +1,20 @@
-import { Bookmark, CalendarIcon, Check, DollarSign, FileText, Info, Loader2, Save, StickyNote } from "lucide-react";
+import {
+  Bookmark,
+  CalendarIcon,
+  Check,
+  DollarSign,
+  FileText,
+  Info,
+  Loader2,
+  Save,
+  StickyNote,
+} from "lucide-react";
 import { format, parseISO } from "date-fns";
 import type React from "react";
 import { useMemo, useState } from "react";
 import { NormalizeText } from "../../Utils/Functions/Normalize";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -81,7 +85,7 @@ export const ShoppVehicle: React.FC = () => {
   const totalInvestment = useMemo(() => {
     const sumExpenses = Object.values(expenses).reduce(
       (acc, curr) => acc + (Number(curr.amount) || 0),
-      0,
+      0
     );
     const purchasePrice = Number(vehicleData.purchase_price) || 0;
     return Math.round((sumExpenses + purchasePrice) * 100) / 100;
@@ -263,7 +267,9 @@ export const ShoppVehicle: React.FC = () => {
                             {vehicleData.color === color.value && (
                               <Check
                                 size={16}
-                                className={color.value === "#ffffff" ? "text-slate-800" : "text-white"}
+                                className={
+                                  color.value === "#ffffff" ? "text-slate-800" : "text-white"
+                                }
                               />
                             )}
                           </div>
@@ -297,7 +303,7 @@ export const ShoppVehicle: React.FC = () => {
                       variant="outline"
                       className={cn(
                         "h-9 w-full justify-start font-normal",
-                        !vehicleData.purchase_date && "text-muted-foreground",
+                        !vehicleData.purchase_date && "text-muted-foreground"
                       )}
                     >
                       <CalendarIcon className="mr-2 size-4" />
@@ -323,7 +329,7 @@ export const ShoppVehicle: React.FC = () => {
                       variant="outline"
                       className={cn(
                         "h-9 w-full justify-start font-normal",
-                        !vehicleData.sale_date && "text-muted-foreground",
+                        !vehicleData.sale_date && "text-muted-foreground"
                       )}
                     >
                       <CalendarIcon className="mr-2 size-4" />
@@ -369,7 +375,7 @@ export const ShoppVehicle: React.FC = () => {
                         "rounded-lg border px-3 py-2.5 text-sm font-semibold transition-all",
                         active
                           ? STATUS_STYLES[status]
-                          : "border-border bg-background text-muted-foreground hover:bg-muted",
+                          : "border-border bg-background text-muted-foreground hover:bg-muted"
                       )}
                     >
                       {status}

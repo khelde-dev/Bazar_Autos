@@ -25,10 +25,16 @@ export const BoxMoney: React.FC<BoxMoneyProps> = ({
 
   return (
     <section className="bg-blue-50/50 dark:bg-blue-950/30 border-2 border-blue-100 dark:border-blue-900 p-8 rounded-[32px] text-center transition-all focus-within:border-blue-400 focus-within:bg-white dark:focus-within:bg-slate-800 shadow-sm">
-      <h3 className="text-blue-600 dark:text-blue-400 font-bold text-[10px] uppercase tracking-[2px] mb-4">{label}</h3>
+      <h3 className="text-blue-600 dark:text-blue-400 font-bold text-[10px] uppercase tracking-[2px] mb-4">
+        {label}
+      </h3>
 
       <div className="relative flex items-center justify-center max-w-[300px] mx-auto">
-        <DollarSign size={32} strokeWidth={3} className="text-blue-500 dark:text-blue-400 mr-1 shrink-0" />
+        <DollarSign
+          size={32}
+          strokeWidth={3}
+          className="text-blue-500 dark:text-blue-400 mr-1 shrink-0"
+        />
         <input
           name={name}
           value={value}

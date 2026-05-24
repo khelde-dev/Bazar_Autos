@@ -91,7 +91,9 @@ export const VehicleSearchInput: React.FC<VehicleSearchInputProps> = ({
               );
             })
           ) : (
-            <div className="p-4 text-xs text-gray-400 dark:text-gray-500 text-center">No hay resultados</div>
+            <div className="p-4 text-xs text-gray-400 dark:text-gray-500 text-center">
+              No hay resultados
+            </div>
           )}
         </div>
       )}

@@ -1,17 +1,24 @@
-import { Calendar, Car, Check, DollarSign, Loader2, Save, Search, Users, X } from "lucide-react";
+import {
+  CalendarIcon,
+  Car,
+  Check,
+  DollarSign,
+  Loader2,
+  Save,
+  Search,
+  Users,
+  X,
+} from "lucide-react";
 import { BackBar } from "../Investments/Components/BackBar";
 import type React from "react";
 import { useMemo, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -38,6 +45,18 @@ import {
 } from "./Types/ExpenseVehicle.types";
 
 const formatDateForInput = (iso: string) => iso.split("T")[0];
+
+const toLocalDate = (str: string | null | undefined): Date | undefined => {
+  if (!str) return undefined;
+  const [y, m, d] = str.split("-").map(Number);
+  return new Date(y, m - 1, d);
+};
+const toDateStr = (date: Date): string =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+const displayDate = (str: string | null | undefined): string => {
+  const d = toLocalDate(str);
+  return d ? format(d, "d 'de' MMMM yyyy", { locale: es }) : "Seleccionar fecha";
+};
 const isSharedMovement = (description: string) => description.startsWith("[Compartido]");
 
 const buildInitialState = (row: IndividualExpenseRow): VehicleExpense => ({
@@ -55,15 +74,15 @@ const buildInitialState = (row: IndividualExpenseRow): VehicleExpense => ({
 });
 
 const buildInitialStateFromShared = (row: SharedExpenseRow): VehicleExpense => ({
-  type: "Gasto",
+  type: row.type as VehicleExpense["type"],
   subType: row.category.type,
   movements_category_id: row.category.id,
   mainVehicleId: "",
   amount: row.total,
   isShared: true,
   involvedVehicles: row.cars.map((car) => `${car.brand} ${car.model}`),
-  description: "",
-  closing_date: "",
+  description: row.description.replace(/^\[Compartido\]\s*/, ""),
+  closing_date: formatDateForInput(row.closing_date),
 });
 
 const EMPTY_STATE: VehicleExpense = {
@@ -79,7 +98,6 @@ const EMPTY_STATE: VehicleExpense = {
 };
 
 export const ExpenseEditPage = () => {
-  const { movementId = "" } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const row = location.state?.row as IndividualExpenseRow | undefined;
@@ -97,7 +115,9 @@ export const ExpenseEditPage = () => {
     return EMPTY_STATE;
   });
 
-  const { mutate, isPending } = useUpdateExpense(() => navigate("/expenses/list"));
+  const { mutate: updateMutate, isPending: isSaving } = useUpdateExpense(() =>
+    navigate("/expenses/list")
+  );
   const { data: categoriesData, isLoading: isLoadingCats } = useCategories();
   const { data: modelsData, isLoading: isLoadingModels } = useCarModels(true);
 
@@ -106,11 +126,11 @@ export const ExpenseEditPage = () => {
 
   const categoryTypes = useMemo(
     () => Array.from(new Set(categoriesArray.map((cat) => cat.type))),
-    [categoriesArray],
+    [categoriesArray]
   );
   const filteredCategories = useMemo(
     () => categoriesArray.filter((c) => c.type === expenseData.subType),
-    [categoriesArray, expenseData.subType],
+    [categoriesArray, expenseData.subType]
   );
 
   const [vehicleSearch, setVehicleSearch] = useState("");
@@ -122,7 +142,7 @@ export const ExpenseEditPage = () => {
   }, [modelsArray, vehicleSearch]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setExpenseData((prev) => {
@@ -161,19 +181,18 @@ export const ExpenseEditPage = () => {
     }
   };
 
+  const movementsIds = sharedRow?.movements_ids ?? (row ? [row.movement.id] : []);
+
   const handleSave = () => {
     if (!validateExpense(expenseData)) return;
-    mutate({
-      movementId,
-      payload: {
-        type: expenseData.type,
-        movements_category_id: expenseData.movements_category_id,
-        amount: expenseData.amount,
-        isShared: expenseData.isShared,
-        description: expenseData.description,
-        closing_date: expenseData.closing_date,
-        car_id: GenerateArray(expenseData, modelsArray),
-      },
+    updateMutate({
+      movements_ids: movementsIds,
+      type: expenseData.type,
+      movements_category_id: expenseData.movements_category_id,
+      amount: expenseData.amount,
+      description: expenseData.description,
+      closing_date: expenseData.closing_date,
+      car_id: GenerateArray(expenseData, modelsArray),
     });
   };
 
@@ -181,14 +200,10 @@ export const ExpenseEditPage = () => {
     <div className="mx-auto w-full max-w-5xl space-y-6 p-4 lg:p-6">
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <BackBar
-          title="Editar movimiento"
-          subtitle={pageSubtitle}
-          to="/expenses/list"
-        />
-        <Button onClick={handleSave} disabled={isPending} size="lg">
-          {isPending ? <Loader2 className="animate-spin" /> : <Save />}
-          {isPending ? "Guardando..." : "Guardar cambios"}
+        <BackBar title="Editar movimiento" subtitle={pageSubtitle} to="/expenses/list" />
+        <Button onClick={handleSave} disabled={isSaving} size="lg">
+          {isSaving ? <Loader2 className="animate-spin" /> : <Save />}
+          {isSaving ? "Guardando..." : "Guardar cambios"}
         </Button>
       </div>
 
@@ -212,7 +227,7 @@ export const ExpenseEditPage = () => {
                       "rounded-lg border px-3 py-2.5 text-sm font-semibold transition-all",
                       expenseData.type === t
                         ? "border-primary bg-primary text-primary-foreground"
-                        : "border-border bg-background text-muted-foreground hover:bg-muted",
+                        : "border-border bg-background text-muted-foreground hover:bg-muted"
                     )}
                   >
                     {t}
@@ -343,7 +358,7 @@ export const ExpenseEditPage = () => {
                               onClick={() => handleSelectVehicle(m.full_name)}
                               className={cn(
                                 "flex w-full items-center justify-between px-3 py-2.5 text-sm hover:bg-accent",
-                                selected && "bg-accent",
+                                selected && "bg-accent"
                               )}
                             >
                               <span className="flex items-center gap-2">
@@ -399,7 +414,7 @@ export const ExpenseEditPage = () => {
                 <DollarSign
                   className={cn(
                     "absolute left-3 top-1/2 size-5 -translate-y-1/2",
-                    expenseData.subType === "Activo" ? "text-emerald-500" : "text-blue-500",
+                    expenseData.subType === "Activo" ? "text-emerald-500" : "text-blue-500"
                   )}
                 />
                 <Input
@@ -421,18 +436,34 @@ export const ExpenseEditPage = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-1.5">
-                <Label htmlFor="closing_date">Fecha de cierre</Label>
-                <div className="relative">
-                  <Calendar className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    id="closing_date"
-                    name="closing_date"
-                    type="date"
-                    value={expenseData.closing_date}
-                    onChange={handleChange}
-                    className="pl-9"
-                  />
-                </div>
+                <Label>Fecha de cierre</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start font-normal",
+                        !expenseData.closing_date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 size-4" />
+                      {displayDate(expenseData.closing_date)}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={toLocalDate(expenseData.closing_date)}
+                      defaultMonth={toLocalDate(expenseData.closing_date)}
+                      onSelect={(date) => {
+                        if (date)
+                          setExpenseData((prev) => ({ ...prev, closing_date: toDateStr(date) }));
+                      }}
+                      captionLayout="dropdown"
+                      locale={es}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
               <div className="grid gap-1.5">
                 <Label htmlFor="description">Descripción</Label>

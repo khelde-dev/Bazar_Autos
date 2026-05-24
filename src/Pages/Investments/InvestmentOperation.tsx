@@ -3,13 +3,7 @@ import { BackBar } from "./Components/BackBar";
 import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -36,12 +30,9 @@ export const InvestmentOperation = () => {
   const investmentAmount: string | undefined = location.state?.investmentAmount;
   const [form, setForm] = useState<TransactionFormState>(INITIAL_TRANSACTION_STATE);
 
-  const { mutate, isPending } = useRegisterTransaction(() =>
-    navigate(`/investments/${userId}`),
-  );
+  const { mutate, isPending } = useRegisterTransaction(() => navigate(`/investments/${userId}`));
 
-  const handleTypeChange = (type: TransactionType) =>
-    setForm((prev) => ({ ...prev, type }));
+  const handleTypeChange = (type: TransactionType) => setForm((prev) => ({ ...prev, type }));
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((prev) => ({ ...prev, amount: Number(e.target.value) }));
@@ -97,7 +88,7 @@ export const InvestmentOperation = () => {
                       "rounded-lg border px-3 py-3 text-sm font-semibold transition-all",
                       form.type === t
                         ? TYPE_STYLES[t]
-                        : "border-border bg-background text-muted-foreground hover:bg-muted",
+                        : "border-border bg-background text-muted-foreground hover:bg-muted"
                     )}
                   >
                     {t}
@@ -140,7 +131,9 @@ export const InvestmentOperation = () => {
             </CardHeader>
             <CardContent>
               <div className="relative">
-                <DollarSign className={cn("absolute left-3 top-1/2 size-5 -translate-y-1/2", accent)} />
+                <DollarSign
+                  className={cn("absolute left-3 top-1/2 size-5 -translate-y-1/2", accent)}
+                />
                 <Input
                   name="amount"
                   type="number"

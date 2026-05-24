@@ -18,9 +18,12 @@ const getBrandColor = (brand: string) => AVATAR_COLORS[brand.charCodeAt(0) % AVA
 
 const STATUS_STYLES: Record<string, string> = {
   Inventario: "bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border-transparent",
-  Vendido: "bg-green-100 text-green-700 dark:bg-green-950/60 dark:text-green-300 border-transparent",
-  Apartado: "bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-transparent",
-  "En espera": "bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-transparent",
+  Vendido:
+    "bg-green-100 text-green-700 dark:bg-green-950/60 dark:text-green-300 border-transparent",
+  Apartado:
+    "bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-transparent",
+  "En espera":
+    "bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-transparent",
   Reparacion: "bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-transparent",
 };
 
@@ -79,15 +82,13 @@ export const CarListItem: React.FC<CarListItemProps> = ({ car, onClick, onDelete
               className="absolute inset-0 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               aria-label={`${car.brand} ${car.model}, ${car.year_of_car}`}
             />
-
-            {/* Avatar */}
+            Avatar
             <div
               className="flex size-10 shrink-0 items-center justify-center rounded-full shadow-sm"
               style={{ backgroundColor: avatarColor }}
             >
               <span className="text-sm font-black text-white">{brandInitial}</span>
             </div>
-
             {/* Brand / model / year / status */}
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-bold text-foreground">
@@ -101,7 +102,6 @@ export const CarListItem: React.FC<CarListItemProps> = ({ car, onClick, onDelete
                 {car.status}
               </Badge>
             </div>
-
             {/* Prices — inversión + venta (base queda en tabla desktop) */}
             <div className="shrink-0 text-right">
               <div>
@@ -121,7 +121,6 @@ export const CarListItem: React.FC<CarListItemProps> = ({ car, onClick, onDelete
                 </p>
               </div>
             </div>
-
             {/* Desktop delete — z-10 floats above stretched button */}
             <Button
               type="button"

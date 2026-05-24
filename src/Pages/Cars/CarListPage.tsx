@@ -140,7 +140,10 @@ export const CarListPage: React.FC = () => {
       <Card className="p-4">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_auto_auto]">
           <div className="grid gap-1.5">
-            <Label htmlFor="car-search" className="text-xs uppercase tracking-wider text-muted-foreground">
+            <Label
+              htmlFor="car-search"
+              className="text-xs uppercase tracking-wider text-muted-foreground"
+            >
               Buscar
             </Label>
             <div className="relative">
@@ -166,7 +169,10 @@ export const CarListPage: React.FC = () => {
           </div>
 
           <div className="grid gap-1.5">
-            <Label htmlFor="car-year" className="text-xs uppercase tracking-wider text-muted-foreground">
+            <Label
+              htmlFor="car-year"
+              className="text-xs uppercase tracking-wider text-muted-foreground"
+            >
               Año
             </Label>
             <Select
@@ -188,7 +194,10 @@ export const CarListPage: React.FC = () => {
           </div>
 
           <div className="grid gap-1.5">
-            <Label htmlFor="car-month" className="text-xs uppercase tracking-wider text-muted-foreground">
+            <Label
+              htmlFor="car-month"
+              className="text-xs uppercase tracking-wider text-muted-foreground"
+            >
               Mes
             </Label>
             <Select
@@ -200,7 +209,7 @@ export const CarListPage: React.FC = () => {
               </SelectTrigger>
               <SelectContent>
                 {MONTHS.map((m) => (
-                  <SelectItem key={m.value} value={m.value}>
+                  <SelectItem key={m.label} value={m.value}>
                     {m.label}
                   </SelectItem>
                 ))}
@@ -295,7 +304,7 @@ export const CarListPage: React.FC = () => {
                     <TableCell className="text-right text-muted-foreground">
                       {formatPrice(car.initial_purchase_price)}
                     </TableCell>
-                     <TableCell className="text-right text-muted-foreground">
+                    <TableCell className="text-right text-muted-foreground">
                       {formatPrice(car.purchase_price)}
                     </TableCell>
                     <TableCell className="text-right font-semibold">
@@ -337,11 +346,7 @@ export const CarListPage: React.FC = () => {
         </>
       )}
 
-      <CarPagination
-        pagination={pagination}
-        onPageChange={setPage}
-        isLoading={isFetching}
-      />
+      <CarPagination pagination={pagination} onPageChange={setPage} isLoading={isFetching} />
 
       <DeleteConfirmModal
         car={carToDelete}

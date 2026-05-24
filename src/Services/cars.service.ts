@@ -1,8 +1,4 @@
-import type {
-  CarFilters,
-  CarListResponse,
-  UpdateCarPayload,
-} from "../Pages/Cars/Types/Cars.types";
+import type { CarFilters, CarListResponse, UpdateCarPayload } from "../Pages/Cars/Types/Cars.types";
 import { api } from "./axiosConfig";
 
 export const getCars = async (filters: CarFilters): Promise<CarListResponse> => {

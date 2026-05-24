@@ -33,7 +33,10 @@ export const CarSearchBar: React.FC<CarSearchBarProps> = ({
 
   return (
     <div className="relative">
-      <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" size={18} />
+      <Search
+        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500"
+        size={18}
+      />
       <input
         type="text"
         value={local}

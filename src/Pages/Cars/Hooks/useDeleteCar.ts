@@ -14,7 +14,8 @@ export const useDeleteCar = (onSuccess?: () => void) => {
       onSuccess?.();
     },
     onError: (error: unknown) => {
-      const msg = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      const msg = (error as { response?: { data?: { message?: string } } })?.response?.data
+        ?.message;
       toast.error("No se pudo eliminar", { description: msg || "Error de conexión" });
     },
   });

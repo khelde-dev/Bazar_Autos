@@ -17,7 +17,7 @@ export const Sidebar = ({ className, onNavigate }: SidebarProps) => {
     <aside
       className={cn(
         "flex h-full w-64 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground",
-        className,
+        className
       )}
       aria-label="Navegación principal"
     >
@@ -41,7 +41,7 @@ export const Sidebar = ({ className, onNavigate }: SidebarProps) => {
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 isActive
                   ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-muted-foreground hover:bg-sidebar-accent/50 hover:text-foreground",
+                  : "text-muted-foreground hover:bg-sidebar-accent/50 hover:text-foreground"
               )
             }
           >

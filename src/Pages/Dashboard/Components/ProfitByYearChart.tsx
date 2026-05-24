@@ -1,18 +1,12 @@
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import type { YearMetric } from "../data/mock";
+import type { YearProfit } from "../Types/Dashboard.types";
 
 const config = {
   profit: {
@@ -27,7 +21,7 @@ const compactFormatter = new Intl.NumberFormat("es-MX", {
 });
 
 interface Props {
-  data: YearMetric[];
+  data: YearProfit[];
 }
 
 export const ProfitByYearChart = ({ data }: Props) => (

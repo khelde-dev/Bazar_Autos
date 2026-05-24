@@ -87,10 +87,7 @@ export const ExportReportDialog = () => {
         <div className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="report-type">Tipo de reporte</Label>
-            <Select
-              value={reportType}
-              onValueChange={(v) => setReportType(v as ReportType)}
-            >
+            <Select value={reportType} onValueChange={(v) => setReportType(v as ReportType)}>
               <SelectTrigger id="report-type">
                 <SelectValue />
               </SelectTrigger>
@@ -106,10 +103,7 @@ export const ExportReportDialog = () => {
 
           <div className="grid gap-2">
             <Label htmlFor="export-format">Formato</Label>
-            <Select
-              value={exportFormat}
-              onValueChange={(v) => setExportFormat(v as ExportFormat)}
-            >
+            <Select value={exportFormat} onValueChange={(v) => setExportFormat(v as ExportFormat)}>
               <SelectTrigger id="export-format">
                 <SelectValue />
               </SelectTrigger>
@@ -133,7 +127,7 @@ export const ExportReportDialog = () => {
                   variant="outline"
                   className={cn(
                     "w-full justify-start font-normal",
-                    !range?.from && "text-muted-foreground",
+                    !range?.from && "text-muted-foreground"
                   )}
                 >
                   <CalendarIcon />
@@ -143,10 +137,13 @@ export const ExportReportDialog = () => {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="range"
+                  defaultMonth={range?.from}
                   selected={range}
                   onSelect={setRange}
-                  numberOfMonths={1}
+                  numberOfMonths={2}
+                  captionLayout="dropdown"
                   locale={es}
+                  disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
                 />
               </PopoverContent>
             </Popover>

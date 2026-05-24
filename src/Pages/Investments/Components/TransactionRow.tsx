@@ -26,7 +26,9 @@ export const TransactionRow = ({ tx }: TransactionRowProps) => {
       </div>
 
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-bold text-slate-800 dark:text-slate-100 truncate">{tx.concept}</div>
+        <div className="text-sm font-bold text-slate-800 dark:text-slate-100 truncate">
+          {tx.concept}
+        </div>
         <div className={`text-[11px] font-semibold mt-0.5 ${colorClasses.text}`}>{tx.type}</div>
         <div className="text-[10px] text-gray-400 mt-0.5">{formatDateTime(tx.created)}</div>
       </div>

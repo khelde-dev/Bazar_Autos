@@ -17,13 +17,7 @@ import type React from "react";
 import { useMemo, useState } from "react";
 import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -133,11 +127,9 @@ const CarEditForm: React.FC<CarEditFormProps> = ({ car, onBack }) => {
   const totalInvestment = useMemo(() => {
     const sumExpenses = Object.values(expenses).reduce(
       (acc, curr) => acc + (Number(curr.amount) || 0),
-      0,
+      0
     );
-    return (
-      Math.round(((Number(vehicleData.purchase_price) || 0) + sumExpenses) * 100) / 100
-    );
+    return Math.round(((Number(vehicleData.purchase_price) || 0) + sumExpenses) * 100) / 100;
   }, [expenses, vehicleData.purchase_price]);
 
   const setField = (name: string, value: string | number) => {
@@ -330,10 +322,7 @@ const CarEditForm: React.FC<CarEditFormProps> = ({ car, onBack }) => {
                 <Label>Fecha de compra</Label>
                 <Popover open={purchaseDateOpen} onOpenChange={setPurchaseDateOpen}>
                   <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="h-10 w-full justify-start font-normal"
-                    >
+                    <Button variant="outline" className="h-10 w-full justify-start font-normal">
                       <CalendarIcon className="mr-2 size-4 text-muted-foreground" />
                       <span className={!vehicleData.purchase_date ? "text-muted-foreground" : ""}>
                         {displayDate(vehicleData.purchase_date)}
@@ -360,10 +349,7 @@ const CarEditForm: React.FC<CarEditFormProps> = ({ car, onBack }) => {
                 <Label>Fecha de venta</Label>
                 <Popover open={saleDateOpen} onOpenChange={setSaleDateOpen}>
                   <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="h-10 w-full justify-start font-normal"
-                    >
+                    <Button variant="outline" className="h-10 w-full justify-start font-normal">
                       <CalendarIcon className="mr-2 size-4 text-muted-foreground" />
                       <span className={!vehicleData.sale_date ? "text-muted-foreground" : ""}>
                         {displayDate(vehicleData.sale_date)}
@@ -414,7 +400,7 @@ const CarEditForm: React.FC<CarEditFormProps> = ({ car, onBack }) => {
                         "rounded-lg border px-3 py-2.5 text-sm font-semibold transition-all",
                         active
                           ? STATUS_STYLES[status]
-                          : "border-border bg-background text-muted-foreground hover:bg-muted",
+                          : "border-border bg-background text-muted-foreground hover:bg-muted"
                       )}
                     >
                       {status}

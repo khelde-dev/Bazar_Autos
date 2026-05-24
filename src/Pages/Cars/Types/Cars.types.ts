@@ -1,10 +1,23 @@
 import type { VehicleStatus } from "../../Shopping/Types/ShooppVehicle.types";
 
 export type CostType =
-  | "llantas" | "hojalateria" | "tapiceria" | "cielo" | "volante"
-  | "funda" | "mecanico" | "tapones" | "multa" | "kit" | "sombrerera"
-  | "rin_llaveta" | "aceite" | "tapon_facion" | "alineacion"
-  | "manija" | "faros_calaveras";
+  | "llantas"
+  | "hojalateria"
+  | "tapiceria"
+  | "cielo"
+  | "volante"
+  | "funda"
+  | "mecanico"
+  | "tapones"
+  | "multa"
+  | "kit"
+  | "sombrerera"
+  | "rin_llaveta"
+  | "aceite"
+  | "tapon_facion"
+  | "alineacion"
+  | "manija"
+  | "faros_calaveras";
 
 // ── API raw shapes (lo que viene del backend) ─────────────────────────────
 
@@ -12,7 +25,7 @@ export interface ApiCarCost {
   cost_id: string;
   car_id: string;
   cost_type: string;
-  amount: string;          // "3000.00"
+  amount: string; // "3000.00"
   note: string | null;
   created: string;
 }
@@ -21,11 +34,11 @@ export interface CarListItem {
   car_id: string;
   brand: string;
   model: string;
-  color: string;                    // "#f7ce3b" o "Gris"
+  color: string; // "#f7ce3b" o "Gris"
   year_of_car: number;
-  purchase_price: string;           // "$157,690.00" (initial + costs)
-  price_for_sale: string;           // "$215,000.00"
-  initial_purchase_price: string;   // "$150,000.00" (raw, sin costs)
+  purchase_price: string; // "$157,690.00" (initial + costs)
+  price_for_sale: string; // "$215,000.00"
+  initial_purchase_price: string; // "$150,000.00" (raw, sin costs)
   purchase_date: string;
   sale_date: string | null;
   status: string;
@@ -80,7 +93,7 @@ export interface CarDetail {
   year_of_car: number;
   color: string;
   status: VehicleStatus;
-  purchase_price: number;        // RAW (initial), sin costs
+  purchase_price: number; // RAW (initial), sin costs
   price_for_sale: number;
   purchase_date?: string;
   sale_date?: string | null;

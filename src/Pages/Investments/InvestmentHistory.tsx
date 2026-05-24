@@ -1,16 +1,8 @@
-import {
-  Loader2,
-  MinusCircle,
-  PlusCircle,
-  TrendingDown,
-  TrendingUp,
-  Wallet,
-} from "lucide-react";
+import { Loader2, MinusCircle, PlusCircle, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { BackBar } from "./Components/BackBar";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import {
@@ -65,7 +57,7 @@ const TypeBadge = ({ tx }: { tx: Transaction }) => {
         "gap-1 font-semibold",
         isIn
           ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400"
-          : "bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400",
+          : "bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400"
       )}
     >
       {isIn ? <PlusCircle className="size-3" /> : <MinusCircle className="size-3" />}
@@ -103,7 +95,7 @@ export const InvestmentHistory = () => {
       {/* Summary */}
       {summary && (
         <div className="grid gap-4 sm:grid-cols-3">
-          <Card className="overflow-hidden border-0 bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg sm:col-span-1">
+          <Card className="overflow-hidden border-0 bg-linear-to-br from-blue-600 to-blue-700 text-white shadow-lg sm:col-span-1">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <Wallet size={20} className="text-blue-100" />
@@ -151,7 +143,10 @@ export const InvestmentHistory = () => {
       <Card className="p-4">
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="grid gap-1.5">
-            <Label htmlFor="hist-year" className="text-xs uppercase tracking-wider text-muted-foreground">
+            <Label
+              htmlFor="hist-year"
+              className="text-xs uppercase tracking-wider text-muted-foreground"
+            >
               Año
             </Label>
             <Select value={String(effectiveYear)} onValueChange={(v) => setYear(Number(v))}>
@@ -168,7 +163,10 @@ export const InvestmentHistory = () => {
             </Select>
           </div>
           <div className="grid gap-1.5">
-            <Label htmlFor="hist-month" className="text-xs uppercase tracking-wider text-muted-foreground">
+            <Label
+              htmlFor="hist-month"
+              className="text-xs uppercase tracking-wider text-muted-foreground"
+            >
               Mes
             </Label>
             <Select
@@ -188,7 +186,10 @@ export const InvestmentHistory = () => {
             </Select>
           </div>
           <div className="grid gap-1.5">
-            <Label htmlFor="hist-type" className="text-xs uppercase tracking-wider text-muted-foreground">
+            <Label
+              htmlFor="hist-type"
+              className="text-xs uppercase tracking-wider text-muted-foreground"
+            >
               Tipo
             </Label>
             <Select
@@ -240,7 +241,7 @@ export const InvestmentHistory = () => {
                           "flex size-10 shrink-0 items-center justify-center rounded-xl",
                           isIn
                             ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
-                            : "bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400",
+                            : "bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400"
                         )}
                       >
                         {isIn ? <PlusCircle size={20} /> : <MinusCircle size={20} />}
@@ -255,7 +256,7 @@ export const InvestmentHistory = () => {
                       <span
                         className={cn(
                           "text-sm font-bold",
-                          isIn ? "text-emerald-600" : "text-rose-600",
+                          isIn ? "text-emerald-600" : "text-rose-600"
                         )}
                       >
                         {isIn ? "+" : "-"}
@@ -293,7 +294,7 @@ export const InvestmentHistory = () => {
                         <TableCell
                           className={cn(
                             "text-right font-bold",
-                            isIn ? "text-emerald-600" : "text-rose-600",
+                            isIn ? "text-emerald-600" : "text-rose-600"
                           )}
                         >
                           {isIn ? "+" : "-"}

@@ -19,7 +19,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { CreateUserPayload, UpdateUserPayload, UserItem, UserRole } from "../Types/Users.types";
+import type {
+  CreateUserPayload,
+  UpdateUserPayload,
+  UserItem,
+  UserRole,
+} from "../Types/Users.types";
 
 // ── types ─────────────────────────────────────────────────────────────────────
 
@@ -58,15 +63,15 @@ function isCreateValid(f: UserFormState) {
 /** Enable save only when at least one field changed. Password optional. */
 function isEditValid(f: UserFormState, original: UserItem | null) {
   if (!f.username.trim() || !f.full_name.trim()) return false;
-  const nameChanged     = f.full_name.trim() !== original?.name;
-  const usernameChanged = f.username.trim()   !== original?.username;
-  const emailChanged    = f.email.trim()       !== (original?.email ?? "");
-  const roleChanged     = f.role               !== original?.role;
+  const nameChanged = f.full_name.trim() !== original?.name;
+  const usernameChanged = f.username.trim() !== original?.username;
+  const emailChanged = f.email.trim() !== (original?.email ?? "");
+  const roleChanged = f.role !== original?.role;
   return nameChanged || usernameChanged || emailChanged || roleChanged;
 }
 
 const ROLE_OPTIONS: Array<{ value: UserRole; label: string }> = [
-  { value: "user",  label: "Usuario" },
+  { value: "user", label: "Usuario" },
   { value: "admin", label: "Admin" },
 ];
 
@@ -105,25 +110,25 @@ export const UserFormDialog: React.FC<UserFormDialogProps> = ({
   const handleSave = () => {
     if (mode === "create") {
       onSave({
-        username:  form.username.trim(),
-        password:  form.password,
+        username: form.username.trim(),
+        password: form.password,
         full_name: form.full_name.trim(),
-        email:     form.email.trim(),
-        role:      form.role,
+        email: form.email.trim(),
+        role: form.role,
       } satisfies CreateUserPayload);
     } else {
       onSave({
-        username:  form.username.trim(),
-        password:  form.password,
+        username: form.username.trim(),
+        password: form.password,
         full_name: form.full_name.trim(),
-        email:     form.email.trim(),
-        role:      form.role,
+        email: form.email.trim(),
+        role: form.role,
       } satisfies UpdateUserPayload);
     }
   };
 
   const isCreate = mode === "create";
-  const canSave  = isCreate ? isCreateValid(form) : isEditValid(form, editing);
+  const canSave = isCreate ? isCreateValid(form) : isEditValid(form, editing);
 
   return (
     <Dialog open={!!mode} onOpenChange={(open) => !open && onClose()}>
@@ -197,9 +202,7 @@ export const UserFormDialog: React.FC<UserFormDialogProps> = ({
 
           {/* Contraseña */}
           <div className="grid gap-1.5">
-            <Label htmlFor="u-password">
-              {isCreate ? "Contraseña" : "Nueva contraseña"}
-            </Label>
+            <Label htmlFor="u-password">{isCreate ? "Contraseña" : "Nueva contraseña"}</Label>
             <Input
               id="u-password"
               type="password"

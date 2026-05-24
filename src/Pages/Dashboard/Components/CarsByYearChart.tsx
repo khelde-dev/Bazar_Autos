@@ -1,18 +1,12 @@
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import type { YearMetric } from "../data/mock";
+import type { YearCars } from "../Types/Dashboard.types";
 
 const config = {
   cars: {
@@ -22,7 +16,7 @@ const config = {
 } satisfies ChartConfig;
 
 interface Props {
-  data: YearMetric[];
+  data: YearCars[];
 }
 
 export const CarsByYearChart = ({ data }: Props) => (

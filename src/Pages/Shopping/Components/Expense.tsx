@@ -42,11 +42,15 @@ export const Expense: React.FC<ExpenseProps> = ({
             <span className="text-[10px] font-black text-blue-500 dark:text-blue-400 uppercase tracking-[0.1em]">
               Inversión Total
             </span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Suma de todos los conceptos</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+              Suma de todos los conceptos
+            </span>
           </div>
 
           <div className="text-right">
-            <span className="text-xl font-black text-slate-900 dark:text-slate-100">${totalInvestment}</span>
+            <span className="text-xl font-black text-slate-900 dark:text-slate-100">
+              ${totalInvestment}
+            </span>
           </div>
         </div>
       </div>

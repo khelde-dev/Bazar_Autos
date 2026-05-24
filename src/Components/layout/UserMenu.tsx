@@ -38,9 +38,7 @@ export const UserMenu = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="flex flex-col gap-0.5">
-          <span className="text-xs uppercase tracking-widest text-muted-foreground">
-            Sesión
-          </span>
+          <span className="text-xs uppercase tracking-widest text-muted-foreground">Sesión</span>
           <span className="text-sm font-semibold">{username ?? "Usuario"}</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

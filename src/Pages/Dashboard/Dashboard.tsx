@@ -1,23 +1,30 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   Activity,
   Banknote,
   Car,
   CircleDollarSign,
-  Coins,
+  Loader2,
   ReceiptText,
   TrendingDown,
   TrendingUp,
   Users,
 } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { DashboardFilters } from "./Components/DashboardFilters";
 import { KpiCard } from "./Components/KpiCard";
 import { TopCarsCard } from "./Components/TopCarsCard";
 import { CarsByYearChart } from "./Components/CarsByYearChart";
 import { ProfitByYearChart } from "./Components/ProfitByYearChart";
 import { InvestmentByYearChart } from "./Components/InvestmentByYearChart";
+import { ProfitByBrandChart } from "./Components/ProfitByBrandChart";
+import { AvgDaysToSellChart } from "./Components/AvgDaysToSellChart";
+import { ExpensesByCategoryChart } from "./Components/ExpensesByCategoryChart";
+import { CarsByBrandChart } from "./Components/CarsByBrandChart";
 import { ExportReportDialog } from "./Components/ExportReportDialog";
-import { MOCK_KPIS, MOCK_TOP_CARS, MOCK_YEARLY } from "./data/mock";
+import { useDashboard } from "./Hooks/useDashboard";
+import { useDashboardUrlFilters } from "./Hooks/useDashboardUrlFilters";
+import type { KpiValue } from "./Types/Dashboard.types";
 
 const mxnFormatter = new Intl.NumberFormat("es-MX", {
   style: "currency",
@@ -29,33 +36,34 @@ const numberFormatter = new Intl.NumberFormat("es-MX");
 const CURRENT_YEAR = new Date().getFullYear();
 const AVAILABLE_YEARS = Array.from({ length: 6 }, (_, i) => CURRENT_YEAR - i);
 
+// Derive trend prop from backend's change_pct
+const toTrend = (k: KpiValue | undefined) => {
+  if (!k || k.changePct === undefined || k.changePct === 0) return undefined;
+  const sign = k.changePct >= 0 ? "up" : "down";
+  return { direction: sign as "up" | "down", value: `${Math.abs(k.changePct).toFixed(1)}%` };
+};
+
 export const Dashboard = () => {
-  const [year, setYear] = useState<string>(String(CURRENT_YEAR));
-  const [month, setMonth] = useState<string>("all");
+  const { year, month, setYear, setMonth } = useDashboardUrlFilters();
 
-  // Filter mock yearly data by selected year
-  const filteredYearly = useMemo(() => {
-    const target = Number(year);
-    return MOCK_YEARLY.filter((d) => d.year <= target);
-  }, [year]);
+  const params = useMemo(
+    () => ({
+      year: Number(year),
+      month: month === "all" ? undefined : Number(month),
+      years_range: 6,
+      top_limit: 3,
+    }),
+    [year, month]
+  );
 
-  // Apply a basic month factor to KPIs so the user sees filters affect numbers
-  const k = useMemo(() => {
-    if (month === "all") return MOCK_KPIS;
-    const factor = 1 / 12;
-    return {
-      ...MOCK_KPIS,
-      totalSales: Math.round(MOCK_KPIS.totalSales * factor),
-      profitThisYear: Math.round(MOCK_KPIS.profitThisYear * factor),
-      totalMovements: Math.round(MOCK_KPIS.totalMovements * factor),
-      activeExpenses: Math.round(MOCK_KPIS.activeExpenses * factor),
-      passiveExpenses: Math.round(MOCK_KPIS.passiveExpenses * factor),
-    };
-  }, [month]);
+  const { data, isLoading, isError } = useDashboard(params);
+
+  const kpis = data?.kpis;
+  const charts = data?.charts;
 
   return (
     <div className="space-y-6 p-4 lg:p-6">
-      {/* Page header */}
+      {/* Header */}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
@@ -75,98 +83,124 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* KPI Grid */}
-      <section
-        aria-label="Indicadores principales"
-        className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
-      >
-        <KpiCard
-          label="Ventas totales"
-          value={mxnFormatter.format(k.totalSales)}
-          icon={CircleDollarSign}
-          accent="blue"
-          trend={{ direction: "up", value: "+12.4%" }}
-          hint="vs. año anterior"
-        />
-        <KpiCard
-          label="Utilidad año actual"
-          value={mxnFormatter.format(k.profitThisYear)}
-          icon={TrendingUp}
-          accent="green"
-          trend={{ direction: "up", value: "+5.6%" }}
-          hint="vs. periodo anterior"
-        />
-        <KpiCard
-          label="Total movimientos"
-          value={numberFormatter.format(k.totalMovements)}
-          icon={Activity}
-          accent="violet"
-          hint="entradas + salidas"
-        />
-        <KpiCard
-          label="Marcas en catálogo"
-          value={numberFormatter.format(k.brandsCount)}
-          icon={Car}
-          accent="amber"
-          hint="únicas registradas"
-        />
-        <KpiCard
-          label="Gastos activos"
-          value={mxnFormatter.format(k.activeExpenses)}
-          icon={ReceiptText}
-          accent="green"
-          hint="recuperables"
-        />
-        <KpiCard
-          label="Gastos pasivos"
-          value={mxnFormatter.format(k.passiveExpenses)}
-          icon={TrendingDown}
-          accent="rose"
-          hint="no recuperables"
-        />
-        <KpiCard
-          label="Inversionistas"
-          value={numberFormatter.format(k.totalInvestors)}
-          icon={Users}
-          accent="blue"
-          hint="cuentas activas"
-        />
-        <KpiCard
-          label="Capital invertido"
-          value={mxnFormatter.format(k.totalInvestorMoney)}
-          icon={Banknote}
-          accent="violet"
-          hint="total acumulado"
-        />
-      </section>
-
-      {/* Charts row */}
-      <section
-        aria-label="Tendencias anuales"
-        className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3"
-      >
-        <CarsByYearChart data={filteredYearly} />
-        <ProfitByYearChart data={filteredYearly} />
-        <InvestmentByYearChart data={filteredYearly} />
-      </section>
-
-      {/* Top performers */}
-      <section
-        aria-label="Top performers"
-        className="grid gap-4 lg:grid-cols-3"
-      >
-        <div className="lg:col-span-1">
-          <TopCarsCard cars={MOCK_TOP_CARS} />
+      {/* Loading (only first load) */}
+      {isLoading && !data && (
+        <div className="flex justify-center py-16">
+          <Loader2 className="size-8 animate-spin text-primary" strokeWidth={2.5} />
         </div>
-        <div className="lg:col-span-2">
-          <div className="flex h-full items-center justify-center rounded-lg border border-dashed border-border bg-muted/30 p-8 text-center text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Coins size={16} />
-              Espacio reservado para próximos widgets (ranking de inversionistas, etc.)
+      )}
+
+      {/* Error */}
+      {isError && (
+        <Card className="p-8 text-center">
+          <p className="text-sm text-muted-foreground">
+            No se pudo cargar el dashboard. Intenta de nuevo.
+          </p>
+        </Card>
+      )}
+
+      {/* Content */}
+      {data && !isError && kpis && charts && (
+        <>
+          {/* KPI Grid */}
+          <section
+            aria-label="Indicadores principales"
+            className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            <KpiCard
+              label={kpis.totalSales.label}
+              value={mxnFormatter.format(kpis.totalSales.value)}
+              icon={CircleDollarSign}
+              accent="blue"
+              trend={toTrend(kpis.totalSales)}
+              hint="vs. período anterior"
+            />
+            <KpiCard
+              label={kpis.totalProfit.label}
+              value={mxnFormatter.format(kpis.totalProfit.value)}
+              icon={TrendingUp}
+              accent="green"
+              trend={toTrend(kpis.totalProfit)}
+              hint="vs. período anterior"
+            />
+            <KpiCard
+              label={kpis.totalMovements.label}
+              value={numberFormatter.format(kpis.totalMovements.value)}
+              icon={Activity}
+              accent="violet"
+              hint={kpis.totalMovements.hint}
+            />
+            <KpiCard
+              label={kpis.totalBrands.label}
+              value={numberFormatter.format(kpis.totalBrands.value)}
+              icon={Car}
+              accent="amber"
+              hint={kpis.totalBrands.hint}
+            />
+            <KpiCard
+              label={kpis.activeExpenses.label}
+              value={mxnFormatter.format(kpis.activeExpenses.value)}
+              icon={ReceiptText}
+              accent="green"
+              trend={toTrend(kpis.activeExpenses)}
+              hint={kpis.activeExpenses.hint}
+            />
+            <KpiCard
+              label={kpis.passiveExpenses.label}
+              value={mxnFormatter.format(kpis.passiveExpenses.value)}
+              icon={TrendingDown}
+              accent="rose"
+              trend={toTrend(kpis.passiveExpenses)}
+              hint={kpis.passiveExpenses.hint}
+            />
+            <KpiCard
+              label={kpis.investorsCount.label}
+              value={numberFormatter.format(kpis.investorsCount.value)}
+              icon={Users}
+              accent="blue"
+              hint={kpis.investorsCount.hint}
+            />
+            <KpiCard
+              label={kpis.totalInvested.label}
+              value={mxnFormatter.format(kpis.totalInvested.value)}
+              icon={Banknote}
+              accent="violet"
+              trend={toTrend(kpis.totalInvested)}
+              hint={kpis.totalInvested.hint}
+            />
+          </section>
+
+          {/* Time series row */}
+          <section
+            aria-label="Tendencias anuales"
+            className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3"
+          >
+            <CarsByYearChart data={charts.carsSoldPerYear} />
+            <ProfitByYearChart data={charts.profitPerYear} />
+            <InvestmentByYearChart data={charts.investmentPerYear} />
+          </section>
+
+          {/* Breakdown row */}
+          <section
+            aria-label="Desglose por marca y categoría"
+            className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3"
+          >
+            <ProfitByBrandChart data={charts.profitByBrand} />
+            <AvgDaysToSellChart data={charts.avgDaysToSellByBrand} />
+            <ExpensesByCategoryChart data={charts.expensesByCategory} />
+          </section>
+
+          {/* Top performers */}
+          <section aria-label="Top performers" className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            <div>
+              <TopCarsCard cars={charts.topSoldCars} />
             </div>
-          </div>
-        </div>
-      </section>
+            <div className="lg:col-span-2">
+              <CarsByBrandChart data={charts.carsByBrand} />
+            </div>
+          </section>
+        </>
+      )}
     </div>
   );
 };

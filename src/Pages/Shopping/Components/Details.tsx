@@ -66,7 +66,10 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange, onAutoSta
           placeholder="Ej. Toyota"
         />
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="model" className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider ml-1">
+          <label
+            htmlFor="model"
+            className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider ml-1"
+          >
             Modelo
           </label>
           <div className="relative">
@@ -118,7 +121,10 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange, onAutoSta
         />
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="year_of_car" className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider ml-1">
+          <label
+            htmlFor="year_of_car"
+            className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider ml-1"
+          >
             Año del Auto
           </label>
           <select
@@ -138,7 +144,10 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange, onAutoSta
       </div>
 
       <div className="flex flex-col gap-1.5 mt-4 relative">
-        <label htmlFor="color" className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider ml-1">
+        <label
+          htmlFor="color"
+          className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider ml-1"
+        >
           Color del Vehículo
         </label>
         <button
@@ -175,7 +184,9 @@ export const Details: React.FC<DetailsProps> = ({ data, onInputChange, onAutoSta
                       />
                     )}
                   </div>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{color.name}</span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                    {color.name}
+                  </span>
                 </button>
               ))}
             </div>

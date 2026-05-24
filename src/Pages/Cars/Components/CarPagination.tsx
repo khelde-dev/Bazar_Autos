@@ -85,13 +85,13 @@ export const CarPagination: React.FC<CarPaginationProps> = ({
                   buttonVariants({ variant: "ghost", size: "icon" }),
                   "size-9 text-sm",
                   currentPage === page &&
-                    "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground",
+                    "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
                 )}
               >
                 {page}
               </button>
             </PaginationItem>
-          ),
+          )
         )}
 
         {/* Next */}

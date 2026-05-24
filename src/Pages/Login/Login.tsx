@@ -26,7 +26,7 @@ export default function Login() {
   return (
     <div className="min-h-screen w-full bg-background text-foreground lg:grid lg:grid-cols-2">
       {/* Brand panel — visible on lg+ only */}
-      <aside className="relative hidden overflow-hidden bg-gradient-to-br from-[#1a4bd3] via-[#2f63f6] to-[#3b6df6] p-12 text-white lg:flex lg:flex-col lg:justify-between">
+      <aside className="relative hidden overflow-hidden bg-linear-to-br from-[#1a4bd3] via-[#2f63f6] to-[#3b6df6] p-12 text-white lg:flex lg:flex-col lg:justify-between">
         <div
           className="absolute inset-0 opacity-20"
           style={{
@@ -41,9 +41,6 @@ export default function Login() {
           </div>
           <div className="flex flex-col leading-tight">
             <span className="text-lg font-semibold tracking-tight">Bazar de Autos</span>
-            <span className="text-xs uppercase tracking-[0.3em] text-white/70">
-              Acceso profesional
-            </span>
           </div>
         </div>
 
@@ -54,8 +51,8 @@ export default function Login() {
             <span className="text-white/70">para tu bazar de autos.</span>
           </h2>
           <p className="max-w-md text-sm leading-relaxed text-white/80">
-            Catálogo, inversionistas, gastos y rendimiento en una sola plataforma.
-            Información consolidada y decisiones basadas en datos reales.
+            Catálogo, inversionistas, gastos y rendimiento en una sola plataforma. Información
+            consolidada y decisiones basadas en datos reales.
           </p>
         </div>
 
@@ -71,7 +68,7 @@ export default function Login() {
           {/* Mobile brand */}
           <div className="flex flex-col items-center gap-3 lg:hidden">
             <div className="relative">
-              <div className="flex size-20 items-center justify-center rounded-3xl bg-gradient-to-br from-[#2f63f6] to-[#1a4bd3] shadow-lg shadow-blue-500/30">
+              <div className="flex size-20 items-center justify-center rounded-3xl bg-linear-to-br from-[#2f63f6] to-[#1a4bd3] shadow-lg shadow-blue-500/30">
                 <CarFront size={48} className="rotate-12 text-white" strokeWidth={1.5} />
               </div>
               <div className="absolute -bottom-1 -right-1 rounded-full bg-background p-1 shadow-sm">

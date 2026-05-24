@@ -42,8 +42,7 @@ import {
 const TYPE_STYLES: Record<CategoryType, string> = {
   Activo:
     "bg-emerald-100 text-emerald-700 border-transparent dark:bg-emerald-950/60 dark:text-emerald-300",
-  Pasivo:
-    "bg-rose-100 text-rose-700 border-transparent dark:bg-rose-950/60 dark:text-rose-300",
+  Pasivo: "bg-rose-100 text-rose-700 border-transparent dark:bg-rose-950/60 dark:text-rose-300",
 };
 
 const EMPTY_FORM: CategoryPayload = { name: "", type: "Pasivo" };
@@ -64,9 +63,7 @@ export const CategoriesPage: React.FC = () => {
   const deleteMutation = useDeleteCategory();
 
   // Flatten — backend returns { data: Category[] } or similar
-  const rows: MovementCategory[] = Array.isArray(data?.data)
-    ? data.data
-    : (data?.data?.rows ?? []);
+  const rows: MovementCategory[] = Array.isArray(data?.data) ? data.data : (data?.data?.rows ?? []);
 
   const openCreate = () => {
     setEditing(null);
@@ -129,7 +126,9 @@ export const CategoriesPage: React.FC = () => {
             <Box className="size-6 text-muted-foreground" />
           </div>
           <p className="text-sm font-semibold">Sin categorías</p>
-          <p className="text-xs text-muted-foreground">Agrega la primera categoría de movimiento.</p>
+          <p className="text-xs text-muted-foreground">
+            Agrega la primera categoría de movimiento.
+          </p>
         </Card>
       ) : (
         <Card className="overflow-hidden p-0">
@@ -146,7 +145,11 @@ export const CategoriesPage: React.FC = () => {
                 <TableRow key={cat.category_id}>
                   <TableCell className="font-medium">{cat.name}</TableCell>
                   <TableCell>
-                    <Badge className={TYPE_STYLES[cat.type] ?? "bg-muted text-muted-foreground border-transparent"}>
+                    <Badge
+                      className={
+                        TYPE_STYLES[cat.type] ?? "bg-muted text-muted-foreground border-transparent"
+                      }
+                    >
                       {cat.type}
                     </Badge>
                   </TableCell>
@@ -242,8 +245,8 @@ export const CategoriesPage: React.FC = () => {
             </div>
             <DialogTitle className="text-center">¿Eliminar categoría?</DialogTitle>
             <DialogDescription className="text-center">
-              <span className="font-semibold text-foreground">{toDelete?.name}</span> será
-              eliminada permanentemente del catálogo.
+              <span className="font-semibold text-foreground">{toDelete?.name}</span> será eliminada
+              permanentemente del catálogo.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-row gap-3 sm:justify-center">

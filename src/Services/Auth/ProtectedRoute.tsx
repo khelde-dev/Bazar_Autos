@@ -20,7 +20,5 @@ export const ProtectedRoute = () => {
     return <Navigate to="/login" replace />;
   }
 
-  return (
-      <Outlet />
-  );
+  return <Outlet />;
 };

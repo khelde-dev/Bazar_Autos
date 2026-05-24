@@ -49,5 +49,18 @@ export const useExpenseUrlFilters = () => {
   const setIsShared = useCallback((v: boolean) => updateParam("isShared", v), [updateParam]);
   const setPage = useCallback((p: number) => updateParam("page", p, false), [updateParam]);
 
-  return { year, month, type, name, isShared, page, setYear, setMonth, setType, setName, setIsShared, setPage };
+  return {
+    year,
+    month,
+    type,
+    name,
+    isShared,
+    page,
+    setYear,
+    setMonth,
+    setType,
+    setName,
+    setIsShared,
+    setPage,
+  };
 };

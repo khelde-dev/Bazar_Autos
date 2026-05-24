@@ -18,12 +18,16 @@ export const SharedVehiclesSection: React.FC<SharedVehiclesSectionProps> = ({
   <>
     <div
       className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${
-        isShared ? "bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800" : "bg-gray-50 dark:bg-gray-700/50 border-transparent"
+        isShared
+          ? "bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800"
+          : "bg-gray-50 dark:bg-gray-700/50 border-transparent"
       }`}
     >
       <div className="flex items-center gap-3">
         <Users className={isShared ? "text-blue-600" : "text-gray-400"} size={22} />
-        <span className={`font-bold text-sm ${isShared ? "text-blue-900 dark:text-blue-300" : "text-gray-500 dark:text-gray-400"}`}>
+        <span
+          className={`font-bold text-sm ${isShared ? "text-blue-900 dark:text-blue-300" : "text-gray-500 dark:text-gray-400"}`}
+        >
           ¿Monto compartido?
         </span>
       </div>
