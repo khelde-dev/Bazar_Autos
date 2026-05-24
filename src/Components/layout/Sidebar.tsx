@@ -4,6 +4,21 @@ import { cn } from "@/lib/utils";
 import { NAV_ITEMS } from "./nav-items";
 import { useUserRole } from "@/hooks/use-user-role";
 
+// Evaluated once at module load — stable across server/client, no hydration mismatch
+const CURRENT_YEAR = new Date().getFullYear();
+
+// Preload map — dispara el dynamic import en hover para adelantar la descarga
+// del chunk antes de que el usuario haga click (clave en 3G / 4G lento)
+const PRELOAD_MAP: Record<string, () => Promise<unknown>> = {
+  "/dashboard":          () => import("@/Pages/Dashboard/Dashboard"),
+  "/shopping":           () => import("@/Pages/Shopping/ShoppVehicle"),
+  "/cars":               () => import("@/Pages/Cars/CarListPage"),
+  "/expenses":           () => import("@/Pages/Expense/ExpenseVehicle"),
+  "/investments":        () => import("@/Pages/Investments/AddInvestment"),
+  "/users":              () => import("@/Pages/Users/UsersPage"),
+  "/movements-category": () => import("@/Pages/MovementCategories/CategoriesPage"),
+};
+
 interface SidebarProps {
   className?: string;
   onNavigate?: () => void;
@@ -36,6 +51,8 @@ export const Sidebar = ({ className, onNavigate }: SidebarProps) => {
             key={to}
             to={to}
             onClick={onNavigate}
+            onMouseEnter={() => PRELOAD_MAP[to]?.()}
+            onFocus={() => PRELOAD_MAP[to]?.()}
             className={({ isActive }) =>
               cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
@@ -53,7 +70,7 @@ export const Sidebar = ({ className, onNavigate }: SidebarProps) => {
 
       <div className="border-t border-sidebar-border p-3">
         <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
-          © {new Date().getFullYear()} Bazar Autos
+          © {CURRENT_YEAR} Bazar Autos
         </p>
       </div>
     </aside>

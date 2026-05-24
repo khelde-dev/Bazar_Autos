@@ -30,7 +30,7 @@ export const UserMenu = () => {
           aria-label="Abrir menú de usuario"
         >
           <Avatar className="size-9">
-            <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-700 text-xs font-semibold text-white">
+            <AvatarFallback className="bg-linear-to-br from-blue-500 to-blue-700 text-xs font-semibold text-white">
               {initial}
             </AvatarFallback>
           </Avatar>

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { lazy, Suspense, useMemo } from "react";
 import {
   Activity,
   Banknote,
@@ -11,20 +11,39 @@ import {
   Users,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { DashboardFilters } from "./Components/DashboardFilters";
 import { KpiCard } from "./Components/KpiCard";
 import { TopCarsCard } from "./Components/TopCarsCard";
-import { CarsByYearChart } from "./Components/CarsByYearChart";
-import { ProfitByYearChart } from "./Components/ProfitByYearChart";
-import { InvestmentByYearChart } from "./Components/InvestmentByYearChart";
-import { ProfitByBrandChart } from "./Components/ProfitByBrandChart";
-import { AvgDaysToSellChart } from "./Components/AvgDaysToSellChart";
-import { ExpensesByCategoryChart } from "./Components/ExpensesByCategoryChart";
-import { CarsByBrandChart } from "./Components/CarsByBrandChart";
 import { ExportReportDialog } from "./Components/ExportReportDialog";
 import { useDashboard } from "./Hooks/useDashboard";
 import { useDashboardUrlFilters } from "./Hooks/useDashboardUrlFilters";
 import type { KpiValue } from "./Types/Dashboard.types";
+
+// Lazy — chart-vendor (431 KB / 115 KB gzip) se descarga solo cuando se llega al dashboard
+const CarsByYearChart     = lazy(() => import("./Components/CarsByYearChart").then(m => ({ default: m.CarsByYearChart })));
+const ProfitByYearChart   = lazy(() => import("./Components/ProfitByYearChart").then(m => ({ default: m.ProfitByYearChart })));
+const InvestmentByYearChart = lazy(() => import("./Components/InvestmentByYearChart").then(m => ({ default: m.InvestmentByYearChart })));
+const ProfitByBrandChart  = lazy(() => import("./Components/ProfitByBrandChart").then(m => ({ default: m.ProfitByBrandChart })));
+const AvgDaysToSellChart  = lazy(() => import("./Components/AvgDaysToSellChart").then(m => ({ default: m.AvgDaysToSellChart })));
+const ExpensesByCategoryChart = lazy(() => import("./Components/ExpensesByCategoryChart").then(m => ({ default: m.ExpensesByCategoryChart })));
+const CarsByBrandChart    = lazy(() => import("./Components/CarsByBrandChart").then(m => ({ default: m.CarsByBrandChart })));
+
+// Skeleton para cada card de chart mientras carga chart-vendor
+const ChartSkeleton = () => (
+  <Card className="space-y-3 p-4">
+    <Skeleton className="h-4 w-2/5" />
+    <Skeleton className="h-[260px] w-full rounded-lg" />
+  </Card>
+);
+
+const ChartRowSkeleton = ({ count }: { count: 2 | 3 }) => (
+  <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+    <ChartSkeleton />
+    <ChartSkeleton />
+    {count === 3 && <ChartSkeleton />}
+  </div>
+);
 
 const mxnFormatter = new Intl.NumberFormat("es-MX", {
   style: "currency",
@@ -68,7 +87,7 @@ export const Dashboard = () => {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
           <p className="text-sm text-muted-foreground">
-            Vista general del negocio — KPIs, tendencias y top performers
+            Vista general del negocio: KPIs, tendencias y top performers
           </p>
         </div>
         <div className="flex flex-wrap items-end gap-3">
@@ -171,34 +190,47 @@ export const Dashboard = () => {
           </section>
 
           {/* Time series row */}
-          <section
-            aria-label="Tendencias anuales"
-            className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3"
-          >
-            <CarsByYearChart data={charts.carsSoldPerYear} />
-            <ProfitByYearChart data={charts.profitPerYear} />
-            <InvestmentByYearChart data={charts.investmentPerYear} />
-          </section>
+          <Suspense fallback={<ChartRowSkeleton count={3} />}>
+            <section
+              aria-label="Tendencias anuales"
+              className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3"
+            >
+              <CarsByYearChart data={charts.carsSoldPerYear} />
+              <ProfitByYearChart data={charts.profitPerYear} />
+              <InvestmentByYearChart data={charts.investmentPerYear} />
+            </section>
+          </Suspense>
 
           {/* Breakdown row */}
-          <section
-            aria-label="Desglose por marca y categoría"
-            className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3"
-          >
-            <ProfitByBrandChart data={charts.profitByBrand} />
-            <AvgDaysToSellChart data={charts.avgDaysToSellByBrand} />
-            <ExpensesByCategoryChart data={charts.expensesByCategory} />
-          </section>
+          <Suspense fallback={<ChartRowSkeleton count={3} />}>
+            <section
+              aria-label="Desglose por marca y categoría"
+              className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3"
+            >
+              <ProfitByBrandChart data={charts.profitByBrand} />
+              <AvgDaysToSellChart data={charts.avgDaysToSellByBrand} />
+              <ExpensesByCategoryChart data={charts.expensesByCategory} />
+            </section>
+          </Suspense>
 
           {/* Top performers */}
-          <section aria-label="Top performers" className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            <div>
-              <TopCarsCard cars={charts.topSoldCars} />
-            </div>
-            <div className="lg:col-span-2">
-              <CarsByBrandChart data={charts.carsByBrand} />
-            </div>
-          </section>
+          <Suspense
+            fallback={
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <ChartSkeleton />
+                <div className="lg:col-span-2"><ChartSkeleton /></div>
+              </div>
+            }
+          >
+            <section aria-label="Top performers" className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+              <div>
+                <TopCarsCard cars={charts.topSoldCars} />
+              </div>
+              <div className="lg:col-span-2">
+                <CarsByBrandChart data={charts.carsByBrand} />
+              </div>
+            </section>
+          </Suspense>
         </>
       )}
     </div>
