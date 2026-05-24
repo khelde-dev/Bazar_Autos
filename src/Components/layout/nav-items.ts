@@ -1,8 +1,10 @@
 import {
   BarChart3,
+  Box,
   Car,
   Receipt,
   ShoppingCart,
+  User,
   Wallet,
   type LucideIcon,
 } from "lucide-react";
@@ -21,4 +23,6 @@ export const NAV_ITEMS: NavItem[] = [
   { to: "/cars", label: "Catálogo", icon: Car },
   { to: "/expenses", label: "Gastos", icon: Receipt },
   { to: "/investments", label: "Inversionista", icon: Wallet, investorOnly: true },
+  { to: "/users", label: "Alta de Usuarios", icon: User, investorOnly: true },
+  { to: "/movements-category", label: "Catalogo de movimientos", icon: Box, investorOnly: true },
 ];

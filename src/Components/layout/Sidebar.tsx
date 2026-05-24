@@ -10,8 +10,8 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ className, onNavigate }: SidebarProps) => {
-  const { isInvestor } = useUserRole();
-  const items = NAV_ITEMS.filter((item) => !item.investorOnly || isInvestor);
+  const { isAdmin } = useUserRole();
+  const items = NAV_ITEMS.filter((item) => !item.investorOnly || isAdmin);
 
   return (
     <aside

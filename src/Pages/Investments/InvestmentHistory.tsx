@@ -1,5 +1,4 @@
 import {
-  ArrowLeft,
   Loader2,
   MinusCircle,
   PlusCircle,
@@ -7,8 +6,9 @@ import {
   TrendingUp,
   Wallet,
 } from "lucide-react";
+import { BackBar } from "./Components/BackBar";
 import { useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -76,7 +76,6 @@ const TypeBadge = ({ tx }: { tx: Transaction }) => {
 
 export const InvestmentHistory = () => {
   const { userId = "", investmentId = "" } = useParams();
-  const navigate = useNavigate();
   const { year, month, type, setYear, setMonth, setType } = useUrlFilters();
 
   const currentYear = new Date().getFullYear();
@@ -95,24 +94,11 @@ export const InvestmentHistory = () => {
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6 p-4 lg:p-6">
       {/* Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => navigate(`/investments/${userId}`)}
-            aria-label="Volver"
-          >
-            <ArrowLeft />
-          </Button>
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Historial de inversión</h1>
-            <p className="text-sm text-muted-foreground">
-              Transacciones registradas en esta inversión
-            </p>
-          </div>
-        </div>
-      </div>
+      <BackBar
+        title="Historial de inversión"
+        subtitle="Transacciones registradas en esta inversión"
+        to={`/investments/${userId}`}
+      />
 
       {/* Summary */}
       {summary && (

@@ -1,4 +1,5 @@
-import { ArrowLeft, ArrowRightLeft, History, Loader2, Wallet } from "lucide-react";
+import { ArrowRightLeft, History, Loader2, Wallet } from "lucide-react";
+import { BackBar } from "./Components/BackBar";
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -68,24 +69,11 @@ export const ManageInvestments = () => {
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6 p-4 lg:p-6">
       {/* Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => navigate("/investments")}
-            aria-label="Volver"
-          >
-            <ArrowLeft />
-          </Button>
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Gestionar inversiones</h1>
-            <p className="text-sm text-muted-foreground">
-              Inversiones activas del inversionista seleccionado
-            </p>
-          </div>
-        </div>
-      </div>
+      <BackBar
+        title="Gestionar inversiones"
+        subtitle="Inversiones activas del inversionista seleccionado"
+        to="/investments"
+      />
 
       {/* Balance card */}
       <Card className="overflow-hidden border-0 bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg">

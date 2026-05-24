@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/table";
 import { resolveCarColor } from "../../Utils/Functions/colorUtils";
 import { buildYearRange } from "../Investments/Utils/format";
+import { BackBar } from "../Investments/Components/BackBar";
 import { ExpenseSharedCard } from "./Components/ExpenseSharedCard";
 import { ExpenseListPagination } from "./Components/ExpenseListPagination";
 import { useExpenseList } from "./Hooks/useExpenseList";
@@ -89,14 +90,11 @@ export const ExpenseListPage = () => {
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6 p-4 lg:p-6">
       {/* Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Gastos registrados</h1>
-          <p className="text-sm text-muted-foreground">
-            Vista agrupada por categoría · {pagination?.total ?? 0} resultados
-          </p>
-        </div>
-      </div>
+      <BackBar
+        title="Gastos registrados"
+        subtitle={`Vista agrupada por categoría · ${pagination?.total ?? 0} resultados`}
+        to="/expenses"
+      />
 
       {/* Filters */}
       <Card className="p-4">

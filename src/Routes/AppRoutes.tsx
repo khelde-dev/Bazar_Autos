@@ -11,6 +11,8 @@ import { AddInvestment } from "@/Pages/Investments/AddInvestment";
 import { InvestmentHistory } from "@/Pages/Investments/InvestmentHistory";
 import { InvestmentOperation } from "@/Pages/Investments/InvestmentOperation";
 import { ManageInvestments } from "@/Pages/Investments/ManageInvestments";
+import { UsersPage } from "@/Pages/Users/UsersPage";
+import { CategoriesPage } from "@/Pages/MovementCategories/CategoriesPage";
 import Login from "@/Pages/Login/Login";
 import { InvestorRoute } from "@/Services/Auth/InvestorRoute";
 import { ProtectedRoute } from "@/Services/Auth/ProtectedRoute";
@@ -43,6 +45,8 @@ export const AppRoutes = () => {
                 path="/investments/:userId/:investmentId/history"
                 element={<InvestmentHistory />}
               />
+              <Route path="/users" element={<UsersPage />} />
+              <Route path="/movements-category" element={<CategoriesPage />} />
             </Route>
           </Route>
         </Route>

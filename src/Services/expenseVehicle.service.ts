@@ -7,7 +7,7 @@ export const createExpense = async (payload: any) => {
 };
 
 export const getCategories = async () => {
-  const { data } = await api.get("/expenses/categories");
+  const { data } = await api.get("/categories");
   return data;
 };
 
@@ -22,5 +22,20 @@ export const getExpenses = async (params: ExpenseListParams) => {
 // TODO: endpoint PUT /expenses/:id pending implementation
 export const updateExpense = async (movementId: string, payload: any) => {
   const { data } = await api.put(`/expenses/${movementId}`, payload);
+  return data;
+};
+
+export const createCategory = async (payload: { name: string; type: string }) => {
+  const { data } = await api.post("/categories", payload);
+  return data;
+};
+
+export const updateCategory = async (id: string, payload: { name: string; type: string }) => {
+  const { data } = await api.put(`/categories/${id}`, payload);
+  return data;
+};
+
+export const deleteCategory = async (id: string) => {
+  const { data } = await api.delete(`/categories/${id}`);
   return data;
 };

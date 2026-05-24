@@ -1,4 +1,5 @@
-import { ArrowLeft, DollarSign, Loader2, Save, Wallet } from "lucide-react";
+import { DollarSign, Loader2, Save, Wallet } from "lucide-react";
+import { BackBar } from "./Components/BackBar";
 import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -66,22 +67,11 @@ export const InvestmentOperation = () => {
     <div className="mx-auto w-full max-w-5xl space-y-6 p-4 lg:p-6">
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => navigate(`/investments/${userId}`)}
-            aria-label="Volver"
-          >
-            <ArrowLeft />
-          </Button>
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Nueva transacción</h1>
-            <p className="text-sm text-muted-foreground">
-              Registra entrada o salida de capital
-            </p>
-          </div>
-        </div>
+        <BackBar
+          title="Nueva transacción"
+          subtitle="Registra entrada o salida de capital"
+          to={`/investments/${userId}`}
+        />
         <Button onClick={handleConfirm} disabled={isPending} size="lg">
           {isPending ? <Loader2 className="animate-spin" /> : <Save />}
           {isPending ? "Procesando..." : "Confirmar operación"}
