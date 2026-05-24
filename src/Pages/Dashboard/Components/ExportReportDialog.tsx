@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { CalendarIcon, Download, FileSpreadsheet } from "lucide-react";
+import { useMemo, useReducer } from "react";
+import { CalendarIcon, Download, FileSpreadsheet, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import type { DateRange } from "react-day-picker";
@@ -27,40 +27,89 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { exportReport } from "@/Services/reports.service";
+import type { ReportType, ReportFormat } from "@/Services/reports.service";
 
-const REPORT_TYPES = [
+const REPORT_TYPES: Array<{ value: ReportType; label: string }> = [
   { value: "sales", label: "Ventas (Catálogo)" },
   { value: "expenses", label: "Gastos" },
   { value: "investments", label: "Inversionistas" },
   { value: "full", label: "Reporte completo" },
-] as const;
+];
 
-type ReportType = (typeof REPORT_TYPES)[number]["value"];
-
-const FORMATS = [
+const FORMATS: Array<{ value: ReportFormat; label: string }> = [
   { value: "xlsx", label: "Excel (.xlsx)" },
   { value: "csv", label: "CSV (.csv)" },
   { value: "pdf", label: "PDF (.pdf)" },
-] as const;
+];
 
-type ExportFormat = (typeof FORMATS)[number]["value"];
+// Constant lower bound — doesn't change
+const MIN_DATE = new Date("1900-01-01");
 
+// ── State ──────────────────────────────────────────────────────────────────────
+interface DialogState {
+  open: boolean;
+  reportType: ReportType;
+  exportFormat: ReportFormat;
+  range: DateRange | undefined;
+  isExporting: boolean;
+}
+
+type DialogAction =
+  | { type: "SET_OPEN"; payload: boolean }
+  | { type: "SET_REPORT_TYPE"; payload: ReportType }
+  | { type: "SET_FORMAT"; payload: ReportFormat }
+  | { type: "SET_RANGE"; payload: DateRange | undefined }
+  | { type: "SET_EXPORTING"; payload: boolean };
+
+const initialState: DialogState = {
+  open: false,
+  reportType: "full",
+  exportFormat: "xlsx",
+  range: undefined,
+  isExporting: false,
+};
+
+function reducer(state: DialogState, action: DialogAction): DialogState {
+  switch (action.type) {
+    case "SET_OPEN":       return { ...state, open: action.payload };
+    case "SET_REPORT_TYPE": return { ...state, reportType: action.payload };
+    case "SET_FORMAT":     return { ...state, exportFormat: action.payload };
+    case "SET_RANGE":      return { ...state, range: action.payload };
+    case "SET_EXPORTING":  return { ...state, isExporting: action.payload };
+  }
+}
+
+// ── Component ──────────────────────────────────────────────────────────────────
 export const ExportReportDialog = () => {
-  const [open, setOpen] = useState(false);
-  const [reportType, setReportType] = useState<ReportType>("full");
-  const [exportFormat, setExportFormat] = useState<ExportFormat>("xlsx");
-  const [range, setRange] = useState<DateRange | undefined>();
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { open, reportType, exportFormat, range, isExporting } = state;
 
-  const handleExport = () => {
+  // Stable "today" — computed once per mount, no new Date() in JSX
+  const today = useMemo(() => new Date(), []);
+
+  const handleExport = async () => {
     if (!range?.from || !range?.to) {
       toast.error("Selecciona un rango de fechas para exportar");
       return;
     }
-    // TODO: wire to backend endpoint
-    toast.success("Reporte en cola — recibirás un enlace por correo", {
-      description: `${REPORT_TYPES.find((r) => r.value === reportType)?.label} · ${exportFormat.toUpperCase()}`,
-    });
-    setOpen(false);
+    dispatch({ type: "SET_EXPORTING", payload: true });
+    try {
+      await exportReport({
+        type: reportType,
+        format: exportFormat,
+        date_from: format(range.from, "yyyy-MM-dd"),
+        date_to: format(range.to, "yyyy-MM-dd"),
+      });
+      toast.success("Reporte descargado", {
+        description: `${REPORT_TYPES.find((r) => r.value === reportType)?.label} · ${exportFormat.toUpperCase()}`,
+      });
+      dispatch({ type: "SET_OPEN", payload: false });
+    } catch {
+      toast.error("Error al generar el reporte. Intenta de nuevo.");
+    } finally {
+      dispatch({ type: "SET_EXPORTING", payload: false });
+    }
   };
 
   const rangeLabel =
@@ -69,7 +118,7 @@ export const ExportReportDialog = () => {
       : "Seleccionar rango de fechas";
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(v) => dispatch({ type: "SET_OPEN", payload: v })}>
       <DialogTrigger asChild>
         <Button>
           <Download />
@@ -87,7 +136,10 @@ export const ExportReportDialog = () => {
         <div className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="report-type">Tipo de reporte</Label>
-            <Select value={reportType} onValueChange={(v) => setReportType(v as ReportType)}>
+            <Select
+              value={reportType}
+              onValueChange={(v) => dispatch({ type: "SET_REPORT_TYPE", payload: v as ReportType })}
+            >
               <SelectTrigger id="report-type">
                 <SelectValue />
               </SelectTrigger>
@@ -103,7 +155,10 @@ export const ExportReportDialog = () => {
 
           <div className="grid gap-2">
             <Label htmlFor="export-format">Formato</Label>
-            <Select value={exportFormat} onValueChange={(v) => setExportFormat(v as ExportFormat)}>
+            <Select
+              value={exportFormat}
+              onValueChange={(v) => dispatch({ type: "SET_FORMAT", payload: v as ReportFormat })}
+            >
               <SelectTrigger id="export-format">
                 <SelectValue />
               </SelectTrigger>
@@ -139,11 +194,11 @@ export const ExportReportDialog = () => {
                   mode="range"
                   defaultMonth={range?.from}
                   selected={range}
-                  onSelect={setRange}
+                  onSelect={(v) => dispatch({ type: "SET_RANGE", payload: v })}
                   numberOfMonths={2}
                   captionLayout="dropdown"
                   locale={es}
-                  disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                  disabled={(date) => date > today || date < MIN_DATE}
                 />
               </PopoverContent>
             </Popover>
@@ -152,11 +207,15 @@ export const ExportReportDialog = () => {
 
         <DialogFooter className="gap-2 sm:gap-0">
           <DialogClose asChild>
-            <Button variant="ghost">Cancelar</Button>
+            <Button variant="ghost" disabled={isExporting}>Cancelar</Button>
           </DialogClose>
-          <Button onClick={handleExport}>
-            <FileSpreadsheet />
-            Exportar
+          <Button onClick={handleExport} disabled={isExporting}>
+            {isExporting ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <FileSpreadsheet />
+            )}
+            {isExporting ? "Generando..." : "Exportar"}
           </Button>
         </DialogFooter>
       </DialogContent>
