@@ -132,13 +132,3 @@ input::-webkit-credentials-auto-fill-button {
   }
 }
 
-/* Sonner: top-center on mobile, bottom-right on desktop (set via position prop) */
-@media (max-width: 767px) {
-  [data-sonner-toaster] {
-    top: 0 !important;
-    bottom: auto !important;
-    left: 50% !important;
-    right: auto !important;
-    transform: translateX(-50%) !important;
-  }
-}

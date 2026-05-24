@@ -1,4 +1,5 @@
-import { ArrowLeft, Calendar, Car, Check, DollarSign, Loader2, Save, Search, Users, X } from "lucide-react";
+import { Calendar, Car, Check, DollarSign, Loader2, Save, Search, Users, X } from "lucide-react";
+import { BackBar } from "../Investments/Components/BackBar";
 import type React from "react";
 import { useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -180,20 +181,11 @@ export const ExpenseEditPage = () => {
     <div className="mx-auto w-full max-w-5xl space-y-6 p-4 lg:p-6">
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => navigate("/expenses/list")}
-            aria-label="Volver a lista"
-          >
-            <ArrowLeft />
-          </Button>
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Editar movimiento</h1>
-            <p className="text-sm text-muted-foreground">{pageSubtitle}</p>
-          </div>
-        </div>
+        <BackBar
+          title="Editar movimiento"
+          subtitle={pageSubtitle}
+          to="/expenses/list"
+        />
         <Button onClick={handleSave} disabled={isPending} size="lg">
           {isPending ? <Loader2 className="animate-spin" /> : <Save />}
           {isPending ? "Guardando..." : "Guardar cambios"}

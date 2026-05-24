@@ -1,29 +1,35 @@
-import { ArrowLeft } from "lucide-react";
+import type React from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 interface BackBarProps {
   title: string;
+  subtitle?: React.ReactNode;
+  /** Navigate to this path on click. Falls back to navigate(-1) if omitted. */
   to?: string;
+  /** Custom click handler — takes priority over `to`. */
+  onClick?: () => void;
 }
 
-export const BackBar = ({ title, to }: BackBarProps) => {
+export const BackBar = ({ title, subtitle, to, onClick }: BackBarProps) => {
   const navigate = useNavigate();
+
   const handleBack = () => {
+    if (onClick) { onClick(); return; }
     if (to) navigate(to);
     else navigate(-1);
   };
 
   return (
-    <div className="flex items-center gap-3 py-2">
-      <button
-        onClick={handleBack}
-        className="p-2 rounded-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-blue-600 dark:text-blue-400 active:scale-95 transition-all shadow-sm"
-        aria-label="Volver atrás"
-        title="Volver"
-      >
-        <ArrowLeft size={20} strokeWidth={2.5} />
-      </button>
-      <h1 className="font-semibold text-slate-800 dark:text-slate-100 text-lg tracking-tight">{title}</h1>
+    <div className="flex items-center gap-3">
+      <Button variant="outline" size="icon" onClick={handleBack} aria-label="Volver">
+        <ArrowLeft />
+      </Button>
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+        {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
+      </div>
     </div>
   );
 };

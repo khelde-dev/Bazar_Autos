@@ -25,3 +25,26 @@ export const getListUser = async () => {
   const { data } = await api.get("/users");
   return data;
 };
+
+export const createUser = async (payload: {
+  username: string;
+  password: string;
+  full_name: string;
+  email: string;
+}) => {
+  const { data } = await api.post("/users", payload);
+  return data;
+};
+
+export const updateUser = async (
+  userId: string,
+  payload: { username: string; password: string; full_name: string },
+) => {
+  const { data } = await api.put(`/users/${userId}`, payload);
+  return data;
+};
+
+export const deleteUser = async (userId: string) => {
+  const { data } = await api.delete(`/users/${userId}`);
+  return data;
+};

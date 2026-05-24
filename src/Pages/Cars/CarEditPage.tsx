@@ -1,6 +1,6 @@
 import {
-  ArrowLeft,
   Bookmark,
+  CalendarIcon,
   Check,
   DollarSign,
   FileText,
@@ -9,6 +9,10 @@ import {
   Save,
   StickyNote,
 } from "lucide-react";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { Calendar } from "@/components/ui/calendar";
+import { BackBar } from "../Investments/Components/BackBar";
 import type React from "react";
 import { useMemo, useState } from "react";
 import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -69,6 +73,23 @@ const STATUS_STYLES: Record<VehicleStatus, string> = {
   Reparacion: "bg-rose-600 text-white border-rose-600",
 };
 
+// ── Date helpers ─────────────────────────────────────────────────────────────
+// new Date("YYYY-MM-DD") parses as UTC → shift de -1 día en zonas negativas.
+// Construir con (y, m-1, d) fuerza tiempo local y evita el bug.
+const toLocalDate = (str: string | null | undefined): Date | undefined => {
+  if (!str) return undefined;
+  const [y, m, d] = str.split("-").map(Number);
+  return new Date(y, m - 1, d);
+};
+
+const toDateStr = (date: Date): string =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
+const displayDate = (str: string | null | undefined): string => {
+  const d = toLocalDate(str);
+  return d ? format(d, "d 'de' MMMM yyyy", { locale: es }) : "Seleccionar fecha";
+};
+
 export const CarEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -106,6 +127,8 @@ const CarEditForm: React.FC<CarEditFormProps> = ({ car, onBack }) => {
   const { data: modelsData, isLoading: isLoadingModels } = useCarModels();
   const [isCustomModel, setIsCustomModel] = useState(false);
   const [noteEditing, setNoteEditing] = useState<keyof VehicleExpenses | null>(null);
+  const [purchaseDateOpen, setPurchaseDateOpen] = useState(false);
+  const [saleDateOpen, setSaleDateOpen] = useState(false);
 
   const totalInvestment = useMemo(() => {
     const sumExpenses = Object.values(expenses).reduce(
@@ -136,11 +159,6 @@ const CarEditForm: React.FC<CarEditFormProps> = ({ car, onBack }) => {
     }
   };
 
-  const handleSaleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleInputChange(e);
-    if (e.target.value) handleStatusChange("Vendido");
-  };
-
   const handleAmountChange = (key: keyof VehicleExpenses, raw: string) => {
     if (raw === "" || /^\d*\.?\d*$/.test(raw)) {
       handleExpenseChange({
@@ -161,17 +179,11 @@ const CarEditForm: React.FC<CarEditFormProps> = ({ car, onBack }) => {
     <div className="mx-auto w-full max-w-7xl space-y-6 p-4 lg:p-6">
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <Button variant="outline" size="icon" onClick={onBack} aria-label="Volver">
-            <ArrowLeft />
-          </Button>
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Editar vehículo</h1>
-            <p className="text-sm text-muted-foreground">
-              {vehicleData.brand} {vehicleData.model}
-            </p>
-          </div>
-        </div>
+        <BackBar
+          title="Editar vehículo"
+          subtitle={`${vehicleData.brand} ${vehicleData.model}`}
+          onClick={onBack}
+        />
         <Button onClick={handleSave} disabled={isPending} size="lg">
           {isPending ? <Loader2 className="animate-spin" /> : <Save />}
           {isPending ? "Guardando..." : "Guardar cambios"}
@@ -313,25 +325,69 @@ const CarEditForm: React.FC<CarEditFormProps> = ({ car, onBack }) => {
                 </Popover>
               </div>
 
+              {/* Fecha de compra */}
               <div className="grid gap-1.5">
-                <Label htmlFor="purchase_date">Fecha de compra</Label>
-                <Input
-                  id="purchase_date"
-                  name="purchase_date"
-                  type="date"
-                  value={vehicleData.purchase_date}
-                  onChange={handleInputChange}
-                />
+                <Label>Fecha de compra</Label>
+                <Popover open={purchaseDateOpen} onOpenChange={setPurchaseDateOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="h-10 w-full justify-start font-normal"
+                    >
+                      <CalendarIcon className="mr-2 size-4 text-muted-foreground" />
+                      <span className={!vehicleData.purchase_date ? "text-muted-foreground" : ""}>
+                        {displayDate(vehicleData.purchase_date)}
+                      </span>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={toLocalDate(vehicleData.purchase_date)}
+                      defaultMonth={toLocalDate(vehicleData.purchase_date)}
+                      captionLayout="dropdown"
+                      onSelect={(date) => {
+                        if (date) setField("purchase_date", toDateStr(date));
+                        setPurchaseDateOpen(false);
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
+
+              {/* Fecha de venta */}
               <div className="grid gap-1.5">
-                <Label htmlFor="sale_date">Fecha de venta</Label>
-                <Input
-                  id="sale_date"
-                  name="sale_date"
-                  type="date"
-                  value={vehicleData.sale_date || ""}
-                  onChange={handleSaleDateChange}
-                />
+                <Label>Fecha de venta</Label>
+                <Popover open={saleDateOpen} onOpenChange={setSaleDateOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="h-10 w-full justify-start font-normal"
+                    >
+                      <CalendarIcon className="mr-2 size-4 text-muted-foreground" />
+                      <span className={!vehicleData.sale_date ? "text-muted-foreground" : ""}>
+                        {displayDate(vehicleData.sale_date)}
+                      </span>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={toLocalDate(vehicleData.sale_date)}
+                      defaultMonth={toLocalDate(vehicleData.sale_date)}
+                      captionLayout="dropdown"
+                      onSelect={(date) => {
+                        if (date) {
+                          setField("sale_date", toDateStr(date));
+                          handleStatusChange("Vendido");
+                        } else {
+                          setField("sale_date", "");
+                        }
+                        setSaleDateOpen(false);
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
             </CardContent>
           </Card>
