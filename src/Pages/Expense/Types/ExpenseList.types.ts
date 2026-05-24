@@ -1,11 +1,13 @@
 export type ExpenseSubType = "Activo" | "Pasivo";
 
 export interface ExpenseCar {
-  id: string;
+  car_id: string;
+  movement_id: string;
   year: number;
   brand: string;
   color: string;
   model: string;
+  amount: number;
   status: string;
 }
 
@@ -25,7 +27,11 @@ export interface ExpenseMovement {
 
 export interface SharedExpenseRow {
   category: ExpenseCategory;
+  type: string;
+  description: string;
+  closing_date: string;
   cars: ExpenseCar[];
+  movements_ids: string[];
   total: number;
 }
 

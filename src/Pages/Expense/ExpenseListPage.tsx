@@ -1,11 +1,17 @@
-import { Loader2, Pencil, Search } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ChevronLeft, ChevronRight, Loader2, Pencil, Search, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -21,16 +27,113 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import { resolveCarColor } from "../../Utils/Functions/colorUtils";
 import { buildYearRange } from "../Investments/Utils/format";
 import { BackBar } from "../Investments/Components/BackBar";
 import { ExpenseSharedCard } from "./Components/ExpenseSharedCard";
-import { ExpenseListPagination } from "./Components/ExpenseListPagination";
+import { DeleteExpenseModal } from "./Components/DeleteExpenseModal";
 import { useExpenseList } from "./Hooks/useExpenseList";
 import { useExpenseUrlFilters } from "./Hooks/useExpenseUrlFilters";
-import type { ExpenseSubType, SharedExpenseRow } from "./Types/ExpenseList.types";
+import { useDeleteExpense } from "./Hooks/useExpenseMutate";
+import type {
+  ExpensePagination,
+  ExpenseSubType,
+  SharedExpenseRow,
+} from "./Types/ExpenseList.types";
 
 const mxnFormatter = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
+
+type PageItem = number | "ellipsis-start" | "ellipsis-end";
+
+function getPageNumbers(current: number, total: number): PageItem[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const left = Math.max(2, current - 1);
+  const right = Math.min(total - 1, current + 1);
+  const result: PageItem[] = [1];
+  if (left > 2) result.push("ellipsis-start");
+  for (let i = left; i <= right; i++) result.push(i);
+  if (right < total - 1) result.push("ellipsis-end");
+  result.push(total);
+  return result;
+}
+
+const ExpensePager = ({
+  pagination,
+  onPageChange,
+}: {
+  pagination: ExpensePagination;
+  onPageChange: (p: number) => void;
+}) => {
+  const { currentPage, totalPages, total, hasNextPage, hasPrevPage } = pagination;
+  const pages = getPageNumbers(currentPage, totalPages);
+  return (
+    <div className="flex items-center justify-between pt-1">
+      <span className="text-xs text-muted-foreground">
+        {total} resultado{total !== 1 ? "s" : ""}
+      </span>
+      {totalPages > 1 && (
+        <Pagination className="mx-0 w-auto">
+          <PaginationContent className="gap-0.5">
+            <PaginationItem>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onPageChange(currentPage - 1)}
+                disabled={!hasPrevPage}
+                className="size-9"
+                aria-label="Página anterior"
+              >
+                <ChevronLeft className="size-4" />
+              </Button>
+            </PaginationItem>
+            <PaginationItem className="sm:hidden">
+              <span className="px-2 text-sm tabular-nums text-muted-foreground">
+                {currentPage} / {totalPages}
+              </span>
+            </PaginationItem>
+            {pages.map((page) =>
+              typeof page === "string" ? (
+                <PaginationItem key={page} className="hidden sm:flex">
+                  <PaginationEllipsis />
+                </PaginationItem>
+              ) : (
+                <PaginationItem key={page} className="hidden sm:flex">
+                  <button
+                    type="button"
+                    onClick={() => onPageChange(page)}
+                    aria-label={`Página ${page}`}
+                    aria-current={currentPage === page ? "page" : undefined}
+                    className={cn(
+                      buttonVariants({ variant: "ghost", size: "icon" }),
+                      "size-9 text-sm",
+                      currentPage === page &&
+                        "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
+                    )}
+                  >
+                    {page}
+                  </button>
+                </PaginationItem>
+              )
+            )}
+            <PaginationItem>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onPageChange(currentPage + 1)}
+                disabled={!hasNextPage}
+                className="size-9"
+                aria-label="Página siguiente"
+              >
+                <ChevronRight className="size-4" />
+              </Button>
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
+    </div>
+  );
+};
 
 const MONTHS = [
   { value: "all", label: "Todos" },
@@ -56,18 +159,8 @@ const SUBTYPE_OPTIONS: Array<{ value: "all" | ExpenseSubType; label: string }> =
 
 export const ExpenseListPage = () => {
   const navigate = useNavigate();
-  const {
-    year,
-    month,
-    type,
-    name,
-    page,
-    setYear,
-    setMonth,
-    setType,
-    setName,
-    setPage,
-  } = useExpenseUrlFilters();
+  const { year, month, type, name, page, setYear, setMonth, setType, setName, setPage } =
+    useExpenseUrlFilters();
 
   const currentYear = new Date().getFullYear();
   const effectiveYear = year ?? currentYear;
@@ -75,16 +168,25 @@ export const ExpenseListPage = () => {
 
   const filters = useMemo(
     () => ({ isShared: true, year: effectiveYear, month, type, name, page }),
-    [effectiveYear, month, type, name, page],
+    [effectiveYear, month, type, name, page]
   );
 
   const { data, isLoading, isDebouncing } = useExpenseList(filters);
+  const [rowToDelete, setRowToDelete] = useState<SharedExpenseRow | null>(null);
+  const { mutate: deleteMutate, isPending: isDeleting } = useDeleteExpense(() =>
+    setRowToDelete(null)
+  );
 
   const rows = (data?.data?.rows ?? []) as SharedExpenseRow[];
   const pagination = data?.data?.pagination ?? null;
 
   const handleEditShared = (row: SharedExpenseRow) => {
     navigate(`/expenses/${row.category.id}/edit`, { state: { sharedRow: row } });
+  };
+
+  const handleDeleteConfirm = () => {
+    if (!rowToDelete) return;
+    deleteMutate(rowToDelete.movements_ids);
   };
 
   return (
@@ -100,7 +202,10 @@ export const ExpenseListPage = () => {
       <Card className="p-4">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           <div className="grid gap-1.5 lg:col-span-2">
-            <Label htmlFor="exp-search" className="text-xs uppercase tracking-wider text-muted-foreground">
+            <Label
+              htmlFor="exp-search"
+              className="text-xs uppercase tracking-wider text-muted-foreground"
+            >
               Buscar por categoría
             </Label>
             <div className="relative">
@@ -116,13 +221,13 @@ export const ExpenseListPage = () => {
           </div>
 
           <div className="grid gap-1.5">
-            <Label htmlFor="exp-year" className="text-xs uppercase tracking-wider text-muted-foreground">
+            <Label
+              htmlFor="exp-year"
+              className="text-xs uppercase tracking-wider text-muted-foreground"
+            >
               Año
             </Label>
-            <Select
-              value={String(effectiveYear)}
-              onValueChange={(v) => setYear(Number(v))}
-            >
+            <Select value={String(effectiveYear)} onValueChange={(v) => setYear(Number(v))}>
               <SelectTrigger id="exp-year">
                 <SelectValue />
               </SelectTrigger>
@@ -137,7 +242,10 @@ export const ExpenseListPage = () => {
           </div>
 
           <div className="grid gap-1.5">
-            <Label htmlFor="exp-month" className="text-xs uppercase tracking-wider text-muted-foreground">
+            <Label
+              htmlFor="exp-month"
+              className="text-xs uppercase tracking-wider text-muted-foreground"
+            >
               Mes
             </Label>
             <Select
@@ -158,7 +266,10 @@ export const ExpenseListPage = () => {
           </div>
 
           <div className="grid gap-1.5">
-            <Label htmlFor="exp-subtype" className="text-xs uppercase tracking-wider text-muted-foreground">
+            <Label
+              htmlFor="exp-subtype"
+              className="text-xs uppercase tracking-wider text-muted-foreground"
+            >
               Subtipo
             </Label>
             <Select
@@ -195,7 +306,9 @@ export const ExpenseListPage = () => {
           </div>
         ) : rows.length === 0 ? (
           <Card className="p-12 text-center">
-            <p className="text-sm text-muted-foreground">Sin resultados para los filtros seleccionados.</p>
+            <p className="text-sm text-muted-foreground">
+              Sin resultados para los filtros seleccionados.
+            </p>
           </Card>
         ) : (
           <>
@@ -206,6 +319,7 @@ export const ExpenseListPage = () => {
                   key={row.category.id}
                   row={row}
                   onEdit={() => handleEditShared(row)}
+                  onDelete={() => setRowToDelete(row)}
                 />
               ))}
             </div>
@@ -216,17 +330,31 @@ export const ExpenseListPage = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Categoría</TableHead>
+                    <TableHead>Tipo de movimiento</TableHead>
                     <TableHead>Subtipo</TableHead>
                     <TableHead>Vehículos</TableHead>
                     <TableHead className="text-right">Total</TableHead>
                     <TableHead className="text-right">Por auto</TableHead>
-                    <TableHead className="w-16 text-right">Acciones</TableHead>
+                    <TableHead className="w-24 text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {rows.map((row) => (
-                    <TableRow key={row.category.id}>
+                    <TableRow key={row.total}>
                       <TableCell className="font-semibold">{row.category.name}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="secondary"
+                          style={{
+                            backgroundColor:
+                              row.type === "Gasto" ? "var(--chart-1)" : "var(--chart-3)",
+                            color: "white",
+                          }}
+                          className="border-0"
+                        >
+                          {row.type}
+                        </Badge>
+                      </TableCell>
                       <TableCell>
                         <Badge
                           variant="secondary"
@@ -239,11 +367,12 @@ export const ExpenseListPage = () => {
                           {row.category.type}
                         </Badge>
                       </TableCell>
+
                       <TableCell>
                         <div className="flex max-w-md flex-wrap gap-1">
                           {row.cars.slice(0, 3).map((car) => (
                             <span
-                              key={car.id}
+                              key={car.car_id}
                               className="inline-flex items-center gap-1 rounded-md border border-border bg-muted/40 px-2 py-0.5 text-[11px] font-medium"
                             >
                               <span
@@ -269,15 +398,26 @@ export const ExpenseListPage = () => {
                           : "—"}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-8"
-                          aria-label="Editar"
-                          onClick={() => handleEditShared(row)}
-                        >
-                          <Pencil />
-                        </Button>
+                        <div className="flex justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-8"
+                            aria-label="Editar"
+                            onClick={() => handleEditShared(row)}
+                          >
+                            <Pencil />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-8 text-rose-500 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40"
+                            aria-label="Eliminar"
+                            onClick={() => setRowToDelete(row)}
+                          >
+                            <Trash2 />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -288,9 +428,14 @@ export const ExpenseListPage = () => {
         )}
       </section>
 
-      {pagination && (
-        <ExpenseListPagination pagination={pagination} onPageChange={setPage} />
-      )}
+      {pagination && <ExpensePager pagination={pagination} onPageChange={setPage} />}
+
+      <DeleteExpenseModal
+        row={rowToDelete}
+        isDeleting={isDeleting}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setRowToDelete(null)}
+      />
     </div>
   );
 };

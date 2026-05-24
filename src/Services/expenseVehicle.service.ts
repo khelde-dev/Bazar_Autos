@@ -19,9 +19,21 @@ export const getExpenses = async (params: ExpenseListParams) => {
   return data;
 };
 
-// TODO: endpoint PUT /expenses/:id pending implementation
-export const updateExpense = async (movementId: string, payload: any) => {
-  const { data } = await api.put(`/expenses/${movementId}`, payload);
+export const updateExpense = async (payload: {
+  movements_ids: string[];
+  movements_category_id: string;
+  car_id: string[];
+  type: string;
+  amount: number;
+  description: string;
+  closing_date: string;
+}) => {
+  const { data } = await api.put("/expenses", payload);
+  return data;
+};
+
+export const deleteExpense = async (movements_ids: string[]) => {
+  const { data } = await api.delete("/expenses", { data: { movements_ids } });
   return data;
 };
 

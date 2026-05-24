@@ -1,16 +1,24 @@
-import { Calendar, Car, Check, DollarSign, Loader2, PencilLine, ReceiptText, Search, Users, X } from "lucide-react";
+import {
+  CalendarIcon,
+  Car,
+  Check,
+  DollarSign,
+  Loader2,
+  PencilLine,
+  ReceiptText,
+  Search,
+  Users,
+  X,
+} from "lucide-react";
 import type React from "react";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -32,14 +40,21 @@ import { useExpenseForm } from "./Hooks/useExpenseForm";
 import { useCategories, useExpense } from "./Hooks/useExpenseMutate";
 import { type Category, MAIN_MOVEMENT_TYPES } from "./Types/ExpenseVehicle.types";
 
+const toLocalDate = (str: string | null | undefined): Date | undefined => {
+  if (!str) return undefined;
+  const [y, m, d] = str.split("-").map(Number);
+  return new Date(y, m - 1, d);
+};
+const toDateStr = (date: Date): string =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+const displayDate = (str: string | null | undefined): string => {
+  const d = toLocalDate(str);
+  return d ? format(d, "d 'de' MMMM yyyy", { locale: es }) : "Seleccionar fecha";
+};
+
 export const ExpenseVehicle: React.FC = () => {
-  const {
-    expenseData,
-    setExpenseData,
-    handleChange,
-    toggleShared,
-    removeVehicleTag,
-  } = useExpenseForm();
+  const { expenseData, setExpenseData, handleChange, toggleShared, removeVehicleTag } =
+    useExpenseForm();
 
   const { mutate, isPending } = useExpense(() => {
     setExpenseData((p) => ({ ...p, amount: 0, description: "", involvedVehicles: [] }));
@@ -47,20 +62,17 @@ export const ExpenseVehicle: React.FC = () => {
   const { data: categoriesData, isLoading: isLoadingCategories } = useCategories();
   const { data: modelsData, isLoading: isLoadingModels } = useCarModels(true);
 
-  const categoriesArray = useMemo<Category[]>(
-    () => categoriesData?.data ?? [],
-    [categoriesData],
-  );
+  const categoriesArray = useMemo<Category[]>(() => categoriesData?.data ?? [], [categoriesData]);
   const modelsArray = useMemo<CarModel[]>(() => modelsData?.data ?? [], [modelsData]);
 
   const categoryTypes = useMemo(
     () => Array.from(new Set(categoriesArray.map((c) => c.type))),
-    [categoriesArray],
+    [categoriesArray]
   );
 
   const filteredCategories = useMemo(
     () => categoriesArray.filter((c) => c.type === expenseData.subType),
-    [categoriesArray, expenseData.subType],
+    [categoriesArray, expenseData.subType]
   );
 
   const [vehicleSearch, setVehicleSearch] = useState("");
@@ -90,7 +102,6 @@ export const ExpenseVehicle: React.FC = () => {
       type: expenseData.type,
       movements_category_id: expenseData.movements_category_id,
       amount: expenseData.amount,
-      isShared: expenseData.isShared,
       description: expenseData.description,
       closing_date: expenseData.closing_date,
       car_id: GenerateArray(expenseData, modelsArray),
@@ -133,7 +144,7 @@ export const ExpenseVehicle: React.FC = () => {
                       "rounded-lg border px-3 py-2.5 text-sm font-semibold transition-all",
                       expenseData.type === t
                         ? "border-primary bg-primary text-primary-foreground"
-                        : "border-border bg-background text-muted-foreground hover:bg-muted",
+                        : "border-border bg-background text-muted-foreground hover:bg-muted"
                     )}
                   >
                     {t}
@@ -249,7 +260,9 @@ export const ExpenseVehicle: React.FC = () => {
                     </div>
                     <div className="max-h-60 overflow-y-auto">
                       {filteredModels.length === 0 ? (
-                        <p className="p-4 text-center text-xs text-muted-foreground">Sin resultados</p>
+                        <p className="p-4 text-center text-xs text-muted-foreground">
+                          Sin resultados
+                        </p>
                       ) : (
                         filteredModels.map((m) => {
                           const selected = expenseData.isShared
@@ -262,12 +275,14 @@ export const ExpenseVehicle: React.FC = () => {
                               onClick={() => handleSelectVehicle(m.full_name)}
                               className={cn(
                                 "flex w-full items-center justify-between px-3 py-2.5 text-sm transition-colors hover:bg-accent",
-                                selected && "bg-accent",
+                                selected && "bg-accent"
                               )}
                             >
                               <span className="flex items-center gap-2">
                                 <span className="font-medium">{m.full_name}</span>
-                                <span className="text-xs text-muted-foreground">{m.year_of_car}</span>
+                                <span className="text-xs text-muted-foreground">
+                                  {m.year_of_car}
+                                </span>
                               </span>
                               {selected && <Check className="size-4 text-primary" />}
                             </button>
@@ -316,7 +331,7 @@ export const ExpenseVehicle: React.FC = () => {
                 <DollarSign
                   className={cn(
                     "absolute left-3 top-1/2 size-5 -translate-y-1/2 font-bold",
-                    expenseData.subType === "Activo" ? "text-emerald-500" : "text-blue-500",
+                    expenseData.subType === "Activo" ? "text-emerald-500" : "text-blue-500"
                   )}
                 />
                 <Input
@@ -339,18 +354,34 @@ export const ExpenseVehicle: React.FC = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-1.5">
-                <Label htmlFor="closing_date">Fecha de cierre</Label>
-                <div className="relative">
-                  <Calendar className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    id="closing_date"
-                    name="closing_date"
-                    type="date"
-                    value={expenseData.closing_date}
-                    onChange={handleChange}
-                    className="pl-9"
-                  />
-                </div>
+                <Label>Fecha de cierre</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start font-normal",
+                        !expenseData.closing_date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 size-4" />
+                      {displayDate(expenseData.closing_date)}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={toLocalDate(expenseData.closing_date)}
+                      defaultMonth={toLocalDate(expenseData.closing_date)}
+                      onSelect={(date) => {
+                        if (date)
+                          setExpenseData((prev) => ({ ...prev, closing_date: toDateStr(date) }));
+                      }}
+                      captionLayout="dropdown"
+                      locale={es}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
 
               <div className="grid gap-1.5">

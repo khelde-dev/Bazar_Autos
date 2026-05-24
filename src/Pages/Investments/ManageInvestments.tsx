@@ -84,9 +84,7 @@ export const ManageInvestments = () => {
                 Saldo total actual
               </p>
               <p className="mt-1 text-4xl font-black tracking-tight">{formatMoney(totalBalance)}</p>
-              <p className="mt-1 text-xs text-blue-100">
-                Suma de todas las inversiones activas
-              </p>
+              <p className="mt-1 text-xs text-blue-100">Suma de todas las inversiones activas</p>
             </div>
             <Wallet size={32} className="text-blue-100" />
           </div>
@@ -97,7 +95,10 @@ export const ManageInvestments = () => {
       <Card className="p-4">
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="grid gap-1.5">
-            <Label htmlFor="inv-year" className="text-xs uppercase tracking-wider text-muted-foreground">
+            <Label
+              htmlFor="inv-year"
+              className="text-xs uppercase tracking-wider text-muted-foreground"
+            >
               Año
             </Label>
             <Select value={String(effectiveYear)} onValueChange={(v) => setYear(Number(v))}>
@@ -114,7 +115,10 @@ export const ManageInvestments = () => {
             </Select>
           </div>
           <div className="grid gap-1.5">
-            <Label htmlFor="inv-month" className="text-xs uppercase tracking-wider text-muted-foreground">
+            <Label
+              htmlFor="inv-month"
+              className="text-xs uppercase tracking-wider text-muted-foreground"
+            >
               Mes
             </Label>
             <Select

@@ -29,7 +29,12 @@ export const KpiCard = ({
 }: KpiCardProps) => (
   <Card className="overflow-hidden">
     <CardContent className="flex items-start gap-3 p-5">
-      <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-xl", ACCENT_CLASSES[accent])}>
+      <div
+        className={cn(
+          "flex size-10 shrink-0 items-center justify-center rounded-xl",
+          ACCENT_CLASSES[accent]
+        )}
+      >
         <Icon size={18} strokeWidth={2.25} />
       </div>
       <div className="min-w-0 flex-1 space-y-1">
@@ -43,7 +48,7 @@ export const KpiCard = ({
               <span
                 className={cn(
                   "font-semibold",
-                  trend.direction === "up" ? "text-emerald-600" : "text-rose-600",
+                  trend.direction === "up" ? "text-emerald-600" : "text-rose-600"
                 )}
               >
                 {trend.direction === "up" ? "▲" : "▼"} {trend.value}

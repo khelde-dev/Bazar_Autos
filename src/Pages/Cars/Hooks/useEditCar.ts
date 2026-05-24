@@ -16,7 +16,8 @@ export const useEditCar = (id: string, onSuccess?: () => void) => {
       onSuccess?.();
     },
     onError: (error: unknown) => {
-      const msg = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      const msg = (error as { response?: { data?: { message?: string } } })?.response?.data
+        ?.message;
       toast.error("No se pudo actualizar", { description: msg || "Error de conexión" });
     },
   });

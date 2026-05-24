@@ -40,7 +40,10 @@ export const DashboardFilters = ({
 }: DashboardFiltersProps) => (
   <div className="flex flex-wrap items-end gap-3">
     <div className="grid gap-1.5">
-      <Label htmlFor="filter-year" className="text-xs uppercase tracking-wider text-muted-foreground">
+      <Label
+        htmlFor="filter-year"
+        className="text-xs uppercase tracking-wider text-muted-foreground"
+      >
         Año
       </Label>
       <Select value={year} onValueChange={onYearChange}>
@@ -58,7 +61,10 @@ export const DashboardFilters = ({
     </div>
 
     <div className="grid gap-1.5">
-      <Label htmlFor="filter-month" className="text-xs uppercase tracking-wider text-muted-foreground">
+      <Label
+        htmlFor="filter-month"
+        className="text-xs uppercase tracking-wider text-muted-foreground"
+      >
         Mes
       </Label>
       <Select value={month} onValueChange={onMonthChange}>

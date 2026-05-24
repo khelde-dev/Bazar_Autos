@@ -28,10 +28,7 @@ import { UserFormDialog } from "./Components/UserFormDialog";
 
 type DialogMode = "create" | "edit" | null;
 
-const AVATAR_COLORS = [
-  "#3b82f6", "#10b981", "#f59e0b", "#ef4444",
-  "#8b5cf6", "#06b6d4", "#14b8a6",
-];
+const AVATAR_COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4", "#14b8a6"];
 
 function avatarColor(id: string) {
   return AVATAR_COLORS[(id?.charCodeAt(0) ?? 0) % AVATAR_COLORS.length];
@@ -86,7 +83,13 @@ export const UsersPage: React.FC = () => {
             {rows.length} {rows.length === 1 ? "usuario registrado" : "usuarios registrados"}
           </p>
         </div>
-        <Button onClick={() => { setEditing(null); setDialogMode("create"); }} className="gap-2 sm:w-auto">
+        <Button
+          onClick={() => {
+            setEditing(null);
+            setDialogMode("create");
+          }}
+          className="gap-2 sm:w-auto"
+        >
           <Plus className="size-4" />
           Nuevo usuario
         </Button>
@@ -165,7 +168,10 @@ export const UsersPage: React.FC = () => {
                           variant="ghost"
                           size="icon"
                           className="size-8"
-                          onClick={() => { setEditing(user); setDialogMode("edit"); }}
+                          onClick={() => {
+                            setEditing(user);
+                            setDialogMode("edit");
+                          }}
                           aria-label="Editar usuario"
                         >
                           <Pencil className="size-4" />
@@ -207,8 +213,8 @@ export const UsersPage: React.FC = () => {
             </div>
             <DialogTitle className="text-center">¿Eliminar usuario?</DialogTitle>
             <DialogDescription className="text-center">
-              <span className="font-semibold text-foreground">{toDelete?.name}</span> será
-              eliminado permanentemente del sistema.
+              <span className="font-semibold text-foreground">{toDelete?.name}</span> será eliminado
+              permanentemente del sistema.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-row gap-3 sm:justify-center">

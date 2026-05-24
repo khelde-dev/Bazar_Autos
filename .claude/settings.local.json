@@ -18,7 +18,14 @@
       "Bash(where gh *)",
       "Bash(winget list *)",
       "Bash(winget install *)",
-      "Bash(\"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" auth status)"
+      "Bash(\"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" auth status)",
+      "PowerShell(Get-Command gh -ErrorAction SilentlyContinue; \\(Get-Command gh -ErrorAction SilentlyContinue\\).Source; ls \"C:\\\\Program Files\\\\GitHub CLI\\\\\" -ErrorAction SilentlyContinue)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\MikeT\\\\Documentos\\\\Backend_Bazar_Autos\\\\src\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(gh pr *)",
+      "Bash(rm src/Pages/Dashboard/data/mock.ts)",
+      "Bash(rmdir src/Pages/Dashboard/data)",
+      "Bash(del \"C:\\\\Users\\\\MikeT\\\\Documentos\\\\Bazar_Autos\\\\src\\\\Pages\\\\Expense\\\\Components\\\\ExpenseListPagination.tsx\")"
     ]
   }
 }

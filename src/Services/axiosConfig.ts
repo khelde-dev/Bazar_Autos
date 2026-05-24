@@ -14,7 +14,15 @@ api.interceptors.response.use(
     const original = error.config;
     const status = error.response?.status;
 
-    if (status === 401 && !original._retry) {
+    if (status === 401) {
+      const isRefreshCall = original.url?.includes("/auth/refresh");
+      if (isRefreshCall || original._retry) {
+        localStorage.removeItem("isAuthenticated");
+        if (!window.location.pathname.includes("/login")) {
+          window.location.href = "/login";
+        }
+        return Promise.reject(error);
+      }
       original._retry = true;
       try {
         await api.post("/auth/refresh");
@@ -43,4 +51,3 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-

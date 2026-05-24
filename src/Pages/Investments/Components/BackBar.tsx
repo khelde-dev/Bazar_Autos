@@ -16,7 +16,10 @@ export const BackBar = ({ title, subtitle, to, onClick }: BackBarProps) => {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    if (onClick) { onClick(); return; }
+    if (onClick) {
+      onClick();
+      return;
+    }
     if (to) navigate(to);
     else navigate(-1);
   };

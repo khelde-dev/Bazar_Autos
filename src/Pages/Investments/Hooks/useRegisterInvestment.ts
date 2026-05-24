@@ -12,7 +12,8 @@ export const useRegisterInvestment = (resetForm: () => void) =>
       resetForm();
     },
     onError: (error: unknown) => {
-      const msg = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      const msg = (error as { response?: { data?: { message?: string } } })?.response?.data
+        ?.message;
       toast.error("Error al registrar", {
         description: msg || "Hubo un problema con el servidor.",
       });

@@ -1,11 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import {
-  createUser,
-  deleteUser,
-  getListUser,
-  updateUser,
-} from "@/Services/auth.service";
+import { createUser, deleteUser, getListUser, updateUser } from "@/Services/auth.service";
 import type { CreateUserPayload, UpdateUserPayload } from "../Types/Users.types";
 
 export const useUsers = () =>

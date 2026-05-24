@@ -3,13 +3,7 @@ import type React from "react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -96,9 +90,7 @@ export const AddInvestment: React.FC = () => {
                   <Label htmlFor="user_id">Cuenta</Label>
                   <Select
                     value={saleData.user_id}
-                    onValueChange={(v) =>
-                      setSaleData((prev) => ({ ...prev, user_id: v }))
-                    }
+                    onValueChange={(v) => setSaleData((prev) => ({ ...prev, user_id: v }))}
                   >
                     <SelectTrigger id="user_id">
                       <SelectValue placeholder="Seleccionar inversionista..." />
@@ -164,18 +156,17 @@ export const AddInvestment: React.FC = () => {
               <Label htmlFor="registrationDate">Fecha de registro</Label>
               <div className="relative">
                 <Calendar className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="registrationDate"
-                  type="date"
-                  readOnly
-                  value={today}
-                  className="pl-9"
-                />
+                <Input id="registrationDate" type="date" readOnly value={today} className="pl-9" />
               </div>
               <p className="text-xs text-muted-foreground">Asignada automáticamente</p>
             </div>
 
-            <Button onClick={handleSaveInvestment} disabled={isPending} size="lg" className="w-full">
+            <Button
+              onClick={handleSaveInvestment}
+              disabled={isPending}
+              size="lg"
+              className="w-full"
+            >
               {isPending ? <Loader2 className="animate-spin" /> : <Save />}
               {isPending ? "Procesando..." : "Registrar inversión"}
             </Button>
