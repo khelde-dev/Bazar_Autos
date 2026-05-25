@@ -55,6 +55,9 @@ const mxnFormatter = new Intl.NumberFormat("es-MX", {
   minimumFractionDigits: 2,
 });
 
+// DECIMAL(10,2): hasta 8 dígitos enteros y 2 decimales → max 99,999,999.99
+const DECIMAL_RE = /^\d{0,8}(\.\d{0,2})?$/;
+
 const toDate = (str: string) => (str ? parseISO(str) : undefined);
 const toStr = (date: Date) => format(date, "yyyy-MM-dd");
 const displayDate = (str: string) => (str ? format(parseISO(str), "dd/MM/yyyy") : null);
@@ -112,7 +115,7 @@ export const ShoppVehicle: React.FC = () => {
   };
 
   const handleAmountChange = (key: keyof VehicleExpenses, raw: string) => {
-    if (raw === "" || /^\d*\.?\d*$/.test(raw)) {
+    if (raw === "" || DECIMAL_RE.test(raw)) {
       handleExpenseChange({
         target: { name: key, value: raw },
       } as React.ChangeEvent<HTMLInputElement>);
@@ -407,7 +410,7 @@ export const ShoppVehicle: React.FC = () => {
                     inputMode="decimal"
                     value={vehicleData.purchase_price}
                     onChange={(e) => {
-                      if (e.target.value === "" || /^\d*\.?\d*$/.test(e.target.value)) {
+                      if (e.target.value === "" || DECIMAL_RE.test(e.target.value)) {
                         handleInputChange(e);
                       }
                     }}
@@ -427,7 +430,7 @@ export const ShoppVehicle: React.FC = () => {
                     inputMode="decimal"
                     value={vehicleData.price_for_sale}
                     onChange={(e) => {
-                      if (e.target.value === "" || /^\d*\.?\d*$/.test(e.target.value)) {
+                      if (e.target.value === "" || DECIMAL_RE.test(e.target.value)) {
                         handleInputChange(e);
                       }
                     }}

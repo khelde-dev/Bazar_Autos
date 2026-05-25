@@ -1,6 +1,10 @@
 import { DollarSign, Loader2, Save, Wallet } from "lucide-react";
 import { BackBar } from "./Components/BackBar";
+import type React from "react";
 import { useState } from "react";
+
+// DECIMAL(10,2): hasta 8 dígitos enteros y 2 decimales → max 99,999,999.99
+const DECIMAL_RE = /^\d{0,8}(\.\d{0,2})?$/;
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,13 +33,19 @@ export const InvestmentOperation = () => {
   const location = useLocation();
   const investmentAmount: string | undefined = location.state?.investmentAmount;
   const [form, setForm] = useState<TransactionFormState>(INITIAL_TRANSACTION_STATE);
+  const [amountStr, setAmountStr] = useState("");
 
   const { mutate, isPending } = useRegisterTransaction(() => navigate(`/investments/${userId}`));
 
   const handleTypeChange = (type: TransactionType) => setForm((prev) => ({ ...prev, type }));
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm((prev) => ({ ...prev, amount: Number(e.target.value) }));
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    if (raw === "" || DECIMAL_RE.test(raw)) {
+      setAmountStr(raw);
+      setForm((prev) => ({ ...prev, amount: parseFloat(raw) || 0 }));
+    }
+  };
 
   const handleConceptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
     setForm((prev) => ({ ...prev, concept: e.target.value }));
@@ -136,13 +146,12 @@ export const InvestmentOperation = () => {
                 />
                 <Input
                   name="amount"
-                  type="number"
+                  type="text"
                   inputMode="decimal"
-                  value={form.amount || ""}
+                  value={amountStr}
                   onChange={handleAmountChange}
                   placeholder="0.00"
                   className="h-14 pl-10 text-2xl font-bold"
-                  required
                 />
               </div>
             </CardContent>

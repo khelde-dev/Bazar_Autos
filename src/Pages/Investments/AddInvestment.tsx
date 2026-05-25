@@ -1,6 +1,10 @@
 import { Calendar, DollarSign, History, Loader2, Save, User } from "lucide-react";
 import type React from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+
+// DECIMAL(10,2): hasta 8 dígitos enteros y 2 decimales → max 99,999,999.99
+const DECIMAL_RE = /^\d{0,8}(\.\d{0,2})?$/;
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,6 +39,16 @@ export const AddInvestment: React.FC = () => {
   const { saleData, handleSaleChange, setSaleData, resetForm } = useInvestmentForm();
   const { mutate, isPending } = useRegisterInvestment(resetForm);
   const { data: listUsers, isLoading } = useUserList();
+
+  const [amountStr, setAmountStr] = useState("");
+
+  const handleAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    if (raw === "" || DECIMAL_RE.test(raw)) {
+      setAmountStr(raw);
+      setSaleData((prev) => ({ ...prev, investment_amount: parseFloat(raw) || 0 }));
+    }
+  };
 
   const users: UserItem[] = (listUsers?.data ?? []) as UserItem[];
   const selectedUser = users.find((u) => u.id === saleData.user_id);
@@ -142,10 +156,10 @@ export const AddInvestment: React.FC = () => {
                 <Input
                   id="investment_amount"
                   name="investment_amount"
-                  type="number"
+                  type="text"
                   inputMode="decimal"
-                  value={saleData.investment_amount || ""}
-                  onChange={handleSaleChange}
+                  value={amountStr}
+                  onChange={handleAmountInput}
                   placeholder="0.00"
                   className="h-14 pl-10 text-2xl font-bold"
                 />

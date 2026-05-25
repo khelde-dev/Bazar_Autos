@@ -1,3 +1,5 @@
+import { format, parseISO } from "date-fns";
+import { es } from "date-fns/locale";
 import { Loader2, Pencil, Plus, Trash2, Users } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
@@ -36,6 +38,15 @@ function avatarColor(id: string) {
 
 function getInitial(name: string) {
   return (name ?? "?").trim().charAt(0).toUpperCase();
+}
+
+function formatLastLogin(raw: string | null): string {
+  if (!raw) return "Nunca";
+  try {
+    return format(parseISO(raw), "d MMM yyyy, HH:mm", { locale: es });
+  } catch {
+    return "—";
+  }
 }
 
 // ── component ─────────────────────────────────────────────────────────────────
@@ -119,6 +130,7 @@ export const UsersPage: React.FC = () => {
                 <TableHead className="hidden sm:table-cell">Usuario</TableHead>
                 <TableHead className="hidden md:table-cell">Correo</TableHead>
                 <TableHead>Rol</TableHead>
+                <TableHead className="hidden lg:table-cell">Último acceso</TableHead>
                 <TableHead className="w-24 text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
@@ -159,6 +171,11 @@ export const UsersPage: React.FC = () => {
                       ) : (
                         <Badge variant="secondary">Usuario</Badge>
                       )}
+                    </TableCell>
+
+                    {/* Last login */}
+                    <TableCell className="hidden text-sm text-muted-foreground lg:table-cell">
+                      {formatLastLogin(user.last_login)}
                     </TableCell>
 
                     {/* Actions */}

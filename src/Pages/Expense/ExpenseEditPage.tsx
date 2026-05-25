@@ -12,6 +12,9 @@ import {
 import { BackBar } from "../Investments/Components/BackBar";
 import type React from "react";
 import { useMemo, useState } from "react";
+
+// DECIMAL(10,2): hasta 8 dígitos enteros y 2 decimales → max 99,999,999.99
+const DECIMAL_RE = /^\d{0,8}(\.\d{0,2})?$/;
 import { useLocation, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -133,6 +136,11 @@ export const ExpenseEditPage = () => {
     [categoriesArray, expenseData.subType]
   );
 
+  const [amountStr, setAmountStr] = useState(() => {
+    if (row) return String(row.movement.amount);
+    if (sharedRow) return String(sharedRow.total);
+    return "";
+  });
   const [vehicleSearch, setVehicleSearch] = useState("");
   const [vehiclePopover, setVehiclePopover] = useState(false);
 
@@ -178,6 +186,14 @@ export const ExpenseEditPage = () => {
     } else {
       setExpenseData((prev) => ({ ...prev, mainVehicleId: fullName }));
       setVehiclePopover(false);
+    }
+  };
+
+  const handleAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    if (raw === "" || DECIMAL_RE.test(raw)) {
+      setAmountStr(raw);
+      setExpenseData((prev) => ({ ...prev, amount: parseFloat(raw) || 0 }));
     }
   };
 
@@ -419,9 +435,10 @@ export const ExpenseEditPage = () => {
                 />
                 <Input
                   name="amount"
-                  type="number"
-                  value={expenseData.amount || ""}
-                  onChange={handleChange}
+                  type="text"
+                  inputMode="decimal"
+                  value={amountStr}
+                  onChange={handleAmountInput}
                   placeholder="0.00"
                   className="h-14 pl-10 text-2xl font-bold"
                 />

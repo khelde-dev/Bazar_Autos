@@ -12,6 +12,9 @@ import {
 } from "lucide-react";
 import type React from "react";
 import { useMemo, useState } from "react";
+
+// DECIMAL(10,2): hasta 8 dígitos enteros y 2 decimales → max 99,999,999.99
+const DECIMAL_RE = /^\d{0,8}(\.\d{0,2})?$/;
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -75,6 +78,7 @@ export const ExpenseVehicle: React.FC = () => {
     [categoriesArray, expenseData.subType]
   );
 
+  const [amountStr, setAmountStr] = useState("");
   const [vehicleSearch, setVehicleSearch] = useState("");
   const [vehiclePopover, setVehiclePopover] = useState(false);
 
@@ -93,6 +97,14 @@ export const ExpenseVehicle: React.FC = () => {
     } else {
       setExpenseData((prev) => ({ ...prev, mainVehicleId: fullName }));
       setVehiclePopover(false);
+    }
+  };
+
+  const handleAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    if (raw === "" || DECIMAL_RE.test(raw)) {
+      setAmountStr(raw);
+      setExpenseData((prev) => ({ ...prev, amount: parseFloat(raw) || 0 }));
     }
   };
 
@@ -336,9 +348,10 @@ export const ExpenseVehicle: React.FC = () => {
                 />
                 <Input
                   name="amount"
-                  type="number"
-                  value={expenseData.amount || ""}
-                  onChange={handleChange}
+                  type="text"
+                  inputMode="decimal"
+                  value={amountStr}
+                  onChange={handleAmountInput}
                   placeholder="0.00"
                   className="h-14 pl-10 text-2xl font-bold"
                 />

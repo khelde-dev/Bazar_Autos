@@ -1,4 +1,4 @@
-import { Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -95,8 +95,10 @@ export const UserFormDialog: React.FC<UserFormDialogProps> = ({
   onClose,
 }) => {
   const [form, setForm] = useState<UserFormState>(EMPTY);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
+    setShowPassword(false);
     if (mode === "edit" && editing) {
       setForm(fromUser(editing));
     } else if (mode === "create") {
@@ -203,14 +205,25 @@ export const UserFormDialog: React.FC<UserFormDialogProps> = ({
           {/* Contraseña */}
           <div className="grid gap-1.5">
             <Label htmlFor="u-password">{isCreate ? "Contraseña" : "Nueva contraseña"}</Label>
-            <Input
-              id="u-password"
-              type="password"
-              value={form.password}
-              onChange={set("password")}
-              placeholder={isCreate ? "Contraseña inicial" : "Dejar vacío para no cambiar"}
-              autoComplete="new-password"
-            />
+            <div className="relative">
+              <Input
+                id="u-password"
+                type={showPassword ? "text" : "password"}
+                value={form.password}
+                onChange={set("password")}
+                placeholder={isCreate ? "Contraseña inicial" : "Dejar vacío para no cambiar"}
+                autoComplete="new-password"
+                className="pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+              >
+                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </button>
+            </div>
           </div>
         </div>
 

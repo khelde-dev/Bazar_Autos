@@ -7,6 +7,7 @@ export interface UserItem {
   email: string;
   username: string;
   role: UserRole;
+  last_login: string | null; // ISO 8601
 }
 
 export interface UsersListResponse {
