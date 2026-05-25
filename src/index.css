@@ -41,6 +41,18 @@ input::-webkit-credentials-auto-fill-button {
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
+  /* Extended palette for high-cardinality categorical charts (pie/donut con muchas marcas) */
+  --chart-6:  oklch(0.65 0.22 0);
+  --chart-7:  oklch(0.65 0.22 145);
+  --chart-8:  oklch(0.65 0.22 280);
+  --chart-9:  oklch(0.65 0.22 320);
+  --chart-10: oklch(0.65 0.22 200);
+  --chart-11: oklch(0.7  0.22 110);
+  --chart-12: oklch(0.65 0.22 350);
+  --chart-13: oklch(0.55 0.22 25);
+  --chart-14: oklch(0.55 0.22 250);
+  --chart-15: oklch(0.6  0.18 160);
+  --chart-16: oklch(0.55 0.22 300);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.141 0.005 285.823);
   --sidebar-primary: oklch(0.546 0.245 262.881);
@@ -75,6 +87,18 @@ input::-webkit-credentials-auto-fill-button {
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
+  /* Extended palette dark mode — un poco más claros para contraste sobre fondo obscuro */
+  --chart-6:  oklch(0.72 0.22 0);
+  --chart-7:  oklch(0.72 0.22 145);
+  --chart-8:  oklch(0.72 0.22 280);
+  --chart-9:  oklch(0.72 0.22 320);
+  --chart-10: oklch(0.72 0.22 200);
+  --chart-11: oklch(0.78 0.22 110);
+  --chart-12: oklch(0.72 0.22 350);
+  --chart-13: oklch(0.7  0.22 25);
+  --chart-14: oklch(0.65 0.22 250);
+  --chart-15: oklch(0.72 0.18 160);
+  --chart-16: oklch(0.65 0.22 300);
   --sidebar: oklch(0.21 0.006 285.885);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.546 0.245 262.881);
@@ -113,6 +137,17 @@ input::-webkit-credentials-auto-fill-button {
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-chart-7: var(--chart-7);
+  --color-chart-8: var(--chart-8);
+  --color-chart-9: var(--chart-9);
+  --color-chart-10: var(--chart-10);
+  --color-chart-11: var(--chart-11);
+  --color-chart-12: var(--chart-12);
+  --color-chart-13: var(--chart-13);
+  --color-chart-14: var(--chart-14);
+  --color-chart-15: var(--chart-15);
+  --color-chart-16: var(--chart-16);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);

@@ -1,6 +1,6 @@
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
-import { Loader2, Pencil, Plus, Trash2, Users } from "lucide-react";
+import { AtSign, Clock, Loader2, Mail, Pencil, Plus, Trash2, Users } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -122,94 +122,164 @@ export const UsersPage: React.FC = () => {
           </p>
         </Card>
       ) : (
-        <Card className="overflow-hidden p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nombre</TableHead>
-                <TableHead className="hidden sm:table-cell">Usuario</TableHead>
-                <TableHead className="hidden md:table-cell">Correo</TableHead>
-                <TableHead>Rol</TableHead>
-                <TableHead className="hidden lg:table-cell">Último acceso</TableHead>
-                <TableHead className="w-24 text-right">Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {rows.map((user) => {
-                const isAdmin = user.role === "admin";
-                return (
-                  <TableRow key={user.id}>
-                    {/* Avatar + name */}
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-black text-white"
-                          style={{ backgroundColor: avatarColor(user.id) }}
-                        >
-                          {getInitial(user.name)}
-                        </div>
+        <>
+          {/* Mobile: cards */}
+          <div className="space-y-3 md:hidden">
+            {rows.map((user) => {
+              const isAdmin = user.role === "admin";
+              return (
+                <Card key={user.id} className="p-4">
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="flex size-11 shrink-0 items-center justify-center rounded-full text-base font-black text-white"
+                      style={{ backgroundColor: avatarColor(user.id) }}
+                    >
+                      {getInitial(user.name)}
+                    </div>
+                    <div className="min-w-0 flex-1 space-y-1.5">
+                      <div className="flex items-start justify-between gap-2">
                         <p className="truncate text-sm font-semibold">{user.name}</p>
+                        {isAdmin ? (
+                          <Badge className="shrink-0 border-transparent bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">
+                            Admin
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="shrink-0">Usuario</Badge>
+                        )}
                       </div>
-                    </TableCell>
-
-                    {/* Username */}
-                    <TableCell className="hidden text-sm text-muted-foreground sm:table-cell">
-                      @{user.username}
-                    </TableCell>
-
-                    {/* Email */}
-                    <TableCell className="hidden text-sm text-muted-foreground md:table-cell">
-                      {user.email}
-                    </TableCell>
-
-                    {/* Role */}
-                    <TableCell>
-                      {isAdmin ? (
-                        <Badge className="border-transparent bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">
-                          Admin
-                        </Badge>
-                      ) : (
-                        <Badge variant="secondary">Usuario</Badge>
-                      )}
-                    </TableCell>
-
-                    {/* Last login */}
-                    <TableCell className="hidden text-sm text-muted-foreground lg:table-cell">
-                      {formatLastLogin(user.last_login)}
-                    </TableCell>
-
-                    {/* Actions */}
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-8"
-                          onClick={() => {
-                            setEditing(user);
-                            setDialogMode("edit");
-                          }}
-                          aria-label="Editar usuario"
-                        >
-                          <Pencil className="size-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-8 text-rose-500 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40"
-                          onClick={() => setToDelete(user)}
-                          aria-label="Eliminar usuario"
-                        >
-                          <Trash2 className="size-4" />
-                        </Button>
+                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <AtSign className="size-3 shrink-0" />
+                        <span className="truncate">{user.username}</span>
                       </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </Card>
+                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <Mail className="size-3 shrink-0" />
+                        <span className="truncate">{user.email}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <Clock className="size-3 shrink-0" />
+                        <span className="truncate">{formatLastLogin(user.last_login)}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex justify-end gap-1 border-t border-border pt-3">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setEditing(user);
+                        setDialogMode("edit");
+                      }}
+                      aria-label="Editar usuario"
+                    >
+                      <Pencil className="size-4" />
+                      Editar
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-rose-500 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40"
+                      onClick={() => setToDelete(user)}
+                      aria-label="Eliminar usuario"
+                    >
+                      <Trash2 className="size-4" />
+                      Eliminar
+                    </Button>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Desktop: table */}
+          <Card className="hidden overflow-hidden p-0 md:block">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nombre</TableHead>
+                  <TableHead className="hidden sm:table-cell">Usuario</TableHead>
+                  <TableHead className="hidden md:table-cell">Correo</TableHead>
+                  <TableHead>Rol</TableHead>
+                  <TableHead className="hidden lg:table-cell">Último acceso</TableHead>
+                  <TableHead className="w-24 text-right">Acciones</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {rows.map((user) => {
+                  const isAdmin = user.role === "admin";
+                  return (
+                    <TableRow key={user.id}>
+                      {/* Avatar + name */}
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <div
+                            className="flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-black text-white"
+                            style={{ backgroundColor: avatarColor(user.id) }}
+                          >
+                            {getInitial(user.name)}
+                          </div>
+                          <p className="truncate text-sm font-semibold">{user.name}</p>
+                        </div>
+                      </TableCell>
+
+                      {/* Username */}
+                      <TableCell className="hidden text-sm text-muted-foreground sm:table-cell">
+                        @{user.username}
+                      </TableCell>
+
+                      {/* Email */}
+                      <TableCell className="hidden text-sm text-muted-foreground md:table-cell">
+                        {user.email}
+                      </TableCell>
+
+                      {/* Role */}
+                      <TableCell>
+                        {isAdmin ? (
+                          <Badge className="border-transparent bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">
+                            Admin
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary">Usuario</Badge>
+                        )}
+                      </TableCell>
+
+                      {/* Last login */}
+                      <TableCell className="hidden text-sm text-muted-foreground lg:table-cell">
+                        {formatLastLogin(user.last_login)}
+                      </TableCell>
+
+                      {/* Actions */}
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-8"
+                            onClick={() => {
+                              setEditing(user);
+                              setDialogMode("edit");
+                            }}
+                            aria-label="Editar usuario"
+                          >
+                            <Pencil className="size-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-8 text-rose-500 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40"
+                            onClick={() => setToDelete(user)}
+                            aria-label="Eliminar usuario"
+                          >
+                            <Trash2 className="size-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </Card>
+        </>
       )}
 
       {/* Form dialog */}
