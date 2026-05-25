@@ -25,7 +25,9 @@
       "Bash(gh pr *)",
       "Bash(rm src/Pages/Dashboard/data/mock.ts)",
       "Bash(rmdir src/Pages/Dashboard/data)",
-      "Bash(del \"C:\\\\Users\\\\MikeT\\\\Documentos\\\\Bazar_Autos\\\\src\\\\Pages\\\\Expense\\\\Components\\\\ExpenseListPagination.tsx\")"
+      "Bash(del \"C:\\\\Users\\\\MikeT\\\\Documentos\\\\Bazar_Autos\\\\src\\\\Pages\\\\Expense\\\\Components\\\\ExpenseListPagination.tsx\")",
+      "Bash(gh repo *)",
+      "Bash(git log *)"
     ]
   }
 }
