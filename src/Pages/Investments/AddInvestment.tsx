@@ -36,7 +36,7 @@ const getInitials = (name: string) =>
     .toUpperCase();
 
 export const AddInvestment: React.FC = () => {
-  const { saleData, handleSaleChange, setSaleData, resetForm } = useInvestmentForm();
+  const { saleData, setSaleData, resetForm } = useInvestmentForm();
   const { mutate, isPending } = useRegisterInvestment(resetForm);
   const { data: listUsers, isLoading } = useUserList();
 
@@ -122,7 +122,7 @@ export const AddInvestment: React.FC = () => {
                 {selectedUser && (
                   <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 p-4">
                     <Avatar className="size-12">
-                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-700 font-semibold text-white">
+                      <AvatarFallback className="bg-linear-to-br from-blue-500 to-blue-700 font-semibold text-white">
                         {getInitials(selectedUser.name)}
                       </AvatarFallback>
                     </Avatar>
